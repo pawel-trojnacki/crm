@@ -16,4 +16,9 @@ class WorkspaceManager
     {
         $this->workspaceRepository->save($workspace);
     }
+
+    public function delete(Workspace $workspace): void
+    {
+        $this->workspaceRepository->delete($workspace);
+    }
 }

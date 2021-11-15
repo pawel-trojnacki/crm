@@ -24,4 +24,10 @@ class WorkspaceRepository extends ServiceEntityRepository
         $this->_em->persist($workspace);
         $this->_em->flush();
     }
+
+    public function delete(Workspace $workspace): void
+    {
+        $this->_em->remove($workspace);
+        $this->_em->flush();
+    }
 }
