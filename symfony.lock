@@ -1,4 +1,7 @@
 {
+    "babdev/pagerfanta-bundle": {
+        "version": "v3.4.0"
+    },
     "behat/transliterator": {
         "version": "v1.3.0"
     },
@@ -135,6 +138,15 @@
     },
     "nikic/php-parser": {
         "version": "v4.13.1"
+    },
+    "pagerfanta/core": {
+        "version": "v3.4.0"
+    },
+    "pagerfanta/doctrine-orm-adapter": {
+        "version": "v3.4.0"
+    },
+    "pagerfanta/twig": {
+        "version": "v3.4.0"
     },
     "phar-io/manifest": {
         "version": "2.0.3"

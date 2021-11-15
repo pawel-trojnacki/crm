@@ -3,9 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Contact;
+use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -31,5 +31,47 @@ class ContactRepository extends ServiceEntityRepository
     {
         $this->_em->remove($contact);
         $this->_em->flush();
+    }
+
+    public function createPagerQueryBuilder(
+        Workspace $workspace,
+        ?string $order = null,
+        ?string $search = null,
+    ): QueryBuilder {
+
+        $qb = $this->createQueryBuilder('q')
+            ->andWhere('q.workspace = :id')
+            ->setParameter(':id', $workspace->getId());
+
+        if ($search) {
+            $qb->andWhere('q.firstName LIKE :search OR q.lastName LIKE :search')
+                ->setParameter(':search', '%' . $search . '%');
+        }
+
+        switch ($order) {
+            case 'date-desc':
+                $qb->orderBy('q.createdAt', 'DESC');
+                break;
+            case 'date-asc':
+                $qb->orderBy('q.createdAt', 'ASC');
+                break;
+            case 'name-desc':
+                $qb->orderBy('q.firstName', 'DESC');
+                break;
+            case 'name-asc':
+                $qb->orderBy('q.firstName', 'ASC');
+                break;
+            case 'surname-desc':
+                $qb->orderBy('q.lastName', 'DESC');
+                break;
+            case 'surname-asc':
+                $qb->orderBy('q.lastName', 'ASC');
+                break;
+            default:
+                $qb->orderBy('q.createdAt', 'DESC');
+                break;
+        }
+
+        return $qb;
     }
 }

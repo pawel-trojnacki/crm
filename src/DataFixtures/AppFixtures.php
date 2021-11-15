@@ -15,7 +15,7 @@ class AppFixtures extends Fixture
             'name' => 'First Workspace',
         ]);
 
-        ContactFactory::createMany(5, [
+        ContactFactory::createMany(50, [
             'workspace' => WorkspaceFactory::random(),
         ]);
     }
