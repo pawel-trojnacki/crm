@@ -20,8 +20,10 @@ class Workspace
     #[ORM\Column(type: 'string', length: 160)]
     private string $name;
 
+    /**
+     * @Gedmo\Slug(fields={"name"})
+     */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    #[Gedmo\Slug(fields: ['name', 'id'])]
     private string $slug;
 
     public function getId(): ?int
