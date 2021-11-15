@@ -30,7 +30,7 @@ class WorkspaceTest extends KernelTestCase
 
         $savedWorkspace = $this->workspaceRepository->findOneBy(['name' => $name]);
 
-        $this->assertNotNull($savedWorkspace);
+        $this->assertInstanceOf(Workspace::class, $savedWorkspace);
         $this->assertIsInt($savedWorkspace->getId());
         $this->assertIsString($savedWorkspace->getSlug());
         $this->assertInstanceOf('DateTime', $savedWorkspace->getCreatedAt());
@@ -46,7 +46,8 @@ class WorkspaceTest extends KernelTestCase
 
         $this->workspaceRepository->save($workspace);
 
-        $this->assertNotNull(
+        $this->assertInstanceOf(
+            Workspace::class,
             $this->workspaceRepository->findOneBy(['name' => $name])
         );
 
