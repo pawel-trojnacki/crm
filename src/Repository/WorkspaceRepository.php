@@ -18,4 +18,10 @@ class WorkspaceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Workspace::class);
     }
+
+    public function save(Workspace $workspace): void
+    {
+        $this->_em->persist($workspace);
+        $this->_em->flush();
+    }
 }
