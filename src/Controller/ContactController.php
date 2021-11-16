@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Constant\ContactConstant;
 use App\Controller\Abstract\AbstractBaseController;
+use App\Entity\Contact;
 use App\Entity\Workspace;
 use App\Form\ContactFormType;
 use App\Service\ContactManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -29,6 +31,9 @@ class ContactController extends AbstractBaseController
         if (!is_numeric($currentPage)) {
             throw new NotFoundHttpException('Page not found');
         }
+
+        $session = new Session();
+        $session->set('contact_index_params', $request->query->all());
 
         $pager = $this->contactManager->createPager($workspace, $currentPage, $order, $search);
 
@@ -53,14 +58,44 @@ class ContactController extends AbstractBaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->contactManager->save($form, $workspace);
 
-            return $this->redirectToRoute('app_contact_index', [
-                'slug' => $workspace->getSlug(),
-            ]);
+            $session = new Session();
+            $params = $session->get('contact_index_params');
+            $params['slug'] = $workspace->getSlug();
+
+            return $this->redirectToRoute('app_contact_index', $params);
         }
 
         return $this->renderForm('contact/create.html.twig', [
             'form' => $form,
             'workspace' => $workspace,
+        ]);
+    }
+
+    #[Route('contact/{slug}/edit', name: 'app_contact_edit', methods: ['GET', 'POST'])]
+    public function edit(Contact $contact, Request $request): Response
+    {
+        $workspace = $contact->getWorkspace();
+
+        $form = $this->createForm(ContactFormType::class, $contact, [
+            'workspace' => $workspace,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->contactManager->save($form, $workspace);
+
+            $session = new Session();
+            $params = $session->get('contact_index_params');
+            $params['slug'] = $workspace->getSlug();
+
+            return $this->redirectToRoute('app_contact_index', $params);
+        }
+
+        return $this->renderForm('contact/edit.html.twig', [
+            'form' => $form,
+            'workspace' => $workspace,
+            'contact' => $contact,
         ]);
     }
 }
