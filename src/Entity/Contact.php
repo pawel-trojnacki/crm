@@ -42,6 +42,10 @@ class Contact
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $workspace;
 
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contacts')]
+    #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
+    private $company;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -127,6 +131,18 @@ class Contact
     public function setWorkspace(?Workspace $workspace): self
     {
         $this->workspace = $workspace;
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): self
+    {
+        $this->company = $company;
 
         return $this;
     }

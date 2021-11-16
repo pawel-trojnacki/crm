@@ -9,6 +9,8 @@ use App\Factory\WorkspaceFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
+use function Zenstruck\Foundry\faker;
+
 class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
@@ -28,8 +30,9 @@ class AppFixtures extends Fixture
             'industry' => IndustryFactory::random(),
         ]);
 
-        ContactFactory::createMany(50, [
+        ContactFactory::createMany(50, fn () => [
             'workspace' => WorkspaceFactory::random(),
+            'company' => faker()->boolean(70) ? CompanyFactory::random() : null,
         ]);
     }
 }
