@@ -23,6 +23,7 @@
             <th scope="col">Last Name</th>
             <th scope="col">Email</th>
             <th scope="col">Phone Number</th>
+            <th scope="col">Company</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -33,6 +34,12 @@
             <td>{{contact.lastName | title}}</td>
             <td>{{contact.email}}</td>
             <td>{{contact.phone}}</td>
+            {% if contact.company %}
+                <td>{{contact.company.name}}</td>
+            {% else %}
+                <td>&#9866</td>
+            {% endif %}
+            
             <td>
                 <div class="d-flex">
                     <div class="me-1">
