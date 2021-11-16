@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
+use App\Constant\ContactConstant;
 use App\Controller\Abstract\AbstractBaseController;
 use App\Entity\Workspace;
-use App\Repository\ContactRepository;
 use App\Service\ContactManager;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -35,7 +33,10 @@ class ContactController extends AbstractBaseController
 
         return $this->render('/contact/index.html.twig', [
             'workspace' => $workspace,
-            'pager' => $pager
+            'pager' => $pager,
+            'order' => $order,
+            'search' => $search,
+            'sortOptions' => ContactConstant::SORT_OPTIONS,
         ]);
     }
 }

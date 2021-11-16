@@ -3,9 +3,13 @@
 {% block title %}Contacts{% endblock %}
 
 {% block body %}
-<h1>Contacts</h1>
 
-<div class="">
+{{ include('layout/_heading.html.twig', {title: 'Contacts'}) }}
+
+<div>
+    
+    {{ include('contact/_filter-form.html.twig') }}
+
     <table class="table table-hover" style="min-width: 700px;">
         <thead>
             <tr>
@@ -28,9 +32,9 @@
     </table>
 
     {% if pager|length > 25 %}
-        <div class="my-4">
-            {{pagerfanta(pager)}}
-        </div>
+    <div class="my-4">
+        {{pagerfanta(pager)}}
+    </div>
     {% endif %}
 
 </div>

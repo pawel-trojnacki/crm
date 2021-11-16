@@ -1,0 +1,20 @@
+<form method="GET" class="row my-4">
+    <div class="col-4 col-lg-3">
+        <label for="search" class="form-label">Search</label>
+        <input type="search" name="search" id="search" class="form-control" value="{{search}}">
+    </div>
+    <div class="col-4 col-lg-3">
+        <label for="order" class="form-label">Sort by</label>
+        <select name="order" id="order" class="form-select">
+            {% if not order %}
+            <option value="" disabled selected hidden>Choose sorting option</option>
+            {% endif %}
+            {% for val, name in sortOptions %}
+                <option value="{{val}}" {{ (val == order) ? 'selected' : '' }} >{{name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-2 col-lg-1 d-flex flex-column justify-content-end">
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </div>
+</form>
