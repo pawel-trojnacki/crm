@@ -70,7 +70,7 @@ class CompanyTest extends KernelTestCase
             $this->companyRepository->save($company);
         }
 
-        $savedCompanies = $this->companyRepository->findAllAlphabetically();
+        $savedCompanies = $this->companyRepository->findAllByWorkspaceAlphabetically($workspace);
 
         // Companies correctly fetched
         $this->assertIsArray($savedCompanies);

@@ -2,16 +2,28 @@
 
 namespace App\Service;
 
+use App\Entity\Contact;
 use App\Entity\Workspace;
 use App\Repository\ContactRepository;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\FormInterface;
 
 class ContactManager
 {
     public function __construct(
         private ContactRepository $contactRepository,
     ) {
+    }
+
+    public function save(FormInterface $form, Workspace $workspace)
+    {
+        /** @var Contact $contact */
+        $contact = $form->getData();
+
+        $contact->setWorkspace($workspace);
+
+        $this->contactRepository->save($contact);
     }
 
     public function createPager(

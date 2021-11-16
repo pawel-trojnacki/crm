@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Constant\ContactConstant;
 use App\Controller\Abstract\AbstractBaseController;
 use App\Entity\Workspace;
+use App\Form\ContactFormType;
 use App\Service\ContactManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,8 +42,25 @@ class ContactController extends AbstractBaseController
     }
 
     #[Route('{slug}/contacts/create', name: 'app_contact_create', methods: ['GET', 'POST'])]
-    public function create(): Response
+    public function create(Workspace $workspace, Request $request): Response
     {
-        return $this->render('contact/create.html.twig');
+        $form = $this->createForm(type: ContactFormType::class, options: [
+            'workspace' => $workspace,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->contactManager->save($form, $workspace);
+
+            return $this->redirectToRoute('app_contact_index', [
+                'slug' => $workspace->getSlug(),
+            ]);
+        }
+
+        return $this->renderForm('contact/create.html.twig', [
+            'form' => $form,
+            'workspace' => $workspace,
+        ]);
     }
 }

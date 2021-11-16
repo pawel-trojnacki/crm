@@ -6,4 +6,40 @@
 
 {{ include('layout/_heading.html.twig', {title: 'Create Contact'}) }}
 
+<div>
+    {{ form_start(form) }}
+
+    <div class="row">
+
+        <div class="col-4">
+            {{form_row(form.firstName)}}
+        </div>
+        <div class="col-4">
+            {{form_row(form.lastName)}}
+        </div>
+        <div class="col-4">
+            {{form_row(form.position)}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            {{form_row(form.email)}}
+        </div>
+        <div class="col-4">
+            {{form_row(form.phone)}}
+        </div>
+        <div class="col-4">
+            {{form_row(form.company)}}
+        </div>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">Save contact</button>
+    </div>
+
+    {{form_end(form)}}
+
+</div>
+
 {% endblock %}

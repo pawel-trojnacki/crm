@@ -1,13 +1,11 @@
 <form method="GET" class="d-flex align-items-end">
     <div class="pe-2">
-        <label for="search" class="form-label">Search</label>
-        <input type="search" name="search" id="search" class="form-control" value="{{search}}">
+        <input type="search" name="search" id="search" class="form-control" value="{{search}}" placeholder="Search">
     </div>
     <div class="pe-2">
-        <label for="order" class="form-label">Sort by</label>
         <select name="order" id="order" class="form-select">
             {% if not order %}
-            <option value="" disabled selected hidden>Choose sorting option</option>
+            <option value="" disabled selected hidden>Sort by</option>
             {% endif %}
             {% for val, name in sortOptions %}
             <option value="{{val}}" {{ (val==order) ? 'selected' : '' }}>{{name}}</option>

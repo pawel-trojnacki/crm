@@ -6,6 +6,7 @@ use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\ContactRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 class Contact
@@ -18,15 +19,32 @@ class Contact
     private $id;
 
     #[ORM\Column(type: 'string', length: 30)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 30,
+    )]
     private $firstName;
 
     #[ORM\Column(type: 'string', length: 30)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 30,
+    )]
     private $lastName;
 
     #[ORM\Column(type: 'string', length: 80)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private $email;
 
     #[ORM\Column(type: 'string', length: 20)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 8,
+        max: 20,
+    )]
     private $phone;
 
     /**

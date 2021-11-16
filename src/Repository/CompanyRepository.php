@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Company;
+use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -32,9 +33,11 @@ class CompanyRepository extends ServiceEntityRepository
     }
 
     /** @return Company[] */
-    public function findAllAlphabetically(): array
+    public function findAllByWorkspaceAlphabetically(Workspace $workspace): array
     {
         return $this->createQueryBuilder('c')
+            ->andWhere('c.workspace = :id')
+            ->setParameter(':id', $workspace->getId())
             ->orderBy('c.name', 'ASC')
             ->getQuery()
             ->getResult();

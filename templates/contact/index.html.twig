@@ -20,15 +20,27 @@
             <th scope="col">Last Name</th>
             <th scope="col">Email</th>
             <th scope="col">Phone Number</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
         {% for contact in pager %}
         <tr>
-            <td>{{contact.firstName}}</td>
-            <td>{{contact.lastName}}</td>
+            <td>{{contact.firstName | title}}</td>
+            <td>{{contact.lastName | title}}</td>
             <td>{{contact.email}}</td>
             <td>{{contact.phone}}</td>
+            <td>
+                <div class="d-flex">
+                    <div class="me-1">
+                        <a href="#" class="fw-bold text-decoration-none">Details</a>
+                    </div>
+                    <span>|</span>
+                    <div class="ms-1">
+                        <a href="#" class="fw-bold text-decoration-none">Edit</a>
+                    </div>
+                </div>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
