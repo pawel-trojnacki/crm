@@ -1,20 +1,23 @@
 <form method="GET" class="d-flex align-items-end">
-    <div class="pe-3">
+    <div class="pe-2">
         <label for="search" class="form-label">Search</label>
         <input type="search" name="search" id="search" class="form-control" value="{{search}}">
     </div>
-    <div class="pe-3">
+    <div class="pe-2">
         <label for="order" class="form-label">Sort by</label>
         <select name="order" id="order" class="form-select">
             {% if not order %}
             <option value="" disabled selected hidden>Choose sorting option</option>
             {% endif %}
             {% for val, name in sortOptions %}
-                <option value="{{val}}" {{ (val == order) ? 'selected' : '' }} >{{name}}</option>
+            <option value="{{val}}" {{ (val==order) ? 'selected' : '' }}>{{name}}</option>
             {% endfor %}
         </select>
     </div>
+    <div class="pe-2">
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </div>
     <div>
-        <button type="submit" class="btn btn-outline-primary">Apply</button>
+        <a href="{{ path('app_contact_index', {slug: workspace.slug}) }}" class="btn btn-secondary">Clear</a>
     </div>
 </form>
