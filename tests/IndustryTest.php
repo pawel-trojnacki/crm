@@ -19,7 +19,7 @@ class IndustryTest extends KernelTestCase
         $this->industryRepository = self::getContainer()->get(IndustryRepository::class);
     }
 
-    public function testIndustryIsCreatedInDatabse()
+    public function testIndustryIsCreatedInDatabse(): void
     {
         $industry = new Industry();
 
@@ -36,7 +36,7 @@ class IndustryTest extends KernelTestCase
         $this->assertSame('transport', $savedIndustry->getName());
     }
 
-    public function testIndustryIsRemovedFromDatabase()
+    public function testIndustryIsRemovedFromDatabase(): void
     {
         $industry = new Industry();
 

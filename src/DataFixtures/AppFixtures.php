@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Factory\CompanyFactory;
 use App\Factory\ContactFactory;
 use App\Factory\IndustryFactory;
 use App\Factory\WorkspaceFactory;
@@ -20,6 +21,11 @@ class AppFixtures extends Fixture
 
         WorkspaceFactory::createOne([
             'name' => 'First Workspace',
+        ]);
+
+        CompanyFactory::createMany(5, fn () => [
+            'workspace' => WorkspaceFactory::random(),
+            'industry' => IndustryFactory::random(),
         ]);
 
         ContactFactory::createMany(50, [
