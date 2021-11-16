@@ -39,4 +39,10 @@ class ContactController extends AbstractBaseController
             'sortOptions' => ContactConstant::SORT_OPTIONS,
         ]);
     }
+
+    #[Route('{slug}/contacts/create', name: 'app_contact_create', methods: ['GET', 'POST'])]
+    public function create(): Response
+    {
+        return $this->render('contact/create.html.twig');
+    }
 }

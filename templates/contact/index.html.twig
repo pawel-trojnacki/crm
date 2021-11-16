@@ -6,37 +6,39 @@
 
 {{ include('layout/_heading.html.twig', {title: 'Contacts'}) }}
 
-<div>
-    
+<div class="d-flex justify-content-between align-items-end my-4">
+
     {{ include('contact/_filter-form.html.twig') }}
 
-    <table class="table table-hover" style="min-width: 700px;">
-        <thead>
-            <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Phone Number</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for contact in pager %}
-            <tr>
-                <td>{{contact.firstName}}</td>
-                <td>{{contact.lastName}}</td>
-                <td>{{contact.email}}</td>
-                <td>{{contact.phone}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    {% if pager|length > 25 %}
-    <div class="my-4">
-        {{pagerfanta(pager)}}
-    </div>
-    {% endif %}
+    <a href="{{ path('app_contact_create', {slug: workspace.slug}) }}" class="btn btn-primary">Create contact</a>
 
 </div>
+<table class="table table-hover" style="min-width: 700px;">
+    <thead>
+        <tr>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contact in pager %}
+        <tr>
+            <td>{{contact.firstName}}</td>
+            <td>{{contact.lastName}}</td>
+            <td>{{contact.email}}</td>
+            <td>{{contact.phone}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if pager|length > 25 %}
+<div class="my-4">
+    {{pagerfanta(pager)}}
+</div>
+{% endif %}
+
 
 {% endblock %}
