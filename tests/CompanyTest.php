@@ -5,6 +5,7 @@ namespace App\Tests;
 use App\Entity\Company;
 use App\Repository\CompanyRepository;
 use App\Repository\WorkspaceRepository;
+use App\Tests\Helper\WorkspaceTestHelper;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\ContactRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -63,6 +65,18 @@ class Contact
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contacts')]
     #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
     private $company;
+
+    #[ORM\OneToMany(
+        mappedBy: 'contact',
+        targetEntity: ContactNote::class,
+        cascade: ['persist', 'remove']
+    )]
+    private $contactNotes;
+
+    public function __construct()
+    {
+        $this->contactNotes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -161,6 +175,36 @@ class Contact
     public function setCompany(?Company $company): self
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ContactNote[]
+     */
+    public function getContactNotes(): Collection
+    {
+        return $this->contactNotes;
+    }
+
+    public function addContactNote(ContactNote $contactNote): self
+    {
+        if (!$this->contactNotes->contains($contactNote)) {
+            $this->contactNotes[] = $contactNote;
+            $contactNote->setContact($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContactNote(ContactNote $contactNote): self
+    {
+        if ($this->contactNotes->removeElement($contactNote)) {
+            // set the owning side to null (unless already changed)
+            if ($contactNote->getContact() === $this) {
+                $contactNote->setContact(null);
+            }
+        }
 
         return $this;
     }

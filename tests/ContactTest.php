@@ -6,19 +6,13 @@ use App\Entity\Contact;
 use App\Entity\Workspace;
 use App\Repository\ContactRepository;
 use App\Repository\WorkspaceRepository;
+use App\Tests\Helper\ContactTestHelper;
+use App\Tests\Helper\WorkspaceTestHelper;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ContactTest extends KernelTestCase
 {
-    private const DEFAULTS = [
-        'firstName' => 'John',
-        'lastName' => 'Doe',
-        'email' => 'johndoe@email.com',
-        'phone' => '541-814-1739',
-        'position' => 'manager',
-    ];
-
     private ContactRepository $contactRepository;
     private WorkspaceRepository $workspaceRepository;
     private EntityManager $em;
@@ -45,18 +39,31 @@ class ContactTest extends KernelTestCase
         $this->saveDefaultContact($workspace);
 
         $savedContact = $this->contactRepository->findOneBy([
-            'email' => self::DEFAULTS['email'],
+            'email' => ContactTestHelper::DEFAULTS['email'],
         ]);
 
         $this->assertInstanceOf(Contact::class, $savedContact);
         $this->assertIsInt($savedContact->getId());
-        $this->assertSame(self::DEFAULTS['firstName'], $savedContact->getFirstName());
-        $this->assertSame(self::DEFAULTS['lastName'], $savedContact->getLastName());
-        $this->assertSame(self::DEFAULTS['phone'], $savedContact->getPhone());
-        $this->assertSame(self::DEFAULTS['position'], $savedContact->getPosition());
+        $this->assertSame(
+            ContactTestHelper::DEFAULTS['firstName'],
+            $savedContact->getFirstName()
+        );
+        $this->assertSame(
+            ContactTestHelper::DEFAULTS['lastName'],
+            $savedContact->getLastName()
+        );
+        $this->assertSame(
+            ContactTestHelper::DEFAULTS['phone'],
+            $savedContact->getPhone()
+        );
+        $this->assertSame(
+            ContactTestHelper::DEFAULTS['position'],
+            $savedContact->getPosition()
+        );
         $this->assertSame('john-doe', $savedContact->getSlug());
         $this->assertInstanceOf('DateTime', $savedContact->getCreatedAt());
         $this->assertInstanceOf('DateTime', $savedContact->getUpdatedAt());
+        $this->assertNull($savedContact->getCompany());
     }
 
     public function testContactCanBeDeletedFromDatabase(): void
@@ -70,7 +77,7 @@ class ContactTest extends KernelTestCase
         $this->assertInstanceOf(
             Contact::class,
             $this->contactRepository->findOneBy(
-                ['email' => self::DEFAULTS['email']]
+                ['email' => ContactTestHelper::DEFAULTS['email']]
             )
         );
 
@@ -78,7 +85,7 @@ class ContactTest extends KernelTestCase
 
         $this->assertNull(
             $this->contactRepository->findOneBy([
-                'email' => self::DEFAULTS['email']
+                'email' => ContactTestHelper::DEFAULTS['email']
             ])
         );
     }
@@ -96,7 +103,7 @@ class ContactTest extends KernelTestCase
         $this->assertInstanceOf(
             Contact::class,
             $this->contactRepository->findOneBy(
-                ['email' => self::DEFAULTS['email']]
+                ['email' => ContactTestHelper::DEFAULTS['email']]
             )
         );
 
@@ -108,28 +115,14 @@ class ContactTest extends KernelTestCase
 
         $this->assertNull(
             $this->contactRepository->findOneBy([
-                'email' => self::DEFAULTS['email']
+                'email' => ContactTestHelper::DEFAULTS['email']
             ])
         );
     }
 
-    private function createDefaultContact(Workspace $workspace): Contact
-    {
-        $contact = new Contact();
-
-        $contact->setFirstName(self::DEFAULTS['firstName']);
-        $contact->setLastName(self::DEFAULTS['lastName']);
-        $contact->setEmail(self::DEFAULTS['email']);
-        $contact->setPhone(self::DEFAULTS['phone']);
-        $contact->setPosition(self::DEFAULTS['position']);
-        $contact->setWorkspace($workspace);
-
-        return $contact;
-    }
-
     private function saveDefaultContact(Workspace $workspace): Contact
     {
-        $contact = $this->createDefaultContact($workspace);
+        $contact = ContactTestHelper::createDefaultContact($workspace);
 
         $this->contactRepository->save($contact);
 
