@@ -26,6 +26,11 @@ class ContactManager
         $this->contactRepository->save($contact);
     }
 
+    public function delete(Contact $contact): void
+    {
+        $this->contactRepository->delete($contact);
+    }
+
     public function createPager(
         Workspace $workspace,
         int $currentPage,

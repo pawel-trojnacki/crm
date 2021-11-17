@@ -44,8 +44,16 @@ class ContactController extends AbstractBaseController
     }
 
     #[Route('/contact/{slug}', name: 'app_contact_show', methods: ['GET', 'POST'])]
-    public function show(Contact $contact): Response
+    public function show(Contact $contact, Request $request): Response
     {
+        if ($request->isMethod('POST') && $request->request->get('delete')) {
+            $this->contactManager->delete($contact);
+
+            return $this->redirectToRoute('app_contact_index', [
+                'slug' => $contact->getWorkspace()->getSlug()
+            ]);
+        }
+
         return $this->render('contact/show.html.twig', [
             'contact' => $contact,
             'workspace' => $contact->getWorkspace(),
