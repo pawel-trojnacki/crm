@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Company;
 use App\Entity\Contact;
-use App\Repository\CompanyRepository;
 use App\Service\CompanyManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

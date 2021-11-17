@@ -38,6 +38,7 @@ class AppFixtures extends Fixture
 
         ContactNoteFactory::createMany(120, fn () => [
             'contact' => ContactFactory::random(),
+            'createdAt' => faker()->dateTimeBetween('-1 week', 'now'),
         ]);
     }
 }

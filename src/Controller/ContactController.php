@@ -10,7 +10,6 @@ use App\Form\ContactFormType;
 use App\Service\ContactManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -41,6 +40,15 @@ class ContactController extends AbstractBaseController
             'order' => $order,
             'search' => $search,
             'sortOptions' => ContactConstant::SORT_OPTIONS,
+        ]);
+    }
+
+    #[Route('/contact/{slug}', name: 'app_contact_show', methods: ['GET', 'POST'])]
+    public function show(Contact $contact): Response
+    {
+        return $this->render('contact/show.html.twig', [
+            'contact' => $contact,
+            'workspace' => $contact->getWorkspace(),
         ]);
     }
 
