@@ -26,6 +26,8 @@
         </div>
     </div>
 
+    <input type="hidden" name="referer" value="{{app.request.headers.get('referer')}}" />
+
     <div class="text-end">
         <button type="submit" class="btn btn-primary">{{ buttonText }}</button>
     </div>

@@ -28,12 +28,10 @@ class ContactController extends AbstractBaseController
         $order = $request->query->get('order');
         $search = $request->query->get('search');
 
+
         if (!is_numeric($currentPage)) {
             throw new NotFoundHttpException('Page not found');
         }
-
-        $session = new Session();
-        $session->set('contact_index_params', $request->query->all());
 
         $pager = $this->contactManager->createPager($workspace, $currentPage, $order, $search);
 
@@ -58,11 +56,14 @@ class ContactController extends AbstractBaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->contactManager->save($form, $workspace);
 
-            $session = new Session();
-            $params = $session->get('contact_index_params');
-            $params['slug'] = $workspace->getSlug();
-
-            return $this->redirectToRoute('app_contact_index', $params);
+            $referer = $request->request->get('referer');
+            if ($referer) {
+                return $this->redirect($referer);
+            } else {
+                return $this->redirectToRoute('app_contact_index', [
+                    'slug' => $workspace->getSlug()
+                ]);
+            }
         }
 
         return $this->renderForm('contact/create.html.twig', [
@@ -85,11 +86,14 @@ class ContactController extends AbstractBaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->contactManager->save($form, $workspace);
 
-            $session = new Session();
-            $params = $session->get('contact_index_params');
-            $params['slug'] = $workspace->getSlug();
-
-            return $this->redirectToRoute('app_contact_index', $params);
+            $referer = $request->request->get('referer');
+            if ($referer) {
+                return $this->redirect($referer);
+            } else {
+                return $this->redirectToRoute('app_contact_index', [
+                    'slug' => $workspace->getSlug()
+                ]);
+            }
         }
 
         return $this->renderForm('contact/edit.html.twig', [
