@@ -18,7 +18,7 @@ class Company
     #[ORM\Column(type: 'string', length: 80)]
     private $name;
 
-    #[ORM\ManyToOne(targetEntity: Industry::class)]
+    #[ORM\ManyToOne(targetEntity: Industry::class, fetch: 'EXTRA_LAZY')]
     #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
     private $industry;
 
