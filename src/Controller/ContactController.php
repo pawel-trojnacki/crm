@@ -7,7 +7,9 @@ use App\Controller\Abstract\AbstractBaseController;
 use App\Entity\Contact;
 use App\Entity\Workspace;
 use App\Form\ContactFormType;
+use App\Form\ContactNoteFormType;
 use App\Service\ContactManager;
+use App\Service\ContactNoteManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -17,6 +19,7 @@ class ContactController extends AbstractBaseController
 {
     public function __construct(
         private ContactManager $contactManager,
+        private ContactNoteManager $contactNoteManager,
     ) {
     }
 
@@ -46,6 +49,17 @@ class ContactController extends AbstractBaseController
     #[Route('/contact/{slug}', name: 'app_contact_show', methods: ['GET', 'POST'])]
     public function show(Contact $contact, Request $request): Response
     {
+        $form = $this->createForm(ContactNoteFormType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->contactNoteManager->save($form, $contact);
+            return $this->redirectToRoute('app_contact_show', [
+                'slug' => $contact->getSlug(),
+            ]);
+        }
+
         if ($request->isMethod('POST') && $request->request->get('delete')) {
             $this->contactManager->delete($contact);
 
@@ -54,9 +68,10 @@ class ContactController extends AbstractBaseController
             ]);
         }
 
-        return $this->render('contact/show.html.twig', [
+        return $this->renderForm('contact/show.html.twig', [
             'contact' => $contact,
             'workspace' => $contact->getWorkspace(),
+            'form' => $form,
         ]);
     }
 
