@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Company;
 use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,5 +42,14 @@ class CompanyRepository extends ServiceEntityRepository
             ->orderBy('c.name', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function createPagerQueryBuilder(Workspace $workspace): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->andWhere('c.workspace = :id')
+            ->setParameter(':id', $workspace->getId());
+
+        return $qb;
     }
 }

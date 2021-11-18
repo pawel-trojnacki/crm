@@ -10,12 +10,12 @@
 
     {{ include('contact/_filter-form.html.twig') }}
 
-    <a href="{{ path('app_contact_create', {slug: workspace.slug}) }}"
-    class="btn btn-primary">
-    Create contact
+    <a href="{{ path('app_contact_create', {slug: workspace.slug}) }}" class="btn btn-primary">
+        Create contact
     </a>
 
 </div>
+
 <table class="table table-hover" style="min-width: 700px;">
     <thead>
         <tr>
@@ -35,19 +35,21 @@
             <td>{{contact.email}}</td>
             <td>{{contact.phone}}</td>
             {% if contact.company %}
-                <td>{{contact.company.name}}</td>
+            <td>{{contact.company.name}}</td>
             {% else %}
-                <td>&#9866</td>
+            <td>&#9866</td>
             {% endif %}
-            
+
             <td>
                 <div class="d-flex">
-                    <a href="{{ path('app_contact_show', {slug: contact.slug}) }}"
-                        class="icon-button">
+                    <a href="{{ path('app_contact_show', {
+                        slug: contact.slug
+                    }) }}" class="icon-button">
                         <i class="bi-eye-fill"></i>
                     </a>
-                    <a href="{{ path('app_contact_edit', {slug: contact.slug}) }}"
-                        class="icon-button">
+                    <a href="{{ path('app_contact_edit', {
+                        slug: contact.slug
+                    }) }}" class="icon-button">
                         <i class="bi-pencil-fill"></i>
                     </a>
                 </div>

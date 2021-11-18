@@ -15,7 +15,9 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Companies</a>
+          <a class="nav-link" href="{{ path('app_company_index', {
+            slug: workspace.slug
+          }) }}">Companies</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Deals</a>
