@@ -97,13 +97,10 @@ class ContactController extends AbstractBaseController
             $this->contactManager->save($form, $workspace);
 
             $referer = $request->request->get('referer');
-            if ($referer) {
-                return $this->redirect($referer);
-            } else {
-                return $this->redirectToRoute('app_contact_index', [
-                    'slug' => $workspace->getSlug()
-                ]);
-            }
+
+            return $this->redirectToReferer($referer, 'app_contact_index', [
+                'slug' => $workspace->getSlug()
+            ]);
         }
 
         return $this->renderForm('contact/create.html.twig', [
@@ -127,13 +124,15 @@ class ContactController extends AbstractBaseController
             $this->contactManager->update($form);
 
             $referer = $request->request->get('referer');
-            if ($referer) {
-                return $this->redirect($referer);
-            } else {
-                return $this->redirectToRoute('app_contact_index', [
-                    'slug' => $workspace->getSlug()
-                ]);
+
+            // Redirect to referer only if it is the index page - temporary solution
+            if ($referer && strpos($referer, 'contacts')) {
+                return $this->redirectToReferer($referer);
             }
+
+            return $this->redirectToRoute('app_contact_show', [
+                'slug' => $contact->getSlug(),
+            ]);
         }
 
         return $this->renderForm('contact/edit.html.twig', [
