@@ -8,6 +8,7 @@ use App\Factory\ContactNoteFactory;
 use App\Factory\IndustryFactory;
 use App\Factory\WorkspaceFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
 
 use function Zenstruck\Foundry\faker;
@@ -16,6 +17,13 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        /** @var EntityManagerInterface $manager */
+        $manager->getConnection()->executeQuery(
+            file_get_contents(__DIR__ . '/../../sql/countries.sql')
+        );
+
+        $manager->flush();
+
         foreach (IndustryFactory::industries as $industry) {
             IndustryFactory::createOne([
                 'name' => $industry

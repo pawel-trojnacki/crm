@@ -29,6 +29,15 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Contact::class)]
     private $contacts;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $website;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $address;
+
+    #[ORM\Column(type: 'string', length: 80, nullable: true)]
+    private $city;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
@@ -101,6 +110,42 @@ class Company
                 $contact->setCompany(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getWebsite(): ?string
+    {
+        return $this->website;
+    }
+
+    public function setWebsite(?string $website): self
+    {
+        $this->website = $website;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }
