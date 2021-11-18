@@ -36,7 +36,9 @@ final class CompanyFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->sentence(2),
+            'name' => self::faker()->company(),
+            'city' => self::faker()->boolean(70) ? self::faker()->city() : null,
+            'address' => self::faker()->boolean(50) ? self::faker()->streetAddress() : null,
         ];
     }
 

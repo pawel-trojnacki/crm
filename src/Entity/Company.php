@@ -38,6 +38,9 @@ class Company
     #[ORM\Column(type: 'string', length: 80, nullable: true)]
     private $city;
 
+    #[ORM\ManyToOne(targetEntity: Country::class)]
+    private $country;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
@@ -146,6 +149,18 @@ class Company
     public function setCity(?string $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getCountry(): ?Country
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?Country $country): self
+    {
+        $this->country = $country;
 
         return $this;
     }

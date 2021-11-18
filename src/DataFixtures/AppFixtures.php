@@ -7,6 +7,7 @@ use App\Factory\ContactFactory;
 use App\Factory\ContactNoteFactory;
 use App\Factory\IndustryFactory;
 use App\Factory\WorkspaceFactory;
+use App\Repository\CountryRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -15,6 +16,10 @@ use function Zenstruck\Foundry\faker;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(
+        private CountryRepository $countryRepository,
+    ) {
+    }
     public function load(ObjectManager $manager): void
     {
         /** @var EntityManagerInterface $manager */
@@ -37,6 +42,7 @@ class AppFixtures extends Fixture
         CompanyFactory::createMany(5, fn () => [
             'workspace' => WorkspaceFactory::random(),
             'industry' => IndustryFactory::random(),
+            'country' => $this->countryRepository->findOneBy(['isoCode' => 'US']),
         ]);
 
         ContactFactory::createMany(30, fn () => [
