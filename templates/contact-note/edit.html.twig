@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Note{% endblock %}
+
+{% block body %}
+
+{{ include('layout/_heading.html.twig', {
+    title: 'Edit note for client: ' ~ contact.firstName ~ ' ' ~ contact.lastName
+}) }}
+
+{{form(form)}}
+
+{% endblock %}

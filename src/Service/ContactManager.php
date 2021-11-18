@@ -16,12 +16,20 @@ class ContactManager
     ) {
     }
 
-    public function save(FormInterface $form, Workspace $workspace)
+    public function save(FormInterface $form, Workspace $workspace): void
     {
         /** @var Contact $contact */
         $contact = $form->getData();
 
         $contact->setWorkspace($workspace);
+
+        $this->contactRepository->save($contact);
+    }
+
+    public function update(FormInterface $form): void
+    {
+        /** @var Contact $contact */
+        $contact = $form->getData();
 
         $this->contactRepository->save($contact);
     }
@@ -47,5 +55,10 @@ class ContactManager
         $pager->setCurrentPage($currentPage);
 
         return $pager;
+    }
+
+    public function findOneBySlug(string $slug): ?Contact
+    {
+        return $this->contactRepository->findOneBy(['slug' => $slug]);
     }
 }

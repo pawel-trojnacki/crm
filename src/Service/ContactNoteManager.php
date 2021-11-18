@@ -24,6 +24,14 @@ class ContactNoteManager
         $this->contactNoteRepository->save($contactNote);
     }
 
+    public function update(FormInterface $form): void
+    {
+        /** @var ContactNote $contactNote */
+        $contactNote = $form->getData();
+
+        $this->contactNoteRepository->save($contactNote);
+    }
+
     public function deleteById(int $id): void
     {
         $contactNote = $this->findOneById($id);

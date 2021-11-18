@@ -1,13 +1,13 @@
-{% extends "base.html.twig" %}
+{% extends 'base.html.twig' %}
 
 {% set page_title = contact.firstName ~ ' ' ~ contact.lastName %}
 
-{% block title %} {{page_title | title}}  {% endblock %}
+{% block title %} {{page_title | title}} {% endblock %}
 
 {% block body %}
 
 {{ include('layout/_heading.html.twig', {
-    title: page_title
+title: page_title
 }) }}
 
 <div class="row">
@@ -20,31 +20,34 @@
 
         {% if contact.contactNotes | length > 0 %}
         <ul class="list-group">
-            {% for note in contact.contactNotes | sort((a, b) => a.createdAt < b.createdAt) %}
-                <li class="list-group-item p-md-3">
-                    <div class="mb-1 d-flex justify-content-between w-100">
-                        <h3 class="fs-6 fw-bold">By John Doe {{note.createdAt | ago}}</h3>
-                        <div>
-                            <a href="#" class="icon-button">
-                                <i class="bi-pencil-fill" aria-label="edit"></i>
-                            </a>
+            {% for note in contact.contactNotes | sort((a, b) => a.createdAt < b.createdAt) %} <li
+                class="list-group-item p-md-3">
+                <div class="mb-1 d-flex justify-content-between w-100">
+                    <h3 class="fs-6 fw-bold">By John Doe {{note.createdAt | ago}}</h3>
+                    <div>
+                        <a href="{{ path('app_contact_edit_note', {
+                                slug: contact.slug,
+                                id: note.id
+                            }) }}" class="icon-button">
+                            <i class="bi-pencil-fill" aria-label="edit"></i>
+                        </a>
 
-                            <button role="button" class="icon-button" data-bs-toggle="modal"
+                        <button role="button" class="icon-button" data-bs-toggle="modal"
                             data-bs-target="{{'#delete-note-modal-' ~ note.id}}">
-                                <i class="bi-trash-fill" aria-label="edit"></i>
-                            </button>
+                            <i class="bi-trash-fill" aria-label="edit"></i>
+                        </button>
 
-                            {{ include('partials/_delete-modal.html.twig', {
-                                id: 'delete-note-modal-' ~ note.id,
-                                delete_name: 'delete-note',
-                                delete_id: note.id
-                            }) }}
+                        {{ include('partials/_delete-modal.html.twig', {
+                        id: 'delete-note-modal-' ~ note.id,
+                        delete_name: 'delete-note',
+                        delete_id: note.id
+                        }) }}
 
-                        </div>
                     </div>
-                    <p class="mb-1">{{ note.content }}</p>
+                </div>
+                <p class="mb-1">{{ note.content }}</p>
                 </li>
-            {% endfor %}
+                {% endfor %}
         </ul>
         {% endif %}
 
@@ -71,17 +74,19 @@
             {% endif %}
             <div class="d-flex justify-content-end my-3">
                 <div class="me-2">
-                    <a href="{{ path('app_contact_edit', {slug: contact.slug}) }}"
-                        class="btn btn-primary">
+                    <a href="{{ path('app_contact_edit', {
+                        slug: contact.slug
+                    }) }}" class="btn btn-primary">
                         Edit
                     </a>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-contact-modal">Delete</button>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#delete-contact-modal">Delete</button>
 
                     {{ include('partials/_delete-modal.html.twig', {
-                        id: 'delete-contact-modal',
-                        delete_name: 'delete-contact'
+                    id: 'delete-contact-modal',
+                    delete_name: 'delete-contact'
                     }) }}
 
                 </div>

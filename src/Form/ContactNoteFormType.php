@@ -15,7 +15,7 @@ class ContactNoteFormType extends AbstractType
     {
         $builder
             ->add('content', TextareaType::class, [
-                'label' => 'Create note',
+                'label' => $options['label_text'],
                 'attr' => [
                     'rows' => 5,
                 ]
@@ -29,6 +29,7 @@ class ContactNoteFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ContactNote::class,
+            'label_text' => 'Create note'
         ]);
     }
 }

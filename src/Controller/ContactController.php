@@ -124,7 +124,7 @@ class ContactController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->contactManager->save($form, $workspace);
+            $this->contactManager->update($form);
 
             $referer = $request->request->get('referer');
             if ($referer) {
@@ -140,6 +140,38 @@ class ContactController extends AbstractBaseController
             'form' => $form,
             'workspace' => $workspace,
             'contact' => $contact,
+        ]);
+    }
+
+    #[Route(
+        '/contact/{slug}/edit-note/{id}',
+        name: 'app_contact_edit_note',
+        methods: ['GET', 'POST']
+    )]
+    public function editNote(string $slug, int $id, Request $request): Response
+    {
+        $contact = $this->contactManager->findOneBySlug($slug);
+        $workspace = $contact->getWorkspace();
+        $contactNote = $this->contactNoteManager->findOneById($id);
+
+        $form = $this->createForm(ContactNoteFormType::class, $contactNote, [
+            'label_text' => 'Edit note',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->contactNoteManager->update($form);
+
+            return $this->redirectToRoute('app_contact_show', [
+                'slug' => $slug,
+            ]);
+        }
+
+        return $this->renderForm('contact-note/edit.html.twig', [
+            'workspace' => $workspace,
+            'contact' => $contact,
+            'form' => $form,
         ]);
     }
 }
