@@ -23,4 +23,18 @@ class ContactNoteManager
 
         $this->contactNoteRepository->save($contactNote);
     }
+
+    public function deleteById(int $id): void
+    {
+        $contactNote = $this->findOneById($id);
+
+        if ($contactNote) {
+            $this->contactNoteRepository->delete($contactNote);
+        }
+    }
+
+    public function findOneById(int $id): ?ContactNote
+    {
+        return $this->contactNoteRepository->findOneBy(['id' => $id]);
+    }
 }

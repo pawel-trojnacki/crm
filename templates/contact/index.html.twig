@@ -42,19 +42,14 @@
             
             <td>
                 <div class="d-flex">
-                    <div class="me-1">
-                        <a href="{{ path('app_contact_show', {slug: contact.slug}) }}"
-                            class="fw-bold text-decoration-none">
-                            Details
-                        </a>
-                    </div>
-                    <span>|</span>
-                    <div class="ms-1">
-                        <a href="{{ path('app_contact_edit', {slug: contact.slug}) }}"
-                            class="fw-bold text-decoration-none">
-                            Edit
-                        </a>
-                    </div>
+                    <a href="{{ path('app_contact_show', {slug: contact.slug}) }}"
+                        class="icon-button">
+                        <i class="bi-eye-fill"></i>
+                    </a>
+                    <a href="{{ path('app_contact_edit', {slug: contact.slug}) }}"
+                        class="icon-button">
+                        <i class="bi-pencil-fill"></i>
+                    </a>
                 </div>
             </td>
         </tr>

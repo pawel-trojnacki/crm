@@ -60,11 +60,20 @@ class ContactController extends AbstractBaseController
             ]);
         }
 
-        if ($request->isMethod('POST') && $request->request->get('delete')) {
+        if ($request->isMethod('POST') && $request->request->get('delete-contact')) {
             $this->contactManager->delete($contact);
 
             return $this->redirectToRoute('app_contact_index', [
-                'slug' => $contact->getWorkspace()->getSlug()
+                'slug' => $contact->getWorkspace()->getSlug(),
+            ]);
+        }
+
+        if ($request->isMethod('POST') && $request->request->get('delete-note')) {
+
+            $this->contactNoteManager->deleteById($request->request->get('delete-id'));
+
+            return $this->redirectToRoute('app_contact_show', [
+                'slug' => $contact->getSlug(),
             ]);
         }
 
