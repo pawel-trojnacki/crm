@@ -39,6 +39,7 @@ class CompanyTest extends KernelTestCase
         $company = new Company();
         $company->setName('Some Company');
         $company->setWorkspace($workspace);
+        $company->setWebsite('www.example.com');
         $company->setAddress('286 Adah Forest');
         $company->setCity('West Williamberg');
 
@@ -51,6 +52,7 @@ class CompanyTest extends KernelTestCase
         $this->assertInstanceOf(Company::class, $savedCompany);
         $this->assertIsInt($savedCompany->getId());
         $this->assertSame($workspace, $savedCompany->getWorkspace());
+        $this->assertSame('www.example.com', $savedCompany->getWebsite());
         $this->assertSame('286 Adah Forest', $savedCompany->getAddress());
         $this->assertSame('West Williamberg', $savedCompany->getCity());
         $this->assertNull($savedCompany->getCountry());
