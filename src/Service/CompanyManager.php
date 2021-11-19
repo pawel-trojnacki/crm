@@ -20,15 +20,20 @@ class CompanyManager
         return $this->companyRepository->findAllByWorkspaceAlphabetically($workspace);
     }
 
-    public function createPager(Workspace $workspace, int $currentPage): Pagerfanta
-    {
-        $qb = $this->companyRepository->createPagerQueryBuilder($workspace);
+    public function createPager(
+        Workspace $workspace,
+        int $currentPage,
+        ?string $search,
+        ?string $industry,
+        ?string $order,
+    ): Pagerfanta {
+        $qb = $this->companyRepository->createPagerQueryBuilder($workspace, $search, $industry, $order);
 
         $adapter = new QueryAdapter($qb);
 
         $pager = new Pagerfanta($adapter);
 
-        $pager->setMaxPerPage(2);
+        $pager->setMaxPerPage(10);
         $pager->setCurrentPage($currentPage);
 
         return $pager;

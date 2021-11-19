@@ -44,11 +44,43 @@ class CompanyRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function createPagerQueryBuilder(Workspace $workspace): QueryBuilder
-    {
+    public function createPagerQueryBuilder(
+        Workspace $workspace,
+        ?string $search = null,
+        ?string $industry = null,
+        ?string $order = null,
+    ): QueryBuilder {
         $qb = $this->createQueryBuilder('c')
             ->andWhere('c.workspace = :id')
             ->setParameter(':id', $workspace->getId());
+
+        if ($search) {
+            $qb->andWhere('c.name LIKE :search')
+                ->setParameter(':search', '%' . $search . '%');
+        }
+
+        if ($industry) {
+            $qb->andWhere('c.industry = :industry')
+                ->setParameter(':industry', $industry);
+        }
+
+        switch ($order) {
+            case 'date-desc':
+                $qb->orderBy('c.createdAt', 'DESC');
+                break;
+            case 'date-asc':
+                $qb->orderBy('c.createdAt', 'ASC');
+                break;
+            case 'name-desc':
+                $qb->orderBy('c.name', 'DESC');
+                break;
+            case 'name-asc':
+                $qb->orderBy('c.name', 'ASC');
+                break;
+            default:
+                $qb->orderBy('c.createdAt', 'DESC');
+                break;
+        }
 
         return $qb;
     }

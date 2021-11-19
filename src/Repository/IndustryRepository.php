@@ -30,4 +30,13 @@ class IndustryRepository extends ServiceEntityRepository
         $this->_em->remove($industry);
         $this->_em->flush();
     }
+
+    /** @return Industry[] */
+    public function findAllAlphabetically(): array
+    {
+        return $this->createQueryBuilder('i')
+            ->orderBy('i.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

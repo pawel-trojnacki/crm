@@ -1,0 +1,12 @@
+<div class="pe-2">
+    <select name="industry" id="industry" class="form-select">
+        {% if not industry %}
+        <option value="" disabled selected hidden>Choose industry</option>
+        {% endif %}
+        {% for industry in industries %}
+        <option value="{{industry.id}}" {{ (industry.id==order) ? 'selected' : '' }}>
+            {{industry.name | title}}
+        </option>
+        {% endfor %}
+    </select>
+</div>

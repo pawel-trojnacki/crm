@@ -1,9 +1,15 @@
 <form method="GET" class="d-flex align-items-end">
+
     <div class="pe-2">
         <input type="search" name="search" id="search" class="form-control" value="{{
             search
         }}" placeholder="Search">
     </div>
+
+    {% if filter_addons | default(false) %}
+        {{ include(filter_addons) }}
+    {% endif %}
+
     <div class="pe-2">
         <select name="order" id="order" class="form-select">
             {% if not order %}
@@ -14,12 +20,15 @@
             {% endfor %}
         </select>
     </div>
+
     <div class="pe-2">
         <button type="submit" class="btn btn-primary">Apply</button>
     </div>
+
     <div>
-        <a href="{{ path('app_contact_index', {
+        <a href="{{ path(base_path, {
             slug: workspace.slug
         }) }}" class="btn btn-secondary">Clear</a>
     </div>
+
 </form>

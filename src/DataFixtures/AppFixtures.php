@@ -39,10 +39,12 @@ class AppFixtures extends Fixture
             'name' => 'First Workspace',
         ]);
 
-        CompanyFactory::createMany(5, fn () => [
+        CompanyFactory::createMany(15, fn () => [
             'workspace' => WorkspaceFactory::random(),
             'industry' => IndustryFactory::random(),
             'country' => $this->countryRepository->findOneBy(['isoCode' => 'US']),
+            'createdAt' => faker()->dateTimeBetween('-1 month', '-2 days'),
+            'updatedAt' => faker()->dateTimeBetween('-1 day', 'now'),
         ]);
 
         ContactFactory::createMany(30, fn () => [
@@ -52,7 +54,8 @@ class AppFixtures extends Fixture
 
         ContactNoteFactory::createMany(120, fn () => [
             'contact' => ContactFactory::random(),
-            'createdAt' => faker()->dateTimeBetween('-1 week', 'now'),
+            'createdAt' => faker()->dateTimeBetween('-1 month', '-2 days'),
+            'updatedAt' => faker()->dateTimeBetween('-1 day', 'now'),
         ]);
     }
 }

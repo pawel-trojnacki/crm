@@ -6,6 +6,19 @@
 
 {{ include('layout/_heading.html.twig', {title: 'Companies'}) }}
 
+<div class="d-flex justify-content-between align-items-start mt-4 mb-2">
+
+    {{ include('partials/_filter-form.html.twig', {
+        base_path: 'app_company_index',
+        filter_addons: 'company/_filter-form-addons.html.twig'
+    }) }}
+
+    <a href="#" class="btn btn-primary">
+        Create company
+    </a>
+
+</div>
+
 <table class="table table-hover" style="min-width: 700px;">
     <thead>
         <tr>
@@ -59,7 +72,7 @@
     </tbody>
 </table>
 
-{% if pager|length > 2 %}
+{% if pager|length > 10 %}
 <div class="my-4">
     {{pagerfanta(pager)}}
 </div>
