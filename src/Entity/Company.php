@@ -43,6 +43,7 @@ class Company
     private $contacts;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Url(relativeProtocol: true)]
     private $website;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
