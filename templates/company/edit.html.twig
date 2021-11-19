@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Company{% endblock %}
+
+{% block body %}
+
+{{ include('layout/_heading.html.twig', {title: 'Edit Company: ' ~ company.name}) }}
+
+{{ include('company/_form.html.twig', {buttonText: 'Update company'}) }}
+
+{% endblock %}

@@ -6,14 +6,14 @@
 
 {{ include('layout/_heading.html.twig', {title: 'Companies'}) }}
 
-<div class="d-flex justify-content-between align-items-start mt-4 mb-2">
+<div class="d-flex justify-content-between align-items-start my-4">
 
     {{ include('partials/_filter-form.html.twig', {
         base_path: 'app_company_index',
         filter_addons: 'company/_filter-form-addons.html.twig'
     }) }}
 
-    <a href="#" class="btn btn-primary">
+    <a href="{{ path('app_company_create', {slug: workspace.slug}) }}" class="btn btn-primary">
         Create company
     </a>
 
@@ -47,25 +47,24 @@
             {% endif %}
 
             {% if company.city %}
-                <td>{{company.city}}</td>
+                <td>{{company.city | title}}</td>
             {% else %}
                 <td>&#9866</td>
             {% endif %}
 
             <td>
-                To do
-                {# <div class="d-flex">
-                    <a href="{{ path('app_contact_show', {
+                <div class="d-flex">
+                    <a href="{{ path('app_company_edit', {
                         slug: company.slug
                     }) }}" class="icon-button">
                         <i class="bi-eye-fill"></i>
                     </a>
-                    <a href="{{ path('app_contact_edit', {
+                    <a href="{{ path('app_company_edit', {
                         slug: company.slug
                     }) }}" class="icon-button">
                         <i class="bi-pencil-fill"></i>
                     </a>
-                </div> #}
+                </div>
             </td>
         </tr>
         {% endfor %}

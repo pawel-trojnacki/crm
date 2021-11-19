@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Company{% endblock %}
+
+{% block body %}
+
+{{ include('layout/_heading.html.twig', {title: 'Create Company'}) }}
+
+{{ include('company/_form.html.twig', {buttonText: 'Save company'}) }}
+
+{% endblock %}

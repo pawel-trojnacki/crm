@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Company;
 use App\Entity\Workspace;
 use App\Repository\CompanyRepository;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\FormInterface;
 
 class CompanyManager
 {
@@ -37,5 +39,23 @@ class CompanyManager
         $pager->setCurrentPage($currentPage);
 
         return $pager;
+    }
+
+    public function save(FormInterface $form, Workspace $workspace): void
+    {
+        /** @var Company $company */
+        $company = $form->getData();
+
+        $company->setWorkspace($workspace);
+
+        $this->companyRepository->save($company);
+    }
+
+    public function update(FormInterface $form): void
+    {
+        /** @var Company $company */
+        $company = $form->getData();
+
+        $this->companyRepository->save($company);
     }
 }

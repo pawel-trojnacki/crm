@@ -35,7 +35,7 @@ class ContactFormType extends AbstractType
                 'choices' => $this->companyManager->findAllByWorkspaceAlphabetically(
                     $options['workspace']
                 ),
-                'placeholder' => 'Choose company',
+                'placeholder' => 'Choose a company',
                 'required' => false,
             ]);
     }

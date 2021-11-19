@@ -1,11 +1,11 @@
 <div class="pe-2">
     <select name="industry" id="industry" class="form-select">
         {% if not industry %}
-        <option value="" disabled selected hidden>Choose industry</option>
+        <option value="" disabled selected hidden>Choose an industry</option>
         {% endif %}
-        {% for industry in industries %}
-        <option value="{{industry.id}}" {{ (industry.id==order) ? 'selected' : '' }}>
-            {{industry.name | title}}
+        {% for i in industries %}
+        <option value="{{i.id}}" {{ (i.id==industry) ? 'selected' : '' }}>
+            {{i.name}}
         </option>
         {% endfor %}
     </select>

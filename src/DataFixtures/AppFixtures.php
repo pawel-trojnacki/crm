@@ -49,7 +49,7 @@ class AppFixtures extends Fixture
 
         ContactFactory::createMany(30, fn () => [
             'workspace' => WorkspaceFactory::random(),
-            'company' => faker()->boolean(70) ? CompanyFactory::random() : null,
+            'company' => faker()->boolean(80) ? CompanyFactory::random() : null,
         ]);
 
         ContactNoteFactory::createMany(120, fn () => [

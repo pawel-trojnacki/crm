@@ -37,8 +37,10 @@ final class CompanyFactory extends ModelFactory
     {
         return [
             'name' => self::faker()->company(),
-            'city' => self::faker()->boolean(70) ? self::faker()->city() : null,
-            'address' => self::faker()->boolean(50) ? self::faker()->streetAddress() : null,
+            'city' => self::faker()->boolean(80) ? self::faker()->city() : null,
+            'address' => self::faker()->boolean(80) ? self::faker()->streetAddress() : null,
+            'website' => self::faker()->boolean(80) ?
+                'http://www.' . self::faker()->domainName() : null,
         ];
     }
 
