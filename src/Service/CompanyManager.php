@@ -58,4 +58,9 @@ class CompanyManager
 
         $this->companyRepository->save($company);
     }
+
+    public function delete(Company $company): void
+    {
+        $this->companyRepository->delete($company);
+    }
 }

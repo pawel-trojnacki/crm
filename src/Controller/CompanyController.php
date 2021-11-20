@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Constant\CompanyConstant;
 use App\Controller\Abstract\AbstractBaseController;
 use App\Entity\Company;
+use App\Entity\Contact;
 use App\Entity\Workspace;
 use App\Form\CompanyFormType;
 use App\Service\CompanyManager;
+use App\Service\ContactManager;
 use App\Service\IndustryManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +21,7 @@ class CompanyController extends AbstractBaseController
     public function __construct(
         private CompanyManager $companyManager,
         private IndustryManager $industryManager,
+        private ContactManager $contactManager,
     ) {
     }
 
@@ -55,6 +58,35 @@ class CompanyController extends AbstractBaseController
         ]);
     }
 
+    #[Route('/company/{slug}', name: 'app_company_show', methods: ['GET', 'POST'])]
+    public function show(Company $company, Request $request): Response
+    {
+        $workspace = $company->getWorkspace();
+
+        if ($request->isMethod('POST') && $request->request->get('delete-company')) {
+
+            if ($request->request->get('delete-contacts') !== null) {
+                /** @var Contact[] $contacts */
+                $contacts = $company->getContacts();
+
+                foreach ($contacts as $contact) {
+                    $this->contactManager->delete($contact);
+                }
+            }
+
+            $this->companyManager->delete($company);
+
+            return $this->redirectToRoute('app_company_index', [
+                'slug' => $company->getWorkspace()->getSlug(),
+            ]);
+        }
+
+        return $this->render('company/show.html.twig', [
+            'workspace' => $workspace,
+            'company' => $company,
+        ]);
+    }
+
     #[Route('/{slug}/companies/create', name: 'app_company_create', methods: ['GET', 'POST'])]
     public function create(Workspace $workspace, Request $request): Response
     {
@@ -78,7 +110,7 @@ class CompanyController extends AbstractBaseController
         ]);
     }
 
-    #[Route('/company/{slug}/create', name: 'app_company_edit', methods: ['GET', 'POST'])]
+    #[Route('/company/{slug}/edit', name: 'app_company_edit', methods: ['GET', 'POST'])]
     public function edit(Company $company, Request $request): Response
     {
         $workspace = $company->getWorkspace();

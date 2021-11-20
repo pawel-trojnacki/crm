@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{company.name}}{% endblock %}
+
+{% block body %}
+
+{{ include('layout/_heading.html.twig', {title: 'Company: ' ~ company.name}) }}
+
+<div class="row">
+
+    <div class="col-8">
+        <h2 class="fs-3 fw-bold mb-3">Contacts</h2>
+
+        {% if company.contacts | length > 0 %}
+
+        <ul class="list-group">
+
+            {% for contact in company.contacts | sort((a, b) => a.createdAt < b.createdAt) %}
+
+            <li class="list-group-item p-md-3">
+                <div class="mb-1 d-flex justify-content-between w-100">
+                    <h3 class="fs-6 fw-bold">
+                        {{contact.firstName ~ ' ' ~ contact.lastName}}
+                    </h3>
+                    <div>
+                        <a href="{{ path('app_contact_show', {
+                                slug: contact.slug,
+                            }) }}" class="icon-button">
+                            <i class="bi-eye-fill" aria-label="edit"></i>
+                        </a>
+                    </div>
+                </div>
+                <ul class="mb-1">
+                    {% if contact.position %}
+                        <li>Position: {{contact.position}}</li>
+                    {% endif %}
+                    <li>Email: {{contact.email}}</li>
+                    <li>Phone number: {{contact.phone}}</li>
+                </ul>
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+        {% else %}
+
+        <p>There are no contacts assigned to this company</p>
+
+        {% endif %}
+
+    </div>
+
+    <section class="col-4">
+        <h2 class="fs-3 fw-bold mb-3">Info</h2>
+        <ul class="list-group">
+
+            {% if company.industry %}
+            <li class="list-group-item">
+                Industry: <span class="fw-bold">{{company.industry.name}}</span>
+            </li>
+            {% endif %}
+
+            {% if company.website %}
+            <li class="list-group-item">
+                Website: <span class="fw-bold">
+                    <a href="{{company.website}}" target="_blank" rel="noopener">
+                        {{company.website}}
+                    </a>
+                </span>
+            </li>
+            {% endif %}
+
+            {% if company.country %}
+            <li class="list-group-item">
+                Country: <span class="fw-bold">{{company.country.name}}</span>
+            </li>
+            {% endif %}
+
+            {% if company.city %}
+            <li class="list-group-item">
+                City: <span class="fw-bold">{{company.city}}</span>
+            </li>
+            {% endif %}
+
+            {% if company.address %}
+            <li class="list-group-item">
+                Address: <span class="fw-bold">{{company.address}}</span>
+            </li>
+            {% endif %}
+
+            <li class="list-group-item">
+                Created: <span class="fw-bold">{{company.createdAt | ago}}</span>
+            </li>
+
+            <li class="list-group-item">
+                Last update: <span class="fw-bold">{{company.updatedAt | ago}}</span>
+            </li>
+
+            <div class="d-flex justify-content-end my-3">
+                <div class="me-2">
+                    <a href="{{ path('app_company_edit', {
+                        slug: company.slug
+                    }) }}" class="btn btn-primary">
+                        Edit
+                    </a>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#delete-company-modal">Delete</button>
+
+                    {{ include('partials/_delete-modal.html.twig', {
+                    id: 'delete-company-modal',
+                    delete_name: 'delete-company',
+                    delete_form_addons: company.contacts | length > 0 ?
+                    'company/_delete-modal-form-addons.html.twig' : false
+                    }) }}
+
+                </div>
+            </div>
+        </ul>
+    </section>
+
+</div>
+
+
+{% endblock %}
