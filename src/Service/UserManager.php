@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\Workspace;
 use App\Repository\UserRepository;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserManager

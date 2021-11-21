@@ -2,15 +2,18 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\User;
 use App\Factory\CompanyFactory;
 use App\Factory\ContactFactory;
 use App\Factory\ContactNoteFactory;
 use App\Factory\IndustryFactory;
+use App\Factory\UserFactory;
 use App\Factory\WorkspaceFactory;
 use App\Repository\CountryRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 use function Zenstruck\Foundry\faker;
 
@@ -18,8 +21,16 @@ class AppFixtures extends Fixture
 {
     public function __construct(
         private CountryRepository $countryRepository,
+        private UserPasswordHasherInterface $passwordHasher,
     ) {
     }
+
+    private function hashUserPassword(string $plainPassword): string
+    {
+        $user = new User();
+        return $this->passwordHasher->hashPassword($user, $plainPassword);
+    }
+
     public function load(ObjectManager $manager): void
     {
         /** @var EntityManagerInterface $manager */
@@ -37,6 +48,12 @@ class AppFixtures extends Fixture
 
         WorkspaceFactory::createOne([
             'name' => 'First Workspace',
+        ]);
+
+        UserFactory::createOne([
+            'email' => 'test@email.com',
+            'password' => $this->hashUserPassword('00000000'),
+            'workspace' => WorkspaceFactory::random(),
         ]);
 
         CompanyFactory::createMany(15, fn () => [

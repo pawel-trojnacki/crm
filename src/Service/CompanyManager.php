@@ -7,7 +7,6 @@ use App\Entity\Workspace;
 use App\Repository\CompanyRepository;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\FormInterface;
 
 class CompanyManager
 {

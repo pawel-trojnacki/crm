@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Contact;
 use App\Entity\ContactNote;
 use App\Repository\ContactNoteRepository;
-use Symfony\Component\Form\FormInterface;
 
 class ContactNoteManager
 {
@@ -14,21 +13,15 @@ class ContactNoteManager
     ) {
     }
 
-    public function save(FormInterface $form, Contact $contact): void
+    public function save(ContactNote $contactNote, Contact $contact): void
     {
-        /** @var ContactNote $contactNote */
-        $contactNote = $form->getData();
-
         $contactNote->setContact($contact);
 
         $this->contactNoteRepository->save($contactNote);
     }
 
-    public function update(FormInterface $form): void
+    public function update(ContactNote $contactNote): void
     {
-        /** @var ContactNote $contactNote */
-        $contactNote = $form->getData();
-
         $this->contactNoteRepository->save($contactNote);
     }
 

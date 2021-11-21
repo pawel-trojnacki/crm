@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Constant\ContactConstant;
 use App\Controller\Abstract\AbstractBaseController;
 use App\Entity\Contact;
+use App\Entity\ContactNote;
 use App\Entity\Workspace;
 use App\Form\ContactFormType;
 use App\Form\ContactNoteFormType;
@@ -54,7 +55,11 @@ class ContactController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->contactNoteManager->save($form, $contact);
+            /** @var ContactNote $contactNote */
+            $contactNote = $form->getData();
+
+            $this->contactNoteManager->save($contactNote, $contact);
+
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
             ]);
@@ -165,7 +170,10 @@ class ContactController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->contactNoteManager->update($form);
+            /** @var ContactNote $contactNote */
+            $contactNote = $form->getData();
+
+            $this->contactNoteManager->update($contactNote);
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $slug,
