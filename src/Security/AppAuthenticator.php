@@ -47,7 +47,7 @@ class AppAuthenticator extends AbstractAuthenticator
             $userBadge,
             new PasswordCredentials($password),
             [
-                new CsrfTokenBadge('authenticate', $request->get('_csrf_token')),
+                new CsrfTokenBadge('authenticate', $request->get('csrf_token')),
                 new RememberMeBadge(),
             ]
         );
