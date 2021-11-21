@@ -1,0 +1,40 @@
+{% extends 'base-auth.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <h1 class="text-center fw-bold mb-4">Create an account</h1>
+
+    <div class="auth-form-wrapper">
+
+        {{ form_start(registrationForm) }}
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(registrationForm.firstName) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(registrationForm.lastName) }}
+            </div>
+        </div>
+
+        {{ form_row(registrationForm.email) }}
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(registrationForm.plainPassword.first) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(registrationForm.plainPassword.second) }}
+            </div>
+        </div>
+
+        {{ form_row(registrationForm.workspace) }}
+
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+        {{ form_end(registrationForm) }}
+    </div>
+    
+{% endblock %}

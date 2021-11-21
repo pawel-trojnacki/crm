@@ -42,10 +42,18 @@ class Workspace
     )]
     private $companies;
 
+    #[ORM\OneToMany(
+        mappedBy: 'workspace',
+        targetEntity: User::class,
+        cascade: ['persist', 'remove']
+    )]
+    private $users;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->companies = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -131,6 +139,36 @@ class Workspace
             // set the owning side to null (unless already changed)
             if ($company->getWorkspace() === $this) {
                 $company->setWorkspace(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setWorkspace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getWorkspace() === $this) {
+                $user->setWorkspace(null);
             }
         }
 

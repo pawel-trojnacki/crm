@@ -16,21 +16,15 @@ class ContactManager
     ) {
     }
 
-    public function save(FormInterface $form, Workspace $workspace): void
+    public function save(Contact $contact, Workspace $workspace): void
     {
-        /** @var Contact $contact */
-        $contact = $form->getData();
-
         $contact->setWorkspace($workspace);
 
         $this->contactRepository->save($contact);
     }
 
-    public function update(FormInterface $form): void
+    public function update(Contact $contact): void
     {
-        /** @var Contact $contact */
-        $contact = $form->getData();
-
         $this->contactRepository->save($contact);
     }
 

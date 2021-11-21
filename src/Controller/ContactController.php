@@ -94,7 +94,9 @@ class ContactController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->contactManager->save($form, $workspace);
+            /** @var Contact $contact */
+            $contact = $form->getData();
+            $this->contactManager->save($contact, $workspace);
 
             $referer = $request->request->get('referer');
 
@@ -121,7 +123,10 @@ class ContactController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->contactManager->update($form);
+            /** @var Contact $contact */
+            $contact = $form->getData();
+
+            $this->contactManager->update($contact);
 
             $referer = $request->request->get('referer');
 

@@ -41,21 +41,15 @@ class CompanyManager
         return $pager;
     }
 
-    public function save(FormInterface $form, Workspace $workspace): void
+    public function save(Company $company, Workspace $workspace): void
     {
-        /** @var Company $company */
-        $company = $form->getData();
-
         $company->setWorkspace($workspace);
 
         $this->companyRepository->save($company);
     }
 
-    public function update(FormInterface $form): void
+    public function update(Company $company): void
     {
-        /** @var Company $company */
-        $company = $form->getData();
-
         $this->companyRepository->save($company);
     }
 

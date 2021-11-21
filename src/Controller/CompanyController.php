@@ -95,7 +95,10 @@ class CompanyController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->companyManager->save($form, $workspace);
+            /** @var Company $company */
+            $company = $form->getData();
+
+            $this->companyManager->save($company, $workspace);
 
             $referer = $request->request->get('referer');
 
@@ -120,7 +123,10 @@ class CompanyController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->companyManager->update($form);
+            /** @var Company $company */
+            $company = $form->getData();
+
+            $this->companyManager->update($company);
 
             $referer = $request->request->get('referer');
 

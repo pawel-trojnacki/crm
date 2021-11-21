@@ -17,6 +17,16 @@ class WorkspaceManager
         $this->workspaceRepository->save($workspace);
     }
 
+    public function createAndSave(string $name): Workspace
+    {
+        $workspace = new Workspace();
+        $workspace->setName($name);
+
+        $this->workspaceRepository->save($workspace);
+
+        return $workspace;
+    }
+
     public function delete(Workspace $workspace): void
     {
         $this->workspaceRepository->delete($workspace);
