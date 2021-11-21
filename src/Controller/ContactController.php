@@ -27,6 +27,7 @@ class ContactController extends AbstractBaseController
     }
 
     #[Route('{slug}/contacts/', name: 'app_contact_index', methods: ['GET'])]
+    #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
     public function index(Workspace $workspace, Request $request): Response
     {
         $currentPage = $request->query->get('page', 1);
@@ -53,11 +54,19 @@ class ContactController extends AbstractBaseController
     #[IsGranted('CONTACT_VIEW', subject: 'contact')]
     public function show(Contact $contact, Request $request): Response
     {
+        $workspace = $contact->getWorkspace();
+
         $form = $this->createForm(ContactNoteFormType::class);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->denyAccessUnlessGranted(
+                'WORKSPACE_ADD_ITEM',
+                $workspace,
+                'Current user is not authorized to create a note'
+            );
+
             /** @var ContactNote $contactNote */
             $contactNote = $form->getData();
 
@@ -71,11 +80,11 @@ class ContactController extends AbstractBaseController
         }
 
         if ($request->isMethod('POST') && $request->request->get('delete-contact')) {
-            if (!$this->isGranted('CONTACT_EDIT', $contact)) {
-                throw new AccessDeniedException(
-                    'Current user is not authorized to delete tihs contact'
-                );
-            }
+            $this->denyAccessUnlessGranted(
+                'CONTACT_EDIT',
+                $contact,
+                'Current user is not authorized to delete this contact'
+            );
 
             $this->contactManager->delete($contact);
 
@@ -85,8 +94,17 @@ class ContactController extends AbstractBaseController
         }
 
         if ($request->isMethod('POST') && $request->request->get('delete-note')) {
+            $noteId = $request->request->get('delete-id');
 
-            $this->contactNoteManager->deleteById($request->request->get('delete-id'));
+            $contactNote = $this->contactNoteManager->findOneById($noteId);
+
+            $this->denyAccessUnlessGranted(
+                'CONTACT_NOTE_EDIT',
+                $contactNote,
+                'Current user is not authorized to delete this note',
+            );
+
+            $this->contactNoteManager->deleteById($noteId);
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
@@ -95,12 +113,13 @@ class ContactController extends AbstractBaseController
 
         return $this->renderForm('contact/show.html.twig', [
             'contact' => $contact,
-            'workspace' => $contact->getWorkspace(),
+            'workspace' => $workspace,
             'form' => $form,
         ]);
     }
 
     #[Route('{slug}/contacts/create', name: 'app_contact_create', methods: ['GET', 'POST'])]
+    #[IsGranted('WORKSPACE_ADD_ITEM', subject: 'workspace')]
     public function create(Workspace $workspace, Request $request): Response
     {
         $form = $this->createForm(type: ContactFormType::class, options: [
@@ -177,6 +196,12 @@ class ContactController extends AbstractBaseController
         $contact = $this->contactManager->findOneBySlug($slug);
         $workspace = $contact->getWorkspace();
         $contactNote = $this->contactNoteManager->findOneById($id);
+
+        $this->denyAccessUnlessGranted(
+            'CONTACT_NOTE_EDIT',
+            $contactNote,
+            'Current user is not authorized to edit this note'
+        );
 
         $form = $this->createForm(ContactNoteFormType::class, $contactNote, [
             'label_text' => 'Edit note',

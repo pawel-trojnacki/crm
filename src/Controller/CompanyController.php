@@ -11,10 +11,12 @@ use App\Form\CompanyFormType;
 use App\Service\CompanyManager;
 use App\Service\ContactManager;
 use App\Service\IndustryManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class CompanyController extends AbstractBaseController
 {
@@ -26,6 +28,7 @@ class CompanyController extends AbstractBaseController
     }
 
     #[Route('/{slug}/companies', name: 'app_company_index', methods: ['GET'])]
+    #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
     public function index(Workspace $workspace, Request $request): Response
     {
         $industries = $this->industryManager->findAllAlphabetically();
@@ -59,11 +62,18 @@ class CompanyController extends AbstractBaseController
     }
 
     #[Route('/company/{slug}', name: 'app_company_show', methods: ['GET', 'POST'])]
+    #[IsGranted('COMPANY_VIEW', subject: 'company')]
     public function show(Company $company, Request $request): Response
     {
         $workspace = $company->getWorkspace();
 
         if ($request->isMethod('POST') && $request->request->get('delete-company')) {
+
+            $this->denyAccessUnlessGranted(
+                'COMPANY_EDIT',
+                $company,
+                'Current user is not authorized to delete this company'
+            );
 
             if ($request->request->get('delete-contacts') !== null) {
                 /** @var Contact[] $contacts */
@@ -88,6 +98,7 @@ class CompanyController extends AbstractBaseController
     }
 
     #[Route('/{slug}/companies/create', name: 'app_company_create', methods: ['GET', 'POST'])]
+    #[IsGranted('WORKSPACE_ADD_ITEM', subject: 'workspace')]
     public function create(Workspace $workspace, Request $request): Response
     {
         $form = $this->createForm(CompanyFormType::class);
@@ -116,6 +127,7 @@ class CompanyController extends AbstractBaseController
     }
 
     #[Route('/company/{slug}/edit', name: 'app_company_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('COMPANY_EDIT', subject: 'company')]
     public function edit(Company $company, Request $request): Response
     {
         $workspace = $company->getWorkspace();
@@ -132,8 +144,13 @@ class CompanyController extends AbstractBaseController
 
             $referer = $request->request->get('referer');
 
-            return $this->redirectToReferer($referer, 'app_comapny_index', [
-                'slug' => $workspace->getSlug(),
+            // Redirect to referer only if it is the index page - temporary solution
+            if ($referer && strpos($referer, 'companies')) {
+                return $this->redirectToReferer($referer);
+            }
+
+            return $this->redirectToRoute('app_company_show', [
+                'slug' => $company->getSlug(),
             ]);
         }
 
