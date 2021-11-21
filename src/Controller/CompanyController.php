@@ -98,7 +98,9 @@ class CompanyController extends AbstractBaseController
             /** @var Company $company */
             $company = $form->getData();
 
-            $this->companyManager->save($company, $workspace);
+            $user = $this->getUser();
+
+            $this->companyManager->save($company, $workspace, $user);
 
             $referer = $request->request->get('referer');
 

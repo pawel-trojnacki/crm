@@ -73,6 +73,10 @@ class Contact
     )]
     private $contactNotes;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
+    private $creator;
+
     public function __construct()
     {
         $this->contactNotes = new ArrayCollection();
@@ -205,6 +209,18 @@ class Contact
                 $contactNote->setContact(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): self
+    {
+        $this->creator = $creator;
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Company;
+use App\Entity\User;
 use App\Entity\Workspace;
 use App\Repository\CompanyRepository;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -40,9 +41,10 @@ class CompanyManager
         return $pager;
     }
 
-    public function save(Company $company, Workspace $workspace): void
+    public function save(Company $company, Workspace $workspace, User $user): void
     {
         $company->setWorkspace($workspace);
+        $company->setCreator($user);
 
         $this->companyRepository->save($company);
     }

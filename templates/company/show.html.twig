@@ -89,6 +89,14 @@
             </li>
             {% endif %}
 
+            {% if company.creator %}
+            <li class="list-group-item">
+                Added by: <span class="fw-bold">
+                    {{company.creator.firstName}} {{company.creator.lastName}}
+                </span>
+            </li>
+            {% endif %}
+
             <li class="list-group-item">
                 Created: <span class="fw-bold">{{company.createdAt | ago}}</span>
             </li>

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Contact;
 use App\Entity\ContactNote;
+use App\Entity\User;
 use App\Repository\ContactNoteRepository;
 
 class ContactNoteManager
@@ -13,9 +14,10 @@ class ContactNoteManager
     ) {
     }
 
-    public function save(ContactNote $contactNote, Contact $contact): void
+    public function save(ContactNote $contactNote, Contact $contact, User $user): void
     {
         $contactNote->setContact($contact);
+        $contactNote->setCreator($user);
 
         $this->contactNoteRepository->save($contactNote);
     }

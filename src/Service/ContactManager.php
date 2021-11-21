@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Contact;
+use App\Entity\User;
 use App\Entity\Workspace;
 use App\Repository\ContactRepository;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -15,9 +16,10 @@ class ContactManager
     ) {
     }
 
-    public function save(Contact $contact, Workspace $workspace): void
+    public function save(Contact $contact, Workspace $workspace, User $user): void
     {
         $contact->setWorkspace($workspace);
+        $contact->setCreator($user);
 
         $this->contactRepository->save($contact);
     }

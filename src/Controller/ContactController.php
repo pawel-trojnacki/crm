@@ -58,7 +58,9 @@ class ContactController extends AbstractBaseController
             /** @var ContactNote $contactNote */
             $contactNote = $form->getData();
 
-            $this->contactNoteManager->save($contactNote, $contact);
+            $user = $this->getUser();
+
+            $this->contactNoteManager->save($contactNote, $contact, $user);
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
@@ -101,7 +103,10 @@ class ContactController extends AbstractBaseController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Contact $contact */
             $contact = $form->getData();
-            $this->contactManager->save($contact, $workspace);
+
+            $user = $this->getUser();
+
+            $this->contactManager->save($contact, $workspace, $user);
 
             $referer = $request->request->get('referer');
 

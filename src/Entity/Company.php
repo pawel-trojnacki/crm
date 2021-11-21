@@ -55,6 +55,10 @@ class Company
     #[ORM\ManyToOne(targetEntity: Country::class)]
     private $country;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
+    private $creator;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
@@ -187,6 +191,18 @@ class Company
     public function setCountry(?Country $country): self
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): self
+    {
+        $this->creator = $creator;
 
         return $this;
     }
