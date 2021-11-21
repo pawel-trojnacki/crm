@@ -11,10 +11,12 @@ use App\Form\ContactFormType;
 use App\Form\ContactNoteFormType;
 use App\Service\ContactManager;
 use App\Service\ContactNoteManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ContactController extends AbstractBaseController
 {
@@ -48,6 +50,7 @@ class ContactController extends AbstractBaseController
     }
 
     #[Route('/contact/{slug}', name: 'app_contact_show', methods: ['GET', 'POST'])]
+    #[IsGranted('CONTACT_VIEW', subject: 'contact')]
     public function show(Contact $contact, Request $request): Response
     {
         $form = $this->createForm(ContactNoteFormType::class);
@@ -68,6 +71,12 @@ class ContactController extends AbstractBaseController
         }
 
         if ($request->isMethod('POST') && $request->request->get('delete-contact')) {
+            if (!$this->isGranted('CONTACT_EDIT', $contact)) {
+                throw new AccessDeniedException(
+                    'Current user is not authorized to delete tihs contact'
+                );
+            }
+
             $this->contactManager->delete($contact);
 
             return $this->redirectToRoute('app_contact_index', [
@@ -122,6 +131,7 @@ class ContactController extends AbstractBaseController
     }
 
     #[Route('contact/{slug}/edit', name: 'app_contact_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('CONTACT_EDIT', subject: 'contact')]
     public function edit(Contact $contact, Request $request): Response
     {
         $workspace = $contact->getWorkspace();

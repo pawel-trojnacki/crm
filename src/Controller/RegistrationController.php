@@ -38,6 +38,8 @@ class RegistrationController extends AbstractBaseController
             $user = $form->getData();
             $plainPassword = $form->get('plainPassword')->getData();
 
+            $this->userManager->setAdminRole($user);
+
             $this->userManager->register($user, $plainPassword, $workspace);
 
             return $this->userAuthenticator->authenticateUser(

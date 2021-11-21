@@ -25,4 +25,13 @@ class UserManager
 
         $this->userRepository->save($user);
     }
+
+    public function setAdminRole(User $user): void
+    {
+        $roles = $user->getRoles();
+
+        $roles[] = 'ROLE_ADMIN';
+
+        $user->setRoles($roles);
+    }
 }

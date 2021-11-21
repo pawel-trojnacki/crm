@@ -54,6 +54,7 @@ class AppFixtures extends Fixture
             'email' => 'test@email.com',
             'password' => $this->hashUserPassword('00000000'),
             'workspace' => WorkspaceFactory::random(),
+            'roles' => ['ROLE_ADMIN'],
         ]);
 
         UserFactory::createMany(3, [

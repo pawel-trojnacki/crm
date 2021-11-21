@@ -21,7 +21,7 @@ class ContactVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        return in_array($attribute, [])
+        return in_array($attribute, [self::VIEW, self::EDIT])
             && $subject instanceof \App\Entity\Contact;
     }
 
@@ -38,6 +38,9 @@ class ContactVoter extends Voter
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
+            case self::VIEW:
+                return $this->canView($contact, $user);
+                break;
             case self::EDIT:
                 return $this->canEdit($contact, $user);
                 break;
@@ -59,6 +62,7 @@ class ContactVoter extends Voter
             return false;
         }
 
-        return $this->security->isGranted('ROLE_MANAGER');
+        return $this->security->isGranted('ROLE_ADMIN') ||
+            $this->security->isGranted('ROLE_MANAGER') && $contact->getCreator() === $user;
     }
 }
