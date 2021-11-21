@@ -4,19 +4,22 @@ namespace App\Controller;
 
 use App\Controller\Abstract\AbstractBaseController;
 use App\Entity\User;
-use App\Entity\Workspace;
 use App\Form\RegistrationFormType;
+use App\Security\AppAuthenticator;
 use App\Service\UserManager;
 use App\Service\WorkspaceManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class RegistrationController extends AbstractBaseController
 {
     public function __construct(
         private UserManager $userManager,
         private WorkspaceManager $workspaceManager,
+        private UserAuthenticatorInterface $userAuthenticator,
+        private AppAuthenticator $appAuthenticator,
     ) {
     }
     #[Route('/register', name: 'app_register')]
@@ -37,13 +40,15 @@ class RegistrationController extends AbstractBaseController
 
             $this->userManager->register($user, $plainPassword, $workspace);
 
-            return $this->redirectToRoute('app_company_index', [
-                'slug' => $workspace->getSlug(),
-            ]);
+            return $this->userAuthenticator->authenticateUser(
+                $user,
+                $this->appAuthenticator,
+                $request
+            );
         }
 
-        return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form->createView(),
+        return $this->renderForm('registration/register.html.twig', [
+            'registrationForm' => $form,
         ]);
     }
 }
