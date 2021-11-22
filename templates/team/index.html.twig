@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Team{% endblock %}
+
+{% block body %}
+
+{{ include('layout/_heading.html.twig', {title: workspace.name ~ ' Team'}) }}
+
+{% if is_granted('ROLE_MANAGER') %}
+    <div class="mb-4">
+        <a href="#" class="btn btn-primary">Create User</a>
+    </div>
+{% endif %}
+
+<ul class="cards-grid">
+    {% for member in workspace.users | sort((a, b) => a.createdAt < b.createdAt) %}
+        <li class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h2 class="card-title fs-5 fw-bold">
+                        {{member.firstName ~ ' ' ~ member.lastName}}
+                    </h2>
+    
+                    {% if 'ROLE_ADMIN' in member.roles %}
+                        <p class="badge bg-primary">Admin</p>
+                    {% else %}
+                        {% if 'ROLE_MANAGER' in member.roles %}
+                            <p class="badge bg-secondary">Manager</p>
+                        {% else %}
+                            <p class="badge bg-light text-dark">User</p>
+                        {% endif %}
+                    {% endif %}
+
+                </div>
+                
+                <small class="d-block mb-2">Registered {{member.createdAt | ago}}</small>
+                <p>{{member.email}}</p>
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="d-flex">
+                        <div class="me-2">
+                            <a href="" class="btn btn-sm btn-outline-primary">Edit</a>
+                        </div>
+                        <div class="me-2">
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </div>
+                    </div>
+                {% endif %}
+
+              </div>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

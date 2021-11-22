@@ -1,18 +1,33 @@
 .main-wrapper {
-    min-width: 850px;
-    max-width: 1200px;
-    margin: 0 auto;
+  min-width: 850px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .layout-wrapper {
-    @extend .main-wrapper;
-    padding: 0 10px;
-    @media (min-width: 768px) {
-        padding: 0 40px;
-    }
+  @extend .main-wrapper;
+  padding: 0 10px;
+  @media (min-width: 768px) {
+    padding: 0 40px;
+  }
 }
 
 .auth-form-wrapper {
-    margin: 0 auto;
-    max-width: 600px;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.cards-grid {
+    padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 800px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

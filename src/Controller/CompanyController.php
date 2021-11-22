@@ -11,8 +11,6 @@ use App\Form\CompanyFormType;
 use App\Repository\CompanyRepository;
 use App\Repository\ContactRepository;
 use App\Repository\IndustryRepository;
-use App\Service\CompanyManager;
-use App\Service\ContactManager;
 use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;

@@ -7,7 +7,9 @@
           <a class="nav-link" href="#">Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Team</a>
+          <a class="nav-link" href="{{ path('app_team_index', {slug: workspace.slug}) }}">
+            Team
+          </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ path('app_contact_index', {slug: workspace.slug}) }}">
