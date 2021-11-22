@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Company;
 use App\Entity\Contact;
+use App\Repository\CompanyRepository;
 use App\Service\CompanyManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ContactFormType extends AbstractType
 {
     public function __construct(
-        private CompanyManager $companyManager,
+        private CompanyRepository $companyRepository,
     ) {
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -32,7 +33,7 @@ class ContactFormType extends AbstractType
             ->add('company', EntityType::class, [
                 'class' => Company::class,
                 'choice_label' => 'name',
-                'choices' => $this->companyManager->findAllByWorkspaceAlphabetically(
+                'choices' => $this->companyRepository->findAllByWorkspaceAlphabetically(
                     $options['workspace']
                 ),
                 'placeholder' => 'Choose a company',

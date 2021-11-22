@@ -8,22 +8,25 @@ use App\Entity\Company;
 use App\Entity\Contact;
 use App\Entity\Workspace;
 use App\Form\CompanyFormType;
+use App\Repository\CompanyRepository;
+use App\Repository\ContactRepository;
+use App\Repository\IndustryRepository;
 use App\Service\CompanyManager;
 use App\Service\ContactManager;
-use App\Service\IndustryManager;
+use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class CompanyController extends AbstractBaseController
 {
     public function __construct(
-        private CompanyManager $companyManager,
-        private IndustryManager $industryManager,
-        private ContactManager $contactManager,
+        private CompanyRepository $companyRepository,
+        private IndustryRepository $industryRepository,
+        private ContactRepository $contactRepository,
+        private PagerService $pagerService,
     ) {
     }
 
@@ -31,7 +34,7 @@ class CompanyController extends AbstractBaseController
     #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
     public function index(Workspace $workspace, Request $request): Response
     {
-        $industries = $this->industryManager->findAllAlphabetically();
+        $industries = $this->industryRepository->findAllAlphabetically();
 
         $currentPage = $request->query->get('page', 1);
         $search = $request->query->get('search');
@@ -42,13 +45,9 @@ class CompanyController extends AbstractBaseController
             throw new NotFoundHttpException('Page not found');
         }
 
-        $pager = $this->companyManager->createPager(
-            $workspace,
-            $currentPage,
-            $search,
-            $industry,
-            $order
-        );
+        $qb = $this->companyRepository->createPagerQueryBuilder($workspace, $search, $industry, $order);
+
+        $pager = $this->pagerService->createPager($qb, $currentPage, 10);
 
         return $this->render('company/index.html.twig', [
             'workspace' => $workspace,
@@ -80,11 +79,11 @@ class CompanyController extends AbstractBaseController
                 $contacts = $company->getContacts();
 
                 foreach ($contacts as $contact) {
-                    $this->contactManager->delete($contact);
+                    $this->contactRepository->delete($contact);
                 }
             }
 
-            $this->companyManager->delete($company);
+            $this->companyRepository->delete($company);
 
             return $this->redirectToRoute('app_company_index', [
                 'slug' => $company->getWorkspace()->getSlug(),
@@ -110,8 +109,11 @@ class CompanyController extends AbstractBaseController
             $company = $form->getData();
 
             $user = $this->getUser();
+            $company->setCreator($user);
 
-            $this->companyManager->save($company, $workspace, $user);
+            $company->setWorkspace($workspace);
+
+            $this->companyRepository->save($company);
 
             $referer = $request->request->get('referer');
 
@@ -140,7 +142,7 @@ class CompanyController extends AbstractBaseController
             /** @var Company $company */
             $company = $form->getData();
 
-            $this->companyManager->update($company);
+            $this->companyRepository->save($company);
 
             $referer = $request->request->get('referer');
 

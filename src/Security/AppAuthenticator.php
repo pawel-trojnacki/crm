@@ -3,7 +3,6 @@
 namespace App\Security;
 
 use App\Entity\User;
-use App\Service\UserManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +24,6 @@ class AppAuthenticator extends AbstractAuthenticator
     use TargetPathTrait;
 
     public function __construct(
-        private UserManager $userManager,
         private RouterInterface $router,
     ) {
     }

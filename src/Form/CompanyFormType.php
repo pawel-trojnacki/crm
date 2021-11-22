@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Company;
 use App\Entity\Country;
 use App\Entity\Industry;
+use App\Repository\IndustryRepository;
 use App\Service\IndustryManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CompanyFormType extends AbstractType
 {
     public function __construct(
-        private IndustryManager $industryManager,
+        private IndustryRepository $industryRepository,
     ) {
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -28,7 +29,7 @@ class CompanyFormType extends AbstractType
             ->add('industry', EntityType::class, [
                 'class' => Industry::class,
                 'choice_label' => 'name',
-                'choices' => $this->industryManager->findAllAlphabetically(),
+                'choices' => $this->industryRepository->findAllAlphabetically(),
                 'placeholder' => 'Choose an industry',
                 'required' => false,
             ])

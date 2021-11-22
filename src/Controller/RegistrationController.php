@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Controller\Abstract\AbstractBaseController;
 use App\Entity\User;
+use App\Entity\Workspace;
 use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
+use App\Repository\WorkspaceRepository;
 use App\Security\AppAuthenticator;
-use App\Service\UserManager;
 use App\Service\WorkspaceManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,8 +18,8 @@ use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 class RegistrationController extends AbstractBaseController
 {
     public function __construct(
-        private UserManager $userManager,
-        private WorkspaceManager $workspaceManager,
+        private UserRepository $userRepository,
+        private WorkspaceRepository $workspaceRepository,
         private UserAuthenticatorInterface $userAuthenticator,
         private AppAuthenticator $appAuthenticator,
     ) {
@@ -32,15 +34,19 @@ class RegistrationController extends AbstractBaseController
             /** @var string $workspaceName */
             $workspaceName = $form->get('workspace')->getData();
 
-            $workspace = $this->workspaceManager->createAndSave($workspaceName);
+            $workspace = new Workspace();
+            $workspace->setName($workspaceName);
+
+            $this->workspaceRepository->save($workspace);
 
             /** @var User $user */
             $user = $form->getData();
             $plainPassword = $form->get('plainPassword')->getData();
 
-            $this->userManager->setAdminRole($user);
+            $user->addRole('ROLE_ADMIN');
+            $user->setWorkspace($workspace);
 
-            $this->userManager->register($user, $plainPassword, $workspace);
+            $this->userRepository->register($user, $plainPassword);
 
             return $this->userAuthenticator->authenticateUser(
                 $user,

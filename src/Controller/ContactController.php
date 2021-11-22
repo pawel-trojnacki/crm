@@ -9,20 +9,21 @@ use App\Entity\ContactNote;
 use App\Entity\Workspace;
 use App\Form\ContactFormType;
 use App\Form\ContactNoteFormType;
-use App\Service\ContactManager;
-use App\Service\ContactNoteManager;
+use App\Repository\ContactNoteRepository;
+use App\Repository\ContactRepository;
+use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ContactController extends AbstractBaseController
 {
     public function __construct(
-        private ContactManager $contactManager,
-        private ContactNoteManager $contactNoteManager,
+        private ContactRepository $contactRepository,
+        private ContactNoteRepository $contactNoteRepository,
+        private PagerService $pagerService,
     ) {
     }
 
@@ -39,7 +40,9 @@ class ContactController extends AbstractBaseController
             throw new NotFoundHttpException('Page not found');
         }
 
-        $pager = $this->contactManager->createPager($workspace, $currentPage, $order, $search);
+        $qb = $this->contactRepository->createPagerQueryBuilder($workspace, $order, $search);
+
+        $pager = $this->pagerService->createPager($qb, $currentPage, 25);
 
         return $this->render('/contact/index.html.twig', [
             'workspace' => $workspace,
@@ -72,7 +75,10 @@ class ContactController extends AbstractBaseController
 
             $user = $this->getUser();
 
-            $this->contactNoteManager->save($contactNote, $contact, $user);
+            $contactNote->setContact($contact);
+            $contactNote->setCreator($user);
+
+            $this->contactNoteRepository->save($contactNote);
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
@@ -86,7 +92,7 @@ class ContactController extends AbstractBaseController
                 'Current user is not authorized to delete this contact'
             );
 
-            $this->contactManager->delete($contact);
+            $this->contactRepository->delete($contact);
 
             return $this->redirectToRoute('app_contact_index', [
                 'slug' => $contact->getWorkspace()->getSlug(),
@@ -96,7 +102,7 @@ class ContactController extends AbstractBaseController
         if ($request->isMethod('POST') && $request->request->get('delete-note')) {
             $noteId = $request->request->get('delete-id');
 
-            $contactNote = $this->contactNoteManager->findOneById($noteId);
+            $contactNote = $this->contactNoteRepository->findOneBy(['id' => $noteId]);
 
             $this->denyAccessUnlessGranted(
                 'CONTACT_NOTE_EDIT',
@@ -104,7 +110,7 @@ class ContactController extends AbstractBaseController
                 'Current user is not authorized to delete this note',
             );
 
-            $this->contactNoteManager->deleteById($noteId);
+            $this->contactNoteRepository->delete($contactNote);
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
@@ -133,8 +139,11 @@ class ContactController extends AbstractBaseController
             $contact = $form->getData();
 
             $user = $this->getUser();
+            $contact->setCreator($user);
 
-            $this->contactManager->save($contact, $workspace, $user);
+            $contact->setWorkspace($workspace);
+
+            $this->contactRepository->save($contact);
 
             $referer = $request->request->get('referer');
 
@@ -165,7 +174,7 @@ class ContactController extends AbstractBaseController
             /** @var Contact $contact */
             $contact = $form->getData();
 
-            $this->contactManager->update($contact);
+            $this->contactRepository->save($contact);
 
             $referer = $request->request->get('referer');
 
@@ -193,9 +202,9 @@ class ContactController extends AbstractBaseController
     )]
     public function editNote(string $slug, int $id, Request $request): Response
     {
-        $contact = $this->contactManager->findOneBySlug($slug);
+        $contact = $this->contactRepository->findOneBy(['slug' => $slug]);
         $workspace = $contact->getWorkspace();
-        $contactNote = $this->contactNoteManager->findOneById($id);
+        $contactNote = $this->contactNoteRepository->findOneBy(['id' => $id]);
 
         $this->denyAccessUnlessGranted(
             'CONTACT_NOTE_EDIT',
@@ -213,7 +222,7 @@ class ContactController extends AbstractBaseController
             /** @var ContactNote $contactNote */
             $contactNote = $form->getData();
 
-            $this->contactNoteManager->update($contactNote);
+            $this->contactNoteRepository->save($contactNote);
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $slug,
