@@ -12,3 +12,5 @@ import {Modal} from 'bootstrap';
 
 // start the Stimulus application
 import "./bootstrap";
+
+console.log('dasdas');

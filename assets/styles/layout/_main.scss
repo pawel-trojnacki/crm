@@ -6,7 +6,16 @@ body {
     font-family: 'Karla', sans-serif;
 }
 
-label.required:after {
-    content: " *";
+label, legend {
     font-weight: bold;
+}
+
+label.required:after,
+legend.required:after {
+    content: ' *';
+    font-weight: bold;
+}
+
+.form-check label.required:after {
+    content: '';
 }

@@ -33,7 +33,8 @@
 
                 </div>
                 
-                <small class="d-block mb-2">Registered {{member.createdAt | ago}}</small>
+                <p class="d-block mb-2 text-muted">Registered {{member.createdAt | ago}}</p>
+                
                 <p>{{member.email}}</p>
 
                 {% if is_granted('ROLE_ADMIN') %}
