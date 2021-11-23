@@ -5,8 +5,10 @@ namespace App\Tests;
 use App\Entity\ContactNote;
 use App\Repository\ContactNoteRepository;
 use App\Repository\ContactRepository;
+use App\Repository\UserRepository;
 use App\Repository\WorkspaceRepository;
 use App\Tests\Helper\ContactTestHelper;
+use App\Tests\Helper\UserTestHelper;
 use App\Tests\Helper\WorkspaceTestHelper;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -18,6 +20,7 @@ class ContactNoteTest extends KernelTestCase
     private WorkspaceRepository $workspaceRepository;
     private ContactRepository $contactRepository;
     private ContactNoteRepository $contactNoteRepository;
+    private UserRepository $userRepository;
     private EntityManager $em;
 
     protected function setUp(): void
@@ -31,7 +34,29 @@ class ContactNoteTest extends KernelTestCase
         $this->workspaceRepository = $container->get(WorkspaceRepository::class);
         $this->contactRepository = $container->get(ContactRepository::class);
         $this->contactNoteRepository = $container->get(ContactNoteRepository::class);
+        $this->userRepository = $container->get(UserRepository::class);
         $this->em = $container->get('doctrine.orm.entity_manager');
+    }
+
+    private function saveDefaultNote(): void
+    {
+        $workspace = WorkspaceTestHelper::createDefaultWorkspace();
+        $this->workspaceRepository->save($workspace);
+
+        $user = UserTestHelper::createDefaultUser($workspace);
+        $this->userRepository->register($user, 'some password');
+
+        $contact = ContactTestHelper::createDefaultContact($workspace);
+        $this->contactRepository->save($contact);
+
+        $contactNote = new ContactNote();
+        $contactNote->setContent(self::DEFAULT_CONTENT);
+        $contactNote->setContact($contact);
+        $contactNote->setCreator($user);
+
+        $this->contactNoteRepository->save($contactNote);
+
+        $this->em->clear();
     }
 
     public function testContactNoteIsCorrectlyCreatedAndRemovedFromDatabase(): void
@@ -49,6 +74,10 @@ class ContactNoteTest extends KernelTestCase
         $this->assertInstanceOf(ContactNote::class, $savedNote);
         $this->assertIsInt($savedNote->getId());
         $this->assertSame(self::DEFAULT_CONTENT, $savedNote->getContent());
+        $this->assertSame(
+            UserTestHelper::DEFAULTS['email'],
+            $savedNote->getCreator()->getEmail()
+        );
 
         $this->contactNoteRepository->delete($savedNote);
 
@@ -81,22 +110,5 @@ class ContactNoteTest extends KernelTestCase
                 'contact' => $savedContact,
             ])
         );
-    }
-
-    private function saveDefaultNote(): void
-    {
-        $workspace = WorkspaceTestHelper::createDefaultWorkspace();
-        $this->workspaceRepository->save($workspace);
-
-        $contact = ContactTestHelper::createDefaultContact($workspace);
-        $this->contactRepository->save($contact);
-
-        $contactNote = new ContactNote();
-        $contactNote->setContent(self::DEFAULT_CONTENT);
-        $contactNote->setContact($contact);
-
-        $this->contactNoteRepository->save($contactNote);
-
-        $this->em->clear();
     }
 }

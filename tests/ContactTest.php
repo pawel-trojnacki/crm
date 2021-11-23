@@ -5,8 +5,10 @@ namespace App\Tests;
 use App\Entity\Contact;
 use App\Entity\Workspace;
 use App\Repository\ContactRepository;
+use App\Repository\UserRepository;
 use App\Repository\WorkspaceRepository;
 use App\Tests\Helper\ContactTestHelper;
+use App\Tests\Helper\UserTestHelper;
 use App\Tests\Helper\WorkspaceTestHelper;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -15,6 +17,7 @@ class ContactTest extends KernelTestCase
 {
     private ContactRepository $contactRepository;
     private WorkspaceRepository $workspaceRepository;
+    private UserRepository $userRepository;
     private EntityManager $em;
 
     protected function setUp(): void
@@ -27,7 +30,19 @@ class ContactTest extends KernelTestCase
 
         $this->contactRepository = $container->get(ContactRepository::class);
         $this->workspaceRepository = $container->get(WorkspaceRepository::class);
+        $this->userRepository = $container->get(UserRepository::class);
         $this->em = $container->get('doctrine.orm.entity_manager');
+    }
+    private function saveDefaultContact(Workspace $workspace): Contact
+    {
+        $user = UserTestHelper::createDefaultUser($workspace);
+        $this->userRepository->register($user, 'some password');
+
+        $contact = ContactTestHelper::createDefaultContact($workspace);
+        $contact->setCreator($user);
+        $this->contactRepository->save($contact);
+
+        return $contact;
     }
 
     public function testContactIsCreatedInDatabase(): void
@@ -61,6 +76,10 @@ class ContactTest extends KernelTestCase
             $savedContact->getPosition()
         );
         $this->assertSame('john-doe', $savedContact->getSlug());
+        $this->assertSame(
+            UserTestHelper::DEFAULTS['email'],
+            $savedContact->getCreator()->getEmail()
+        );
         $this->assertInstanceOf('DateTime', $savedContact->getCreatedAt());
         $this->assertInstanceOf('DateTime', $savedContact->getUpdatedAt());
         $this->assertNull($savedContact->getCompany());
@@ -118,14 +137,5 @@ class ContactTest extends KernelTestCase
                 'email' => ContactTestHelper::DEFAULTS['email']
             ])
         );
-    }
-
-    private function saveDefaultContact(Workspace $workspace): Contact
-    {
-        $contact = ContactTestHelper::createDefaultContact($workspace);
-
-        $this->contactRepository->save($contact);
-
-        return $contact;
     }
 }

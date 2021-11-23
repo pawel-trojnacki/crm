@@ -4,7 +4,9 @@ namespace App\Tests;
 
 use App\Entity\Company;
 use App\Repository\CompanyRepository;
+use App\Repository\UserRepository;
 use App\Repository\WorkspaceRepository;
+use App\Tests\Helper\UserTestHelper;
 use App\Tests\Helper\WorkspaceTestHelper;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -15,6 +17,7 @@ class CompanyTest extends KernelTestCase
 {
     private CompanyRepository $companyRepository;
     private WorkspaceRepository $workspaceRepository;
+    private UserRepository $userRepository;
     private EntityManager $em;
 
     protected function setUp(): void
@@ -27,14 +30,19 @@ class CompanyTest extends KernelTestCase
 
         $this->companyRepository = $container->get(CompanyRepository::class);
         $this->workspaceRepository = $container->get(WorkspaceRepository::class);
+        $this->userRepository = $container->get(UserRepository::class);
         $this->em = $container->get('doctrine.orm.entity_manager');
     }
 
-    public function testCompanyIsCorrectlyCreatedAndRemovedFromDatabase(): void
+    public function testCompanyIsCorrectlyCreatedInDatabase(): void
     {
         $workspace = WorkspaceTestHelper::createDefaultWorkspace();
 
         $this->workspaceRepository->save($workspace);
+
+        $user = UserTestHelper::createDefaultUser($workspace);
+
+        $this->userRepository->register($user, 'some password');
 
         $company = new Company();
         $company->setName('Some Company');
@@ -42,6 +50,7 @@ class CompanyTest extends KernelTestCase
         $company->setWebsite('www.example.com');
         $company->setAddress('286 Adah Forest');
         $company->setCity('West Williamberg');
+        $company->setCreator($user);
 
         $this->companyRepository->save($company);
 
@@ -56,14 +65,38 @@ class CompanyTest extends KernelTestCase
         $this->assertSame('286 Adah Forest', $savedCompany->getAddress());
         $this->assertSame('West Williamberg', $savedCompany->getCity());
         $this->assertNull($savedCompany->getCountry());
+        $this->assertSame(
+            UserTestHelper::DEFAULTS['email'],
+            $savedCompany->getCreator()->getEmail()
+        );
         $this->assertInstanceOf('DateTime', $savedCompany->getCreatedAt());
         $this->assertInstanceOf('DateTime', $savedCompany->getUpdatedAt());
+    }
 
-        $this->companyRepository->delete($savedCompany);
+    public function testCompanyIsDeletedFromDatabase(): void
+    {
+        $workspace = WorkspaceTestHelper::createDefaultWorkspace();
+
+        $this->workspaceRepository->save($workspace);
+
+        $company = new Company();
+        $company->setName('Some Company');
+        $company->setWorkspace($workspace);
+
+        $this->companyRepository->save($company);
+
+        $this->assertInstanceOf(
+            Company::class,
+            $this->companyRepository->findOneBy([
+                'name' => 'Some Company',
+            ])
+        );
+
+        $this->companyRepository->delete($company);
 
         $this->assertNull(
             $this->companyRepository->findOneBy([
-                'name' => 'Some Company'
+                'name' => 'Some Company',
             ])
         );
     }
