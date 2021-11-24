@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TeamController extends AbstractBaseController
 {
@@ -20,10 +21,27 @@ class TeamController extends AbstractBaseController
     ) {
     }
 
-    #[Route('/{slug}/team', name: 'app_team_index', methods: ['GET'])]
+    #[Route('/{slug}/team', name: 'app_team_index', methods: ['GET', 'POST'])]
     #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
-    public function index(Workspace $workspace): Response
+    public function index(Workspace $workspace, Request $request): Response
     {
+        if ($request->isMethod('POST') && $request->request->get('delete-member')) {
+            $this->denyAccessUnlessGranted(
+                'WORKSPACE_EDIT',
+                $workspace,
+                'Current user is not authorized to delete this user',
+            );
+
+            $userId = $request->request->get('delete-id');
+
+            $user = $this->userRepository->findOneBy(['id' => $userId]);
+
+            $this->userRepository->delete($user);
+
+            return $this->redirectToRoute('app_team_index', [
+                'slug' => $workspace->getSlug(),
+            ]);
+        }
         return $this->render('team/index.html.twig', [
             'workspace' => $workspace,
         ]);
@@ -70,6 +88,10 @@ class TeamController extends AbstractBaseController
             $workspace,
             'Current user is not allowed to edit this team member',
         );
+
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            throw new AccessDeniedException('Cannot edit admin user');
+        }
 
         $form = $this->createForm(UserFormType::class, $user, [
             'with_password' => false,

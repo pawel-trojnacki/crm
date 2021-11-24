@@ -7,56 +7,64 @@
 {{ include('layout/_heading.html.twig', {title: workspace.name ~ ' Team'}) }}
 
 {% if is_granted('ROLE_MANAGER') %}
-    <div class="mb-4">
-        <a href="{{ path('app_team_create', {slug: workspace.slug}) }}" class="btn btn-primary">
-            Create User
-        </a>
-    </div>
+<div class="mb-4">
+    <a href="{{ path('app_team_create', {slug: workspace.slug}) }}" class="btn btn-primary">
+        Create User
+    </a>
+</div>
 {% endif %}
 
 <ul class="cards-grid">
-    {% for member in workspace.users | sort((a, b) => a.createdAt < b.createdAt) %}
-        <li class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <h2 class="card-title fs-5 fw-bold">
-                        {{member.firstName ~ ' ' ~ member.lastName}}
-                    </h2>
-    
-                    {% if 'ROLE_ADMIN' in member.roles %}
-                        <p class="badge bg-primary">Admin</p>
-                    {% else %}
-                        {% if 'ROLE_MANAGER' in member.roles %}
-                            <p class="badge bg-secondary">Manager</p>
-                        {% else %}
-                            <p class="badge bg-light text-dark">User</p>
-                        {% endif %}
-                    {% endif %}
+    {% for member in workspace.users | sort((a, b) => a.createdAt < b.createdAt) %} <li class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <h2 class="card-title fs-5 fw-bold">
+                    {{member.firstName ~ ' ' ~ member.lastName}}
+                </h2>
 
-                </div>
-                
-                <p class="d-block mb-2 text-muted">Registered {{member.createdAt | ago}}</p>
-                
-                <p>{{member.email}}</p>
-
-                {% if is_granted('ROLE_ADMIN') %}
-                    <div class="d-flex">
-                        <div class="me-2">
-                            <a href="{{
-                                path('app_team_edit', { slug: member.slug })
-                            }}" class="btn btn-sm btn-outline-primary">
-                                Edit
-                            </a>
-                        </div>
-                        <div class="me-2">
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                        </div>
-                    </div>
+                {% if 'ROLE_ADMIN' in member.roles %}
+                <p class="badge bg-primary">Admin</p>
+                {% else %}
+                {% if 'ROLE_MANAGER' in member.roles %}
+                <p class="badge bg-secondary">Manager</p>
+                {% else %}
+                <p class="badge bg-light text-dark">User</p>
+                {% endif %}
                 {% endif %}
 
-              </div>
+            </div>
+
+            <p class="d-block mb-2 text-muted">Registered {{member.createdAt | ago}}</p>
+
+            <p>{{member.email}}</p>
+
+            {% if is_granted('ROLE_ADMIN') and 'ROLE_ADMIN' not in member.roles %}
+            <div class="d-flex">
+                <div class="me-2">
+                    <a href="{{
+                                path('app_team_edit', { slug: member.slug })
+                            }}" class="btn btn-sm btn-outline-primary">
+                        Edit
+                    </a>
+                </div>
+                <div class="me-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                        data-bs-target="{{'#delete-member-modal-' ~ member.id}}">
+                        Delete
+                    </button>
+
+                    {{ include('partials/_delete-modal.html.twig', {
+                    id: 'delete-member-modal-' ~ member.id,
+                    delete_name: 'delete-member',
+                    delete_id: member.id
+                    }) }}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
         </li>
-    {% endfor %}
+        {% endfor %}
 </ul>
 
 {% endblock %}
