@@ -8,7 +8,9 @@
 
 {% if is_granted('ROLE_MANAGER') %}
     <div class="mb-4">
-        <a href="#" class="btn btn-primary">Create User</a>
+        <a href="{{ path('app_team_create', {slug: workspace.slug}) }}" class="btn btn-primary">
+            Create User
+        </a>
     </div>
 {% endif %}
 
@@ -40,7 +42,11 @@
                 {% if is_granted('ROLE_ADMIN') %}
                     <div class="d-flex">
                         <div class="me-2">
-                            <a href="" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="{{
+                                path('app_team_edit', { slug: member.slug })
+                            }}" class="btn btn-sm btn-outline-primary">
+                                Edit
+                            </a>
                         </div>
                         <div class="me-2">
                             <button class="btn btn-sm btn-outline-danger">Delete</button>

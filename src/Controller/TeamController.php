@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Controller\Abstract\AbstractBaseController;
 use App\Entity\User;
 use App\Entity\Workspace;
+use App\Form\PasswordFormType;
 use App\Form\UserFormType;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -56,6 +57,59 @@ class TeamController extends AbstractBaseController
         return $this->renderForm('team/create.html.twig', [
             'workspace' => $workspace,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/team/{slug}/edit', name: 'app_team_edit', methods: ['GET', 'POST'])]
+    public function edit(User $user, Request $request): Response
+    {
+        $workspace = $user->getWorkspace();
+
+        $this->denyAccessUnlessGranted(
+            'WORKSPACE_EDIT',
+            $workspace,
+            'Current user is not allowed to edit this team member',
+        );
+
+        $form = $this->createForm(UserFormType::class, $user, [
+            'with_password' => false,
+        ]);
+
+        $passwordForm = $this->createForm(PasswordFormType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var User $user */
+            $user = $form->getData();
+
+            $userRole = $form->get('role')->getData();
+
+            $user->setRoles([$userRole]);
+
+            $this->userRepository->save($user);
+
+            return $this->redirectToRoute('app_team_index', [
+                'slug' => $workspace->getSlug(),
+            ]);
+        }
+
+        $passwordForm->handleRequest($request);
+
+        if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
+            $plainPassword = $passwordForm->get('plainPassword')->getData();
+            $this->userRepository->register($user, $plainPassword);
+
+            return $this->redirectToRoute('app_team_index', [
+                'slug' => $workspace->getSlug(),
+            ]);
+        }
+
+        return $this->renderForm('team/edit.html.twig', [
+            'workspace' => $workspace,
+            'user' => $user,
+            'form' => $form,
+            'passwordForm' => $passwordForm,
         ]);
     }
 }

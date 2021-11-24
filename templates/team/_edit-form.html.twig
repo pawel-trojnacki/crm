@@ -1,0 +1,24 @@
+{{form_start(form)}}
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{form_row(form.firstName)}}
+                </div>
+                <div class="col-md-6">
+                    {{form_row(form.lastName)}}
+                </div>
+            </div>
+
+            {{form_row(form.email)}}
+
+            {{form_row(form.role)}}
+
+    <button type="submit" class="btn btn-primary">
+        {% if button_text | default(false) %}
+            {{button_text}}
+        {% else %}
+            Save user
+        {% endif %}
+    </button>
+
+{{form_end(form)}}

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block body %}
+
+{{ include('layout/_heading.html.twig', {
+title: 'Edit User: ' ~ user.firstName ~ ' ' ~ user.lastName
+}) }}
+
+<div class="row gx-5">
+
+    <section class="col-md-6 mb-5">
+        <h2 class="fs-4 fw-bold mb-3">Edit User Info</h2>
+        {{ include('team/_edit-form.html.twig', {button_text: 'Update user'}) }}
+    </section>
+
+    <section class="col-md-6 mb-5">
+        <h2 class="fs-4 fw-bold mb-3">Change user password</h2>
+        {{ include('partials/_password-form.html.twig') }}
+    </section>
+
+</div>
+
+{% endblock %}
