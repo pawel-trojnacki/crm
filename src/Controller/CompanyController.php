@@ -43,14 +43,14 @@ class CompanyController extends AbstractBaseController
             throw new NotFoundHttpException('Page not found');
         }
 
-        $qb = $this->companyRepository->createPagerQueryBuilder(
+        $qb = $this->companyRepository->createFindByWorskpaceQueryBuilder(
             $workspace,
             $search,
             $industry,
             $order
         );
 
-        $pager = $this->pagerService->createPager($qb, $currentPage, 10);
+        $pager = $this->pagerService->createPager($qb, $currentPage);
 
         return $this->render('company/index.html.twig', [
             'workspace' => $workspace,

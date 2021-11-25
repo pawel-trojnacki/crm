@@ -44,7 +44,7 @@ class CompanyRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function createPagerQueryBuilder(
+    public function createFindByWorskpaceQueryBuilder(
         Workspace $workspace,
         ?string $search = null,
         ?string $industry = null,

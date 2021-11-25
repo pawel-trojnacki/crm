@@ -1,0 +1,12 @@
+.card {
+  box-shadow: 0 0 3px $gray-300;
+}
+
+a.card-body {
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s;
+  &:hover {
+    box-shadow: 0 0 4px $gray-500;
+  }
+}

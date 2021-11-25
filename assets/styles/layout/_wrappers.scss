@@ -18,7 +18,7 @@
 }
 
 .cards-grid {
-    padding: 0;
+  padding: 0;
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
@@ -29,5 +29,13 @@
 
   @media (min-width: 800px) {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.cards-grid-secondary {
+  @extend .cards-grid;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

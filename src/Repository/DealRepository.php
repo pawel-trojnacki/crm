@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Deal;
+use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -29,5 +31,15 @@ class DealRepository extends ServiceEntityRepository
     {
         $this->_em->remove($deal);
         $this->_em->flush();
+    }
+
+    public function createFindByWorkspaceQueryBuilder(
+        Workspace $workspace
+    ): QueryBuilder {
+        $qb = $this->createQueryBuilder('d')
+            ->andWhere('d.workspace = :id')
+            ->setParameter(':id', $workspace->getId());
+
+        return $qb;
     }
 }

@@ -1,21 +1,23 @@
-html, body {
-    min-width: fit-content;
+html,
+body {
+  min-width: fit-content;
 }
 
 body {
-    font-family: 'Karla', sans-serif;
+  font-family: "Karla", sans-serif;
 }
 
-label, legend {
-    font-weight: bold;
+label,
+legend {
+  font-weight: bold;
 }
 
 label.required:after,
 legend.required:after {
-    content: ' *';
-    font-weight: bold;
+  content: " *";
+  font-weight: bold;
 }
 
 .form-check label.required:after {
-    content: '';
+  content: "";
 }

@@ -33,7 +33,7 @@ class ContactRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
-    public function createPagerQueryBuilder(
+    public function createFindByWorkspaceQueryBuilder(
         Workspace $workspace,
         ?string $order = null,
         ?string $search = null,

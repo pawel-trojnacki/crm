@@ -36,7 +36,7 @@ final class DealFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->sentence(3),
+            'name' => self::faker()->sentence(5),
             'stage' => self::faker()->randomElement(Deal::STAGES),
             'description' => self::faker()->text(),
         ];

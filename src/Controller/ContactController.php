@@ -40,7 +40,11 @@ class ContactController extends AbstractBaseController
             throw new NotFoundHttpException('Page not found');
         }
 
-        $qb = $this->contactRepository->createPagerQueryBuilder($workspace, $order, $search);
+        $qb = $this->contactRepository->createFindByWorkspaceQueryBuilder(
+            $workspace,
+            $order,
+            $search
+        );
 
         $pager = $this->pagerService->createPager($qb, $currentPage, 25);
 
