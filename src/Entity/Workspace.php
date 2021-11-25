@@ -93,28 +93,6 @@ class Workspace
         return $this->contacts;
     }
 
-    public function addContact(Contact $contact): self
-    {
-        if (!$this->contacts->contains($contact)) {
-            $this->contacts[] = $contact;
-            $contact->setWorkspace($this);
-        }
-
-        return $this;
-    }
-
-    public function removeContact(Contact $contact): self
-    {
-        if ($this->contacts->removeElement($contact)) {
-            // set the owning side to null (unless already changed)
-            if ($contact->getWorkspace() === $this) {
-                $contact->setWorkspace(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection|Company[]
      */
@@ -123,27 +101,6 @@ class Workspace
         return $this->companies;
     }
 
-    public function addCompany(Company $company): self
-    {
-        if (!$this->companies->contains($company)) {
-            $this->companies[] = $company;
-            $company->setWorkspace($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCompany(Company $company): self
-    {
-        if ($this->companies->removeElement($company)) {
-            // set the owning side to null (unless already changed)
-            if ($company->getWorkspace() === $this) {
-                $company->setWorkspace(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|User[]
@@ -151,27 +108,5 @@ class Workspace
     public function getUsers(): Collection
     {
         return $this->users;
-    }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->setWorkspace($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getWorkspace() === $this) {
-                $user->setWorkspace(null);
-            }
-        }
-
-        return $this;
     }
 }

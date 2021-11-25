@@ -191,28 +191,6 @@ class Contact
         return $this->contactNotes;
     }
 
-    public function addContactNote(ContactNote $contactNote): self
-    {
-        if (!$this->contactNotes->contains($contactNote)) {
-            $this->contactNotes[] = $contactNote;
-            $contactNote->setContact($this);
-        }
-
-        return $this;
-    }
-
-    public function removeContactNote(ContactNote $contactNote): self
-    {
-        if ($this->contactNotes->removeElement($contactNote)) {
-            // set the owning side to null (unless already changed)
-            if ($contactNote->getContact() === $this) {
-                $contactNote->setContact(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getCreator(): ?User
     {
         return $this->creator;

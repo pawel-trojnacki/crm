@@ -59,9 +59,17 @@ class Company
     #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
     private $creator;
 
+    #[ORM\OneToMany(
+        mappedBy: 'company',
+        targetEntity: Deal::class,
+        cascade: ['persist', 'remove']
+    )]
+    private $deals;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
+        $this->deals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -125,28 +133,6 @@ class Company
         return $this->contacts;
     }
 
-    public function addContact(Contact $contact): self
-    {
-        if (!$this->contacts->contains($contact)) {
-            $this->contacts[] = $contact;
-            $contact->setCompany($this);
-        }
-
-        return $this;
-    }
-
-    public function removeContact(Contact $contact): self
-    {
-        if ($this->contacts->removeElement($contact)) {
-            // set the owning side to null (unless already changed)
-            if ($contact->getCompany() === $this) {
-                $contact->setCompany(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getWebsite(): ?string
     {
         return $this->website;
@@ -205,5 +191,13 @@ class Company
         $this->creator = $creator;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Deal[]
+     */
+    public function getDeals(): Collection
+    {
+        return $this->deals;
     }
 }
