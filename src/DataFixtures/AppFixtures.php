@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Factory\CompanyFactory;
 use App\Factory\ContactFactory;
 use App\Factory\ContactNoteFactory;
+use App\Factory\DealFactory;
 use App\Factory\IndustryFactory;
 use App\Factory\UserFactory;
 use App\Factory\WorkspaceFactory;
@@ -40,7 +41,7 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
-        foreach (IndustryFactory::industries as $industry) {
+        foreach (IndustryFactory::INDUSTRIES as $industry) {
             IndustryFactory::createOne([
                 'name' => $industry
             ]);
@@ -81,6 +82,15 @@ class AppFixtures extends Fixture
         ContactNoteFactory::createMany(120, fn () => [
             'contact' => ContactFactory::random(),
             'creator' => UserFactory::random(),
+            'createdAt' => faker()->dateTimeBetween('-1 month', '-2 days'),
+            'updatedAt' => faker()->dateTimeBetween('-1 day', 'now'),
+        ]);
+
+        DealFactory::createMany(20, fn () => [
+            'workspace' => WorkspaceFactory::random(),
+            'company' => CompanyFactory::random(),
+            'creator' => UserFactory::random(),
+            'users' => UserFactory::randomRange(1, 3),
             'createdAt' => faker()->dateTimeBetween('-1 month', '-2 days'),
             'updatedAt' => faker()->dateTimeBetween('-1 day', 'now'),
         ]);

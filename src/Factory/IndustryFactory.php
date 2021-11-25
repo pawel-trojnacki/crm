@@ -28,7 +28,7 @@ use Zenstruck\Foundry\Proxy;
  */
 final class IndustryFactory extends ModelFactory
 {
-    public const industries = ['Transport', 'IT', 'Education', 'Construction', 'Food'];
+    public const INDUSTRIES = ['Transport', 'IT', 'Education', 'Construction', 'Food'];
 
     public function __construct()
     {
