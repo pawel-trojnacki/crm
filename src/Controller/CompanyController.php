@@ -43,7 +43,12 @@ class CompanyController extends AbstractBaseController
             throw new NotFoundHttpException('Page not found');
         }
 
-        $qb = $this->companyRepository->createPagerQueryBuilder($workspace, $search, $industry, $order);
+        $qb = $this->companyRepository->createPagerQueryBuilder(
+            $workspace,
+            $search,
+            $industry,
+            $order
+        );
 
         $pager = $this->pagerService->createPager($qb, $currentPage, 10);
 
@@ -83,6 +88,8 @@ class CompanyController extends AbstractBaseController
 
             $this->companyRepository->delete($company);
 
+            $this->addFlashSuccess('Company has been deleted');
+
             return $this->redirectToRoute('app_company_index', [
                 'slug' => $company->getWorkspace()->getSlug(),
             ]);
@@ -115,6 +122,8 @@ class CompanyController extends AbstractBaseController
 
             $referer = $request->request->get('referer');
 
+            $this->addFlashSuccess('Company has been created');
+
             return $this->redirectToReferer($referer, 'app_comapny_index', [
                 'slug' => $workspace->getSlug(),
             ]);
@@ -143,6 +152,11 @@ class CompanyController extends AbstractBaseController
             $this->companyRepository->save($company);
 
             $referer = $request->request->get('referer');
+
+            $this->addFlashSuccess(sprintf(
+                'Company %s has been updated',
+                $company->getName()
+            ));
 
             // Redirect to referer only if it is the index page - temporary solution
             if ($referer && strpos($referer, 'companies')) {

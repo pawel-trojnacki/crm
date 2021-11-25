@@ -80,6 +80,8 @@ class ContactController extends AbstractBaseController
 
             $this->contactNoteRepository->save($contactNote);
 
+            $this->addFlashSuccess('Note has been created');
+
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
             ]);
@@ -93,6 +95,8 @@ class ContactController extends AbstractBaseController
             );
 
             $this->contactRepository->delete($contact);
+
+            $this->addFlashSuccess('Contact has been deleted');
 
             return $this->redirectToRoute('app_contact_index', [
                 'slug' => $contact->getWorkspace()->getSlug(),
@@ -111,6 +115,8 @@ class ContactController extends AbstractBaseController
             );
 
             $this->contactNoteRepository->delete($contactNote);
+
+            $this->addFlashSuccess('Note has been deleted');
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
@@ -147,6 +153,8 @@ class ContactController extends AbstractBaseController
 
             $referer = $request->request->get('referer');
 
+            $this->addFlashSuccess('Contact has been created');
+
             return $this->redirectToReferer($referer, 'app_contact_index', [
                 'slug' => $workspace->getSlug()
             ]);
@@ -177,6 +185,12 @@ class ContactController extends AbstractBaseController
             $this->contactRepository->save($contact);
 
             $referer = $request->request->get('referer');
+
+            $this->addFlashSuccess(sprintf(
+                'Contact %s %s has been updated',
+                $contact->getFirstName(),
+                $contact->getLastName(),
+            ));
 
             // Redirect to referer only if it is the index page - temporary solution
             if ($referer && strpos($referer, 'contacts')) {
@@ -223,6 +237,8 @@ class ContactController extends AbstractBaseController
             $contactNote = $form->getData();
 
             $this->contactNoteRepository->save($contactNote);
+
+            $this->addFlashSuccess('Note has been updated');
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $slug,

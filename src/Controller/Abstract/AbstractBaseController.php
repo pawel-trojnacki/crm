@@ -24,4 +24,9 @@ abstract class AbstractBaseController extends AbstractController
 
         return $this->redirectToRoute($defaultRoute, $parameters);
     }
+
+    protected function addFlashSuccess(string $message)
+    {
+        $this->addFlash('success', $message);
+    }
 }

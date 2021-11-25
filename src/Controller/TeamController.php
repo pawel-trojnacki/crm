@@ -38,6 +38,8 @@ class TeamController extends AbstractBaseController
 
             $this->userRepository->delete($user);
 
+            $this->addFlashSuccess('User has been deleted');
+
             return $this->redirectToRoute('app_team_index', [
                 'slug' => $workspace->getSlug(),
             ]);
@@ -66,6 +68,8 @@ class TeamController extends AbstractBaseController
             $plainPassword = $form->get('plainPassword')->getData();
 
             $this->userRepository->register($user, $plainPassword);
+
+            $this->addFlashSuccess('User has been created');
 
             return $this->redirectToRoute('app_team_index', [
                 'slug' => $workspace->getSlug(),
@@ -111,6 +115,8 @@ class TeamController extends AbstractBaseController
 
             $this->userRepository->save($user);
 
+            $this->addFlashSuccess('User info has been updated');
+
             return $this->redirectToRoute('app_team_index', [
                 'slug' => $workspace->getSlug(),
             ]);
@@ -121,6 +127,8 @@ class TeamController extends AbstractBaseController
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
             $plainPassword = $passwordForm->get('plainPassword')->getData();
             $this->userRepository->register($user, $plainPassword);
+
+            $this->addFlashSuccess('User password has been updated');
 
             return $this->redirectToRoute('app_team_index', [
                 'slug' => $workspace->getSlug(),
