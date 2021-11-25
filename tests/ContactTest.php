@@ -85,7 +85,7 @@ class ContactTest extends KernelTestCase
         $this->assertNull($savedContact->getCompany());
     }
 
-    public function testContactCanBeDeletedFromDatabase(): void
+    public function testContactIsDeletedFromDatabase(): void
     {
         $workspace = WorkspaceTestHelper::createDefaultWorkspace();
 

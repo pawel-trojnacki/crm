@@ -12,7 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Entity(repositoryClass: DealRepository::class)]
 class Deal
 {
-    public const STAGES = ['Opportunity', 'Proposal sent', 'In negociation', 'Won', 'Lost'];
+    public const STAGES = ['opportunity', 'proposal sent', 'in negociation', 'won', 'lost'];
 
     use TimestampableAttributeEntityTrait;
 
@@ -69,6 +69,18 @@ class Deal
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
