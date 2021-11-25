@@ -47,6 +47,10 @@ class Deal
     #[ORM\ManyToMany(targetEntity: User::class)]
     private $users;
 
+    #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'deals')]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private $workspace;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -137,6 +141,18 @@ class Deal
     public function removeUser(User $user): self
     {
         $this->users->removeElement($user);
+
+        return $this;
+    }
+
+    public function getWorkspace(): ?Workspace
+    {
+        return $this->workspace;
+    }
+
+    public function setWorkspace(?Workspace $workspace): self
+    {
+        $this->workspace = $workspace;
 
         return $this;
     }

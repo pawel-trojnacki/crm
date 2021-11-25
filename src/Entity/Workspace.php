@@ -49,11 +49,19 @@ class Workspace
     )]
     private $users;
 
+    #[ORM\OneToMany(
+        mappedBy: 'workspace',
+        targetEntity: Deal::class,
+        cascade: ['persist', 'remove']
+        )]
+    private $deals;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->companies = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->deals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -108,5 +116,13 @@ class Workspace
     public function getUsers(): Collection
     {
         return $this->users;
+    }
+
+    /**
+     * @return Collection|Deal[]
+     */
+    public function getDeals(): Collection
+    {
+        return $this->deals;
     }
 }
