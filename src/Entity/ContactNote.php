@@ -2,52 +2,28 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\NoteEntityTrait;
 use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\ContactNoteRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactNoteRepository::class)]
 class ContactNote
 {
-    use TimestampableAttributeEntityTrait;
+    use TimestampableAttributeEntityTrait, NoteEntityTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'text')]
-    #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 10,
-        max: 5000,
-    )]
-    private $content;
-
     #[ORM\ManyToOne(targetEntity: Contact::class, inversedBy: 'contactNotes')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $contact;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
-    private $creator;
-
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
-
-    public function setContent(string $content): self
-    {
-        $this->content = $content;
-
-        return $this;
     }
 
     public function getContact(): ?Contact
@@ -58,18 +34,6 @@ class ContactNote
     public function setContact(?Contact $contact): self
     {
         $this->contact = $contact;
-
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setCreator(?User $creator): self
-    {
-        $this->creator = $creator;
 
         return $this;
     }
