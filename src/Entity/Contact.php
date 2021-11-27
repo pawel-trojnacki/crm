@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\NoteParentEntityInterface;
 use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\ContactRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,7 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
-class Contact
+class Contact implements NoteParentEntityInterface
 {
     use TimestampableAttributeEntityTrait;
 
@@ -186,7 +187,7 @@ class Contact
     /**
      * @return Collection|ContactNote[]
      */
-    public function getContactNotes(): Collection
+    public function getNotes(): Collection
     {
         return $this->contactNotes;
     }

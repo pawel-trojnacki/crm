@@ -2,29 +2,21 @@
 
 namespace App\Entity;
 
-use App\Entity\Trait\NoteEntityTrait;
+use App\Entity\Abstract\AbstractNoteEntity;
+use App\Entity\Interface\NoteParentEntityInterface;
 use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\ContactNoteRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ContactNoteRepository::class)]
-class ContactNote
+class ContactNote extends AbstractNoteEntity
 {
-    use TimestampableAttributeEntityTrait, NoteEntityTrait;
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
+    use TimestampableAttributeEntityTrait;
 
     #[ORM\ManyToOne(targetEntity: Contact::class, inversedBy: 'contactNotes')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $contact;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getContact(): ?Contact
     {
@@ -36,5 +28,15 @@ class ContactNote
         $this->contact = $contact;
 
         return $this;
+    }
+
+    public function setParent($contact): self
+    {
+        return $this->setContact($contact);
+    }
+
+    public function getParent(): ?NoteParentEntityInterface
+    {
+        return $this->getContact();
     }
 }

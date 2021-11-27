@@ -1,0 +1,61 @@
+{% if notes | length > 0 %}
+
+<ul class="list-group">
+
+    {% for note in notes | sort((a, b) => a.createdAt < b.createdAt) %}
+
+    <li class="list-group-item p-md-3">
+
+        <div class="mb-1 d-flex justify-content-between w-100">
+
+            {% if note.creator %}
+
+            <h3 class="fs-6 fw-bold">
+                By {{
+                note.creator.firstName | title
+                }} {{
+                note.creator.lastName | title
+                }} {{
+                note.createdAt | ago
+                }}
+            </h3>
+
+            {% else %}
+
+            <h3 class="fs-6 fw-bold">By unknown user {{note.createdAt | ago}}</h3>
+
+            {% endif %}
+
+            <div>
+
+                <a href="{{ path(edit_path, {
+                    slug: parent_slug,
+                    id: note.id
+                }) }}" class="icon-button">
+                    <i class="bi-pencil-fill" aria-label="edit"></i>
+                </a>
+
+                <button role="button" class="icon-button" data-bs-toggle="modal"
+                    data-bs-target="{{'#delete-note-modal-' ~ note.id}}">
+                    <i class="bi-trash-fill" aria-label="edit"></i>
+                </button>
+
+                {{ include('partials/_delete-modal.html.twig', {
+                id: 'delete-note-modal-' ~ note.id,
+                delete_name: 'delete-note',
+                delete_id: note.id
+                }) }}
+
+            </div>
+            
+        </div>
+
+        <p class="mb-1">{{ note.content }}</p>
+
+    </li>
+
+    {% endfor %}
+
+</ul>
+
+{% endif %}

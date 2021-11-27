@@ -3,12 +3,12 @@
 namespace App\Controller;
 
 use App\Constant\ContactConstant;
-use App\Controller\Abstract\AbstractBaseController;
+use App\Controller\Abstract\AbstractNoteController;
 use App\Entity\Contact;
 use App\Entity\ContactNote;
 use App\Entity\Workspace;
 use App\Form\ContactFormType;
-use App\Form\ContactNoteFormType;
+use App\Form\NoteFormType;
 use App\Repository\ContactNoteRepository;
 use App\Repository\ContactRepository;
 use App\Service\PagerService;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ContactController extends AbstractBaseController
+class ContactController extends AbstractNoteController
 {
     public function __construct(
         private ContactRepository $contactRepository,
@@ -63,28 +63,14 @@ class ContactController extends AbstractBaseController
     {
         $workspace = $contact->getWorkspace();
 
-        $form = $this->createForm(ContactNoteFormType::class);
+        $form = $this->createForm(NoteFormType::class, null, [
+            'data_class' => ContactNote::class,
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->denyAccessUnlessGranted(
-                'WORKSPACE_ADD_ITEM',
-                $workspace,
-                'Current user is not authorized to create a note'
-            );
-
-            /** @var ContactNote $contactNote */
-            $contactNote = $form->getData();
-
-            $user = $this->getUser();
-
-            $contactNote->setContact($contact);
-            $contactNote->setCreator($user);
-
-            $this->contactNoteRepository->save($contactNote);
-
-            $this->addFlashSuccess('Note has been created');
+            $this->saveNote($this->contactNoteRepository, $workspace, $form, $contact);
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
@@ -108,19 +94,7 @@ class ContactController extends AbstractBaseController
         }
 
         if ($request->isMethod('POST') && $request->request->get('delete-note')) {
-            $noteId = $request->request->get('delete-id');
-
-            $contactNote = $this->contactNoteRepository->findOneBy(['id' => $noteId]);
-
-            $this->denyAccessUnlessGranted(
-                'CONTACT_NOTE_EDIT',
-                $contactNote,
-                'Current user is not authorized to delete this note',
-            );
-
-            $this->contactNoteRepository->delete($contactNote);
-
-            $this->addFlashSuccess('Note has been deleted');
+            $this->deleteNote($this->contactNoteRepository, $request);
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
@@ -220,39 +194,14 @@ class ContactController extends AbstractBaseController
     )]
     public function editNote(string $slug, int $id, Request $request): Response
     {
-        $contact = $this->contactRepository->findOneBy(['slug' => $slug]);
-        $workspace = $contact->getWorkspace();
-        $contactNote = $this->contactNoteRepository->findOneBy(['id' => $id]);
-
-        $this->denyAccessUnlessGranted(
-            'CONTACT_NOTE_EDIT',
-            $contactNote,
-            'Current user is not authorized to edit this note'
+        return parent::updateNote(
+            $id,
+            $slug,
+            $request,
+            $this->contactNoteRepository,
+            $this->contactRepository,
+            ContactNote::class,
+            'app_contact_show'
         );
-
-        $form = $this->createForm(ContactNoteFormType::class, $contactNote, [
-            'label_text' => 'Edit note',
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var ContactNote $contactNote */
-            $contactNote = $form->getData();
-
-            $this->contactNoteRepository->save($contactNote);
-
-            $this->addFlashSuccess('Note has been updated');
-
-            return $this->redirectToRoute('app_contact_show', [
-                'slug' => $slug,
-            ]);
-        }
-
-        return $this->renderForm('contact-note/edit.html.twig', [
-            'workspace' => $workspace,
-            'contact' => $contact,
-            'form' => $form,
-        ]);
     }
 }

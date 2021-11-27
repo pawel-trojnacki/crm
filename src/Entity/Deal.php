@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\NoteParentEntityInterface;
 use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\DealRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: DealRepository::class)]
-class Deal
+class Deal implements NoteParentEntityInterface
 {
     public const STAGES = ['opportunity', 'proposal sent', 'in negociation', 'won', 'lost'];
 
@@ -51,9 +52,17 @@ class Deal
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $workspace;
 
+    #[ORM\OneToMany(
+        mappedBy: 'deal',
+        targetEntity: DealNote::class,
+        cascade: ['persist', 'remove']
+    )]
+    private $dealNotes;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->dealNotes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -167,5 +176,13 @@ class Deal
         $this->workspace = $workspace;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|DealNote[]
+     */
+    public function getNotes(): Collection
+    {
+        return $this->dealNotes;
     }
 }

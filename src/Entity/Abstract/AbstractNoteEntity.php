@@ -1,24 +1,35 @@
 <?php
 
-namespace App\Entity\Trait;
+namespace App\Entity\Abstract;
 
+use App\Entity\Interface\NoteParentEntityInterface;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-trait NoteEntityTrait
+abstract class AbstractNoteEntity
 {
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    protected $id;
+
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 10,
         max: 5000,
     )]
-    private $content;
+    protected $content;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
-    private $creator;
+    protected $creator;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getContent(): ?string
     {
@@ -43,4 +54,8 @@ trait NoteEntityTrait
 
         return $this;
     }
+
+    abstract function setParent(NoteParentEntityInterface $parent): self;
+
+    abstract function getParent(): ?NoteParentEntityInterface;
 }

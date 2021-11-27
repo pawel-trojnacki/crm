@@ -8,67 +8,78 @@
 
 <div class="row gx-5">
 
-    <div class="col-8">
+    <section class="col-8">
+        <h2 class="fs-4 mb-3">Notes</h2>
+
+        {{ include('partials/_note-list.html.twig', {
+        notes: deal.notes,
+        edit_path: 'app_contact_edit_note',
+        parent_slug: deal.slug,
+        }) }}
+
+    </section>
+
+    <div class="col-4">
+
+        <section class="mb-4">
+            <h2 class="fs-4 mb-3">Info</h2>
+
+            <ul class="list-group mb-3">
+                <li class="list-group-item">
+                    Company: <span class="fw-bold">
+                        {{ deal.company.name }}
+                    </span>
+                </li>
+                <li class="list-group-item">
+                    Stage: <span class="fw-bold">
+                        {{ deal.stage | title }}
+                    </span>
+                </li>
+                <li class="list-group-item">
+                    <span>
+                        Assigned to:
+                    </span>
+                    <ul>
+                        {% for user in deal.users %}
+                        <li class="fw-bold">
+                            {{ user.firstName ~ ' ' ~ user.lastName }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    Added by: <span class="fw-bold">
+                        {{ deal.creator.firstName ~ ' ' ~ deal.creator.lastName }}
+                    </span>
+                </li>
+                <li class="list-group-item">
+                    Created: <span class="fw-bold">
+                        {{ deal.createdAt | ago }}
+                    </span>
+                </li>
+                <li class="list-group-item">
+                    Last update: <span class="fw-bold">
+                        {{ deal.updatedAt | ago }}
+                    </span>
+                </li>
+            </ul>
+        </section>
 
         {% if deal.description %}
-        <section class="mb-3">
+
+        <section class="mb-4">
             <h2 class="fs-4 mb-3">Description</h2>
             <div>
                 {{ deal.description }}
             </div>
         </section>
+
         {% endif %}
-        
 
     </div>
-
-    <section class="col-4">
-        <h2 class="fs-4 mb-3">Info</h2>
-
-        <ul class="list-group mb-3">
-            <li class="list-group-item">
-                Company: <span class="fw-bold">
-                    {{ deal.company.name }}
-                </span>
-            </li>
-            <li class="list-group-item">
-                Stage: <span class="fw-bold">
-                    {{ deal.stage | title }}
-                </span>
-            </li>
-            <li class="list-group-item">
-                <span>
-                    Assigned to:
-                </span>
-                <ul>
-                    {% for user in deal.users %}
-                    <li class="fw-bold">
-                        {{ user.firstName ~ ' ' ~ user.lastName }}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </li>
-        </ul>
-
-        <ul class="list-group">
-            <li class="list-group-item">
-                Added by: <span class="fw-bold">
-                    {{ deal.creator.firstName ~ ' ' ~ deal.creator.lastName }}
-                </span>
-            </li>
-            <li class="list-group-item">
-                Created: <span class="fw-bold">
-                    {{ deal.createdAt | ago }}
-                </span>
-            </li>
-            <li class="list-group-item">
-                Last update: <span class="fw-bold">
-                    {{ deal.updatedAt | ago }}
-                </span>
-            </li>
-        </ul>
-
-    </section>
 
 </div>
 

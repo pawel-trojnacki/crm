@@ -7,6 +7,7 @@ use App\Factory\CompanyFactory;
 use App\Factory\ContactFactory;
 use App\Factory\ContactNoteFactory;
 use App\Factory\DealFactory;
+use App\Factory\DealNoteFactory;
 use App\Factory\IndustryFactory;
 use App\Factory\UserFactory;
 use App\Factory\WorkspaceFactory;
@@ -75,14 +76,14 @@ class AppFixtures extends Fixture
             'workspace' => WorkspaceFactory::random(),
             'creator' => UserFactory::random(),
             'company' => faker()->boolean(80) ? CompanyFactory::random() : null,
-            'createdAt' => faker()->dateTimeBetween('-1 month', '-2 days'),
+            'createdAt' => faker()->dateTimeBetween('-1 month', '-1 week'),
             'updatedAt' => faker()->dateTimeBetween('-1 day', 'now'),
         ]);
 
         ContactNoteFactory::createMany(120, fn () => [
             'contact' => ContactFactory::random(),
             'creator' => UserFactory::random(),
-            'createdAt' => faker()->dateTimeBetween('-1 month', '-2 days'),
+            'createdAt' => faker()->dateTimeBetween('-1 week', '-2 days'),
             'updatedAt' => faker()->dateTimeBetween('-1 day', 'now'),
         ]);
 
@@ -91,7 +92,14 @@ class AppFixtures extends Fixture
             'company' => CompanyFactory::random(),
             'creator' => UserFactory::random(),
             'users' => UserFactory::randomRange(1, 3),
-            'createdAt' => faker()->dateTimeBetween('-1 month', '-2 days'),
+            'createdAt' => faker()->dateTimeBetween('-1 month', '-1 week'),
+            'updatedAt' => faker()->dateTimeBetween('-1 day', 'now'),
+        ]);
+
+        DealNoteFactory::createMany(120, fn () => [
+            'deal' => DealFactory::random(),
+            'creator' => UserFactory::random(),
+            'createdAt' => faker()->dateTimeBetween('-1 week', '-2 days'),
             'updatedAt' => faker()->dateTimeBetween('-1 day', 'now'),
         ]);
     }
