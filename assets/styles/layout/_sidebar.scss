@@ -1,0 +1,26 @@
+.sidebar {
+  width: 200px;
+  padding: 28px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-right: 1px solid $gray-400;
+
+  nav {
+    margin-bottom: 28px;
+  }
+
+  a {
+    color: $dark;
+  }
+
+  h2 {
+    color: $gray-600;
+  }
+
+  .brand {
+    display: block;
+    text-decoration: none;
+  }
+}

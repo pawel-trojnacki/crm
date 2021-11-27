@@ -2,9 +2,9 @@
 
 {% block title %}Team{% endblock %}
 
-{% block body %}
+{% block heading %} {{workspace.name | title}} Team {% endblock %}
 
-{{ include('layout/_heading.html.twig', {title: workspace.name ~ ' Team'}) }}
+{% block body %}
 
 {% if is_granted('ROLE_MANAGER') %}
 <div class="mb-4">

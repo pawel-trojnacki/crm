@@ -2,9 +2,9 @@
 
 {% block title %}Edit Company{% endblock %}
 
-{% block body %}
+{% block heading %}Edit Company{% endblock %}
 
-{{ include('layout/_heading.html.twig', {title: 'Edit Company: ' ~ company.name}) }}
+{% block body %}
 
 {{ include('company/_form.html.twig', {buttonText: 'Update company'}) }}
 

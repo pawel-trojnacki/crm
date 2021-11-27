@@ -2,11 +2,9 @@
 
 {% block title %}Edit User{% endblock %}
 
-{% block body %}
+{% block heading %}Edit User: {{ user.firstName ~ ' ' ~ user.lastName }} {% endblock %}
 
-{{ include('layout/_heading.html.twig', {
-title: 'Edit User: ' ~ user.firstName ~ ' ' ~ user.lastName
-}) }}
+{% block body %}
 
 <div class="row gx-5">
 

@@ -2,11 +2,10 @@
 
 {% block title %}Edit Contact{% endblock %}
 
+{% block heading %}Edit Contact: {{ contact.firstName ~ ' ' ~ contact.lastName}} {% endblock %}
+
 {% block body %}
 
-{{ include('layout/_heading.html.twig', {
-    title: 'Edit Contact: ' ~ contact.firstName ~ ' ' ~ contact.lastName
-}) }}
 {{ include('contact/_form.html.twig', {buttonText: 'Update contact'}) }}
 
 {% endblock %}

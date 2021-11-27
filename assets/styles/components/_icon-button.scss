@@ -4,9 +4,9 @@
     text-decoration: none;
     padding: 4px;
     margin: 0 2px;
-    color: $secondary;
+    color: $body-color;
     font-size: 1.1em;
     &:hover {
-        color: $gray-900;
+        color: $dark;
     }
 }

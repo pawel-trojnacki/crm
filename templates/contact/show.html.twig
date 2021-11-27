@@ -4,11 +4,9 @@
 
 {% block title %} {{page_title | title}} {% endblock %}
 
-{% block body %}
+{% block heading %} {{page_title}} {% endblock %}
 
-{{ include('layout/_heading.html.twig', {
-title: page_title
-}) }}
+{% block body %}
 
 <div class="row">
 

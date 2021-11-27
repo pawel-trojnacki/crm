@@ -2,9 +2,9 @@
 
 {% block title %}Create Company{% endblock %}
 
-{% block body %}
+{% block heading %}Create Company{% endblock %}
 
-{{ include('layout/_heading.html.twig', {title: 'Create Company'}) }}
+{% block body %}
 
 {{ include('company/_form.html.twig', {buttonText: 'Save company'}) }}
 

@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{company.name}}{% endblock %}
+{% block title %}{{company.name | title}}{% endblock %}
+
+{% block heading %}{{ company.name }}{% endblock %}
 
 {% block body %}
-
-{{ include('layout/_heading.html.twig', {title: 'Company: ' ~ company.name}) }}
 
 <div class="row">
 

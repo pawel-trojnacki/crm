@@ -2,9 +2,9 @@
 
 {% block title %}Create Contact{% endblock %}
 
-{% block body %}
+{% block heading %}Create Contact {% endblock %}
 
-{{ include('layout/_heading.html.twig', {title: 'Create Contact'}) }}
+{% block body %}
 
 {{ include('contact/_form.html.twig', {buttonText: 'Save contact'}) }}
 

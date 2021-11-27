@@ -2,11 +2,9 @@
 
 {% block title %}Edit Note{% endblock %}
 
-{% block body %}
+{% block heading %}Edit note{% endblock %}
 
-{{ include('layout/_heading.html.twig', {
-    title: 'Edit note for client: ' ~ contact.firstName ~ ' ' ~ contact.lastName
-}) }}
+{% block body %}
 
 {{form(form)}}
 

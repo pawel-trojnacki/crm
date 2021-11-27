@@ -2,9 +2,9 @@
 
 {% block title %}Deals{% endblock %}
 
-{% block body %}
+{% block heading %}Deals{% endblock %}
 
-{{ include('layout/_heading.html.twig', {title: 'Deals'}) }}
+{% block body %}
 
 <ul class="cards-grid-secondary">
     {% for deal in pager %}

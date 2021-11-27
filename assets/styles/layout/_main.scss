@@ -21,3 +21,15 @@ legend.required:after {
 .form-check label.required:after {
   content: "";
 }
+
+h1,
+h2,
+h3,
+th,
+label {
+  color: $dark;
+}
+
+li.list-group-item {
+  color: $body-color;
+}
