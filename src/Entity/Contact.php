@@ -62,7 +62,7 @@ class Contact
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $workspace;
 
-    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contacts')]
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contacts', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
     private $company;
 

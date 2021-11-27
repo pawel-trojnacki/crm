@@ -21,7 +21,7 @@ class ContactNoteVoter extends Voter
     protected function supports(string $attribute, $subject): bool
     {
         return in_array($attribute, [self::EDIT])
-            && $subject instanceof \App\Entity\ContactNote;
+            && $subject instanceof ContactNote;
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool

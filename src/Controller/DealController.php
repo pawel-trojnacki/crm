@@ -20,6 +20,7 @@ class DealController extends AbstractBaseController
         private PagerService $pagerService,
     ) {
     }
+
     #[Route('/{slug}/deals', name: 'app_deal_index', methods: 'GET')]
     #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
     public function index(Workspace $workspace, Request $request): Response
@@ -50,6 +51,18 @@ class DealController extends AbstractBaseController
             'order' => $order,
             'sortOptions' => BaseSortConstant::SORT_OPTIONS,
             'stages' => Deal::STAGES,
+        ]);
+    }
+
+    #[Route('/deal/{slug}', name: 'app_deal_show', methods: ['GET'])]
+    #[IsGranted('DEAL_VIEW', subject: 'deal')]
+    public function show(Deal $deal): Response
+    {
+        $workspace = $deal->getWorkspace();
+
+        return $this->render('deal/show.html.twig', [
+            'workspace' => $workspace,
+            'deal' => $deal,
         ]);
     }
 }

@@ -23,7 +23,7 @@ class WorkspaceVoter extends Voter
     protected function supports(string $attribute, $subject): bool
     {
         return in_array($attribute, [self::VIEW, self::EDIT, self::ADD_ITEM])
-            && $subject instanceof \App\Entity\Workspace;
+            && $subject instanceof Workspace;
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool

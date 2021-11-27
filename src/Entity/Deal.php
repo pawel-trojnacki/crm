@@ -36,11 +36,11 @@ class Deal
     #[ORM\Column(type: 'string', length: 25)]
     private $stage;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
     private $creator;
 
-    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'deals')]
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'deals', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $company;
 

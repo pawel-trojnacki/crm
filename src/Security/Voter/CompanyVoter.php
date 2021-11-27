@@ -22,7 +22,7 @@ class CompanyVoter extends Voter
     protected function supports(string $attribute, $subject): bool
     {
         return in_array($attribute, [self::VIEW, self::EDIT])
-            && $subject instanceof \App\Entity\Company;
+            && $subject instanceof Company;
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool

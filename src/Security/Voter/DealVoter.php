@@ -2,17 +2,17 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Contact;
+use App\Entity\Deal;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ContactVoter extends Voter
+class DealVoter extends Voter
 {
-    public const VIEW = 'CONTACT_VIEW';
-    public const EDIT = 'CONTACT_EDIT';
+    public const VIEW = 'DEAL_VIEW';
+    public const EDIT = 'DEAL_EDIT';
 
     public function __construct(
         private Security $security,
@@ -22,7 +22,7 @@ class ContactVoter extends Voter
     protected function supports(string $attribute, $subject): bool
     {
         return in_array($attribute, [self::VIEW, self::EDIT])
-            && $subject instanceof Contact;
+            && $subject instanceof Deal;
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
@@ -33,36 +33,36 @@ class ContactVoter extends Voter
             return false;
         }
 
-        /** @var Contact $contact */
-        $contact = $subject;
+        /** @var Deal $deal */
+        $deal = $subject;
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::VIEW:
-                return $this->canView($contact, $user);
+                return $this->canView($deal, $user);
                 break;
             case self::EDIT:
-                return $this->canEdit($contact, $user);
+                return $this->canEdit($deal, $user);
                 break;
         }
 
         return false;
     }
 
-    private function canView(Contact $contact, User $user): bool
+    private function canView(Deal $deal, User $user): bool
     {
         $workspace = $user->getWorkspace();
 
-        return $workspace === $contact->getWorkspace() && $this->security->isGranted('ROLE_USER');
+        return $workspace === $deal->getWorkspace() && $this->security->isGranted('ROLE_USER');
     }
 
-    private function canEdit(Contact $contact, User $user): bool
+    private function canEdit(Deal $deal, User $user): bool
     {
-        if (!$this->canView($contact, $user)) {
+        if (!$this->canView($deal, $user)) {
             return false;
         }
 
         return $this->security->isGranted('ROLE_ADMIN') ||
-            $this->security->isGranted('ROLE_MANAGER') && $contact->getCreator() === $user;
+            $this->security->isGranted('ROLE_MANAGER') && $deal->getCreator() === $user;
     }
 }
