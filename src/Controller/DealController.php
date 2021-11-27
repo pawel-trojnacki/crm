@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Constant\BaseSortConstant;
-use App\Controller\Abstract\AbstractBaseController;
+use App\Controller\Abstract\AbstractNoteController;
 use App\Entity\Deal;
+use App\Entity\DealNote;
 use App\Entity\Workspace;
+use App\Form\NoteFormType;
+use App\Repository\DealNoteRepository;
 use App\Repository\DealRepository;
 use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,10 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DealController extends AbstractBaseController
+class DealController extends AbstractNoteController
 {
     public function __construct(
         private DealRepository $dealRepository,
+        private DealNoteRepository $dealNoteRepository,
         private PagerService $pagerService,
     ) {
     }
@@ -54,15 +58,48 @@ class DealController extends AbstractBaseController
         ]);
     }
 
-    #[Route('/deal/{slug}', name: 'app_deal_show', methods: ['GET'])]
+    #[Route('/deal/{slug}', name: 'app_deal_show', methods: ['GET', 'POST'])]
     #[IsGranted('DEAL_VIEW', subject: 'deal')]
-    public function show(Deal $deal): Response
+    public function show(Deal $deal, Request $request): Response
     {
         $workspace = $deal->getWorkspace();
 
-        return $this->render('deal/show.html.twig', [
+        $form = $this->createForm(NoteFormType::class, null, [
+            'data_class' => DealNote::class,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->saveNote($this->dealNoteRepository, $workspace, $form, $deal);
+
+            return $this->redirectToRoute('app_deal_show', [
+                'slug' => $deal->getSlug(),
+            ]);
+        }
+
+        return $this->renderForm('deal/show.html.twig', [
             'workspace' => $workspace,
             'deal' => $deal,
+            'form' => $form,
         ]);
+    }
+
+    #[Route(
+        '/deal/{slug}/edit-note/{id}',
+        name: 'app_deal_edit_note',
+        methods: ['GET', 'POST']
+    )]
+    public function editNote(string $slug, int $id, Request $request): Response
+    {
+        return parent::updateNote(
+            $id,
+            $slug,
+            $request,
+            $this->dealNoteRepository,
+            $this->dealRepository,
+            DealNote::class,
+            'app_deal_show',
+        );
     }
 }

@@ -11,9 +11,13 @@
     <section class="col-8">
         <h2 class="fs-4 mb-3">Notes</h2>
 
+        <div>
+            {{form(form)}}
+        </div>
+
         {{ include('partials/_note-list.html.twig', {
         notes: deal.notes,
-        edit_path: 'app_contact_edit_note',
+        edit_path: 'app_deal_edit_note',
         parent_slug: deal.slug,
         }) }}
 
