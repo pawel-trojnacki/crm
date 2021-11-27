@@ -1,0 +1,10 @@
+<div class="pe-2">
+    <select name="stageId" id="stage" class="form-select">
+        <option value="" disabled selected hidden>Choose an stage</option>
+        {% for key, value in stages %}
+        <option value="{{key + 1}}" {{ (key + 1 == stage) ? 'selected' : '' }}>
+            {{value | title}}
+        </option>
+        {% endfor %}
+    </select>
+</div>

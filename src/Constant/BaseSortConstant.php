@@ -2,7 +2,7 @@
 
 namespace App\Constant;
 
-class CompanyConstant
+class BaseSortConstant
 {
     const SORT_OPTIONS = [
         'name-asc' => 'Name ASC',

@@ -45,7 +45,9 @@
 
         {% else %}
 
-        <p>There are no contacts assigned to this company</p>
+        {{ include('partials/_no-results-alert.html.twig', {
+            message: 'There are no contacts assigned to this company'
+        }) }}
 
         {% endif %}
 

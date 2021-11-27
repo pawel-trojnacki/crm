@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Constant\CompanyConstant;
+use App\Constant\BaseSortConstant;
 use App\Controller\Abstract\AbstractBaseController;
 use App\Entity\Company;
 use App\Entity\Contact;
@@ -59,7 +59,7 @@ class CompanyController extends AbstractBaseController
             'search' => $search,
             'industry' => $industry,
             'order' => $order,
-            'sortOptions' => CompanyConstant::SORT_OPTIONS,
+            'sortOptions' => BaseSortConstant::SORT_OPTIONS,
         ]);
     }
 

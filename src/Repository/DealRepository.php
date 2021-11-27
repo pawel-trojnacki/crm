@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Deal;
+use App\Entity\User;
 use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -34,11 +35,44 @@ class DealRepository extends ServiceEntityRepository
     }
 
     public function createFindByWorkspaceQueryBuilder(
-        Workspace $workspace
+        Workspace $workspace,
+        User $currentUser,
+        ?string $search = null,
+        ?string $stage = null,
+        ?string $order = null
+
     ): QueryBuilder {
         $qb = $this->createQueryBuilder('d')
             ->andWhere('d.workspace = :id')
             ->setParameter(':id', $workspace->getId());
+
+        if ($search) {
+            $qb->andWhere('d.name LIKE :search')
+                ->setParameter(':search', '%' . $search . '%');
+        }
+
+        if ($stage) {
+            $qb->andWhere('d.stage = :stage')
+                ->setParameter(':stage', $stage);
+        }
+
+        switch ($order) {
+            case 'date-desc':
+                $qb->orderBy('d.createdAt', 'DESC');
+                break;
+            case 'date-asc':
+                $qb->orderBy('d.createdAt', 'ASC');
+                break;
+            case 'name-desc':
+                $qb->orderBy('d.name', 'DESC');
+                break;
+            case 'name-asc':
+                $qb->orderBy('d.name', 'ASC');
+                break;
+            default:
+                $qb->orderBy('d.createdAt', 'DESC');
+                break;
+        }
 
         return $qb;
     }

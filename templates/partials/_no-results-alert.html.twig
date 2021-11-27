@@ -1,0 +1,7 @@
+<div class="alert alert-dark" role="alert">
+    {% if message | default(false) %}
+    {{ message }}
+    {% else %}
+    No results found
+    {% endif %}
+</div>
