@@ -68,6 +68,9 @@ class DealFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Deal::class,
+            'attr' => [
+                'autocomplete' => 'off',
+            ],
         ]);
 
         $resolver->setRequired(['workspace']);

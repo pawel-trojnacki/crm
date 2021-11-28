@@ -104,14 +104,13 @@ class DealController extends AbstractNoteController
         }
 
         return $this->renderForm('deal/show.html.twig', [
-            'workspace' => $workspace,
             'deal' => $deal,
             'form' => $form,
         ]);
     }
 
     #[Route('/{slug}/deals/create', name: 'app_deal_create', methods: ['GET', 'POST'])]
-    #[IsGranted('WORKSPACE_EDIT', subject: 'workspace')]
+    #[IsGranted('WORKSPACE_ADD_ITEM', subject: 'workspace')]
     public function create(Workspace $workspace, Request $request): Response
     {
         $form = $this->createForm(DealFormType::class, null, [
@@ -137,7 +136,6 @@ class DealController extends AbstractNoteController
         }
 
         return $this->renderForm('deal/create.html.twig', [
-            'workspace' => $workspace,
             'form' => $form,
         ]);
     }
@@ -171,7 +169,6 @@ class DealController extends AbstractNoteController
         }
 
         return $this->renderForm('deal/edit.html.twig', [
-            'workspace' => $workspace,
             'deal' => $deal,
             'form' => $form,
         ]);

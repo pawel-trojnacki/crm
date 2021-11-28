@@ -53,6 +53,9 @@ class CompanyFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Company::class,
+            'attr' => [
+                'autocomplete' => 'off',
+            ],
         ]);
     }
 }

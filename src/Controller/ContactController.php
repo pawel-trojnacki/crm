@@ -103,7 +103,6 @@ class ContactController extends AbstractNoteController
 
         return $this->renderForm('contact/show.html.twig', [
             'contact' => $contact,
-            'workspace' => $workspace,
             'form' => $form,
         ]);
     }
@@ -140,7 +139,6 @@ class ContactController extends AbstractNoteController
 
         return $this->renderForm('contact/create.html.twig', [
             'form' => $form,
-            'workspace' => $workspace,
         ]);
     }
 
@@ -182,7 +180,6 @@ class ContactController extends AbstractNoteController
 
         return $this->renderForm('contact/edit.html.twig', [
             'form' => $form,
-            'workspace' => $workspace,
             'contact' => $contact,
         ]);
     }

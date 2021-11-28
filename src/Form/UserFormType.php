@@ -49,6 +49,9 @@ class UserFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
             'with_password' => true,
+            'attr' => [
+                'autocomplete' => 'off',
+            ],
         ]);
     }
 }

@@ -130,7 +130,6 @@ class CompanyController extends AbstractBaseController
         }
 
         return $this->renderForm('company/create.html.twig', [
-            'workspace' => $workspace,
             'form' => $form,
         ]);
     }
@@ -169,7 +168,6 @@ class CompanyController extends AbstractBaseController
         }
 
         return $this->renderForm('company/edit.html.twig', [
-            'workspace' => $workspace,
             'company' => $company,
             'form' => $form,
         ]);

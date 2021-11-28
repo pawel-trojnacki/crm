@@ -95,7 +95,6 @@ abstract class AbstractNoteController extends AbstractBaseController
         }
 
         return $this->renderForm('note/edit.html.twig', [
-            'workspace' => $workspace,
             'parent' => $parent,
             'form' => $form,
         ]);

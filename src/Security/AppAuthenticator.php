@@ -63,7 +63,7 @@ class AppAuthenticator extends AbstractAuthenticator
 
         return new RedirectResponse(
             $this->getTargetPath($request->getSession(), $firewallName)
-                ?? $this->router->generate('app_contact_index', [
+                ?? $this->router->generate('app_dashboard_index', [
                     'slug' => $workspace->getSlug(),
                 ])
         );

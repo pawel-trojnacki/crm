@@ -77,7 +77,6 @@ class TeamController extends AbstractBaseController
         }
 
         return $this->renderForm('team/create.html.twig', [
-            'workspace' => $workspace,
             'form' => $form,
         ]);
     }
@@ -136,7 +135,6 @@ class TeamController extends AbstractBaseController
         }
 
         return $this->renderForm('team/edit.html.twig', [
-            'workspace' => $workspace,
             'user' => $user,
             'form' => $form,
             'passwordForm' => $passwordForm,
