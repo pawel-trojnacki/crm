@@ -10,6 +10,7 @@ body {
 label,
 legend {
   font-weight: bold;
+  color: $dark,
 }
 
 label.required:after,

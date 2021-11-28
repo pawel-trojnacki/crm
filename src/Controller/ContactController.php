@@ -89,7 +89,7 @@ class ContactController extends AbstractNoteController
             $this->addFlashSuccess('Contact has been deleted');
 
             return $this->redirectToRoute('app_contact_index', [
-                'slug' => $contact->getWorkspace()->getSlug(),
+                'slug' => $workspace->getSlug(),
             ]);
         }
 
@@ -192,9 +192,9 @@ class ContactController extends AbstractNoteController
         name: 'app_contact_edit_note',
         methods: ['GET', 'POST']
     )]
-    public function editNote(string $slug, int $id, Request $request): Response
+    public function editContactNote(string $slug, int $id, Request $request): Response
     {
-        return parent::updateNote(
+        return $this->editNote(
             $id,
             $slug,
             $request,

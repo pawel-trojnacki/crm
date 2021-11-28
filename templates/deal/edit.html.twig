@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Edit Deal {% endblock %}
+
+{% block heading %} Edit Deal: {{ deal.name }} {% endblock %}
+
+{% block body %}
+
+{{ include('deal/_form.html.twig', {buttonText: 'Update deal'}) }}
+
+{% endblock %}

@@ -83,6 +83,26 @@
 
         {% endif %}
 
+        <div class="d-flex justify-content-end my-3">
+            <div class="me-2">
+                <a href="{{ path('app_deal_edit', {
+                    slug: deal.slug
+                }) }}" class="btn btn-primary">
+                    Edit
+                </a>
+            </div>
+            <div>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#delete-deal-modal">Delete</button>
+
+                {{ include('partials/_delete-modal.html.twig', {
+                id: 'delete-deal-modal',
+                delete_name: 'delete-deal'
+                }) }}
+
+            </div>
+        </div>
+
     </div>
 
 </div>

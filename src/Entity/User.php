@@ -57,6 +57,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private string $slug;
 
+    public function __toString()
+    {
+        return ucwords($this->firstName . ' ' . $this->lastName);
+    }
+
     public function getId(): ?int
     {
         return $this->id;

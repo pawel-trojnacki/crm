@@ -54,7 +54,7 @@ abstract class AbstractNoteController extends AbstractBaseController
         $this->addFlashSuccess('Note has been deleted');
     }
 
-    protected function updateNote(
+    protected function editNote(
         int $noteId,
         string $slug,
         Request $request,

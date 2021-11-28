@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DealRepository::class)]
 class Deal implements NoteParentEntityInterface
@@ -23,6 +24,11 @@ class Deal implements NoteParentEntityInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 80)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 5,
+        max: 80,
+    )]
     private $name;
 
     /**
@@ -32,9 +38,14 @@ class Deal implements NoteParentEntityInterface
     private $slug;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\Length(
+        min: 10,
+        max: 1000,
+    )]
     private $description;
 
     #[ORM\Column(type: 'string', length: 25)]
+    #[Assert\NotBlank]
     private $stage;
 
     #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EAGER')]
@@ -43,6 +54,7 @@ class Deal implements NoteParentEntityInterface
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'deals', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Assert\NotBlank]
     private $company;
 
     #[ORM\ManyToMany(targetEntity: User::class)]

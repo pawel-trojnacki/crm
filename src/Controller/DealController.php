@@ -7,6 +7,7 @@ use App\Controller\Abstract\AbstractNoteController;
 use App\Entity\Deal;
 use App\Entity\DealNote;
 use App\Entity\Workspace;
+use App\Form\DealFormType;
 use App\Form\NoteFormType;
 use App\Repository\DealNoteRepository;
 use App\Repository\DealRepository;
@@ -78,7 +79,98 @@ class DealController extends AbstractNoteController
             ]);
         }
 
+        if ($request->isMethod('POST') && $request->request->get('delete-note')) {
+            $this->deleteNote($this->dealNoteRepository, $request);
+
+            return $this->redirectToRoute('app_deal_show', [
+                'slug' => $deal->getSlug(),
+            ]);
+        }
+
+        if ($request->isMethod('POST') && $request->request->get('delete-deal')) {
+            $this->denyAccessUnlessGranted(
+                'DEAL_EDIT',
+                $deal,
+                'Current user is not authorized to delete this deal'
+            );
+
+            $this->dealRepository->delete($deal);
+
+            $this->addFlashSuccess('Deal has been deleted');
+
+            return $this->redirectToRoute('app_deal_index', [
+                'slug' => $workspace->getSlug(),
+            ]);
+        }
+
         return $this->renderForm('deal/show.html.twig', [
+            'workspace' => $workspace,
+            'deal' => $deal,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{slug}/deals/create', name: 'app_deal_create', methods: ['GET', 'POST'])]
+    #[IsGranted('WORKSPACE_EDIT', subject: 'workspace')]
+    public function create(Workspace $workspace, Request $request): Response
+    {
+        $form = $this->createForm(DealFormType::class, null, [
+            'workspace' => $workspace,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Deal $deal */
+            $deal = $form->getData();
+
+            $deal->setWorkspace($workspace);
+            $deal->setCreator($this->getUser());
+
+            $this->dealRepository->save($deal);
+
+            $this->addFlashSuccess('Deal has been created');
+
+            return $this->redirectToRoute('app_deal_show', [
+                'slug' => $deal->getSlug(),
+            ]);
+        }
+
+        return $this->renderForm('deal/create.html.twig', [
+            'workspace' => $workspace,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/deal/{slug}/edit', name: 'app_deal_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('DEAL_EDIT', subject: 'deal')]
+    public function edit(Deal $deal, Request $request): Response
+    {
+        $workspace = $deal->getWorkspace();
+
+        $form = $this->createForm(DealFormType::class, $deal, [
+            'workspace' => $workspace,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()  && $form->isValid()) {
+            /** @var Deal $deal */
+            $deal = $form->getData();
+
+            $this->dealRepository->save($deal);
+
+            $this->addFlashSuccess(sprintf(
+                'Deal %s has been updated',
+                $deal->getName(),
+            ));
+
+            return $this->redirectToRoute('app_deal_show', [
+                'slug' => $deal->getSlug(),
+            ]);
+        }
+
+        return $this->renderForm('deal/edit.html.twig', [
             'workspace' => $workspace,
             'deal' => $deal,
             'form' => $form,
@@ -90,9 +182,9 @@ class DealController extends AbstractNoteController
         name: 'app_deal_edit_note',
         methods: ['GET', 'POST']
     )]
-    public function editNote(string $slug, int $id, Request $request): Response
+    public function editDealNote(string $slug, int $id, Request $request): Response
     {
-        return parent::updateNote(
+        return $this->editNote(
             $id,
             $slug,
             $request,

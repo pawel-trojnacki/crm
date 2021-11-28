@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -45,6 +46,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($password);
 
         $this->save($user);
+    }
+
+    /** @return User[] */
+    public function findAllByWorkspaceAlphabetically(Workspace $workspace): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.workspace = :id')
+            ->setParameter(':id', $workspace->getId())
+            ->orderBy('u.firstName', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

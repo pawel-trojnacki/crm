@@ -1,0 +1,21 @@
+{{ form_start(form) }}
+
+<div class="row">
+    <div class="col-md-4">
+        {{ form_row(form.name) }}
+    </div>
+    <div class="col-md-4">
+        {{ form_row(form.stage) }}
+    </div>
+    <div class="col-md-4">
+        {{ form_row(form.company) }}
+    </div>
+</div>
+
+{{ form_row(form.description) }}
+
+{{ form_row(form.users) }}
+
+<button type="submit" class="btn btn-primary">{{ buttonText }}</button>
+
+{{ form_end(form) }}

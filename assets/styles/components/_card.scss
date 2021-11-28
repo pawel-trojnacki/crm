@@ -1,5 +1,9 @@
 .card {
   box-shadow: 0 0 3px $gray-300;
+
+  .badge {
+    max-height: 1.8em;
+  }
 }
 
 a.card-body {
