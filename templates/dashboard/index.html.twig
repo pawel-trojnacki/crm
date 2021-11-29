@@ -6,6 +6,11 @@
 
 {% block body %}
 
-{{ render_chart(chart) }}
+<section>
+    <h2 class="fw-bold fs-5">Last Activity</h2>
+    <div class="my-3">
+        {{ render_chart(chart) }}
+    </div>
+</section>
 
 {% endblock %}

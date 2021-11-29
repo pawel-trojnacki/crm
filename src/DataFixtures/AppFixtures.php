@@ -68,22 +68,22 @@ class AppFixtures extends Fixture
             'industry' => IndustryFactory::random(),
             'creator' => UserFactory::random(),
             'country' => $this->countryRepository->findOneBy(['isoCode' => 'US']),
-            'createdAt' => faker()->dateTimeBetween('-1 year', '-1 month'),
-            'updatedAt' => faker()->dateTimeBetween('-1 month', 'now'),
+            'createdAt' => faker()->dateTimeBetween('-6 months', '-2 weeks'),
+            'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);
 
         ContactFactory::createMany(30, fn () => [
             'workspace' => WorkspaceFactory::random(),
             'creator' => UserFactory::random(),
             'company' => faker()->boolean(80) ? CompanyFactory::random() : null,
-            'createdAt' => faker()->dateTimeBetween('-1 year', '-1 month'),
-            'updatedAt' => faker()->dateTimeBetween('-1 month', 'now'),
+            'createdAt' => faker()->dateTimeBetween('-6 months', '-2 weeks'),
+            'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);
 
         ContactNoteFactory::createMany(120, fn () => [
             'contact' => ContactFactory::random(),
             'creator' => UserFactory::random(),
-            'createdAt' => faker()->dateTimeBetween('-1 month', '-1 week'),
+            'createdAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
             'updatedAt' => faker()->dateTimeBetween('-1 week', 'now'),
         ]);
 
@@ -92,14 +92,14 @@ class AppFixtures extends Fixture
             'company' => CompanyFactory::random(),
             'creator' => UserFactory::random(),
             'users' => UserFactory::randomRange(1, 3),
-            'createdAt' => faker()->dateTimeBetween('-1 year', '-1 month'),
-            'updatedAt' => faker()->dateTimeBetween('-1 month', 'now'),
+            'createdAt' => faker()->dateTimeBetween('-6 months', '-2 weeks'),
+            'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);
 
         DealNoteFactory::createMany(120, fn () => [
             'deal' => DealFactory::random(),
             'creator' => UserFactory::random(),
-            'createdAt' => faker()->dateTimeBetween('-1 month', '-1 week'),
+            'createdAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
             'updatedAt' => faker()->dateTimeBetween('-1 week', 'now'),
         ]);
     }
