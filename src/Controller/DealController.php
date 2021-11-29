@@ -40,7 +40,6 @@ class DealController extends AbstractNoteController
 
         $qb = $this->dealRepository->createFindByWorkspaceQueryBuilder(
             $workspace,
-            $this->getUser(),
             $search,
             $stage,
             $order

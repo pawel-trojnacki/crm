@@ -36,7 +36,6 @@ class DealRepository extends ServiceEntityRepository
 
     public function createFindByWorkspaceQueryBuilder(
         Workspace $workspace,
-        User $currentUser,
         ?string $search = null,
         ?string $stage = null,
         ?string $order = null
@@ -75,5 +74,26 @@ class DealRepository extends ServiceEntityRepository
         }
 
         return $qb;
+    }
+
+    public function findAllCountByWorkspace(Workspace $workspace): int
+    {
+        return $this->createQueryBuilder('d')
+            ->select('COUNT(d.id)')
+            ->andWhere('d.workspace = :id')
+            ->setParameter(':id', $workspace->getId())
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findCountByCreateMonth(Workspace $workspace)
+    {
+        return $this->createQueryBuilder('d')
+            ->select('count(d.id) AS dCount, MONTH(d.createdAt) AS dMonth')
+            ->groupBy('dMonth')
+            ->andWhere('d.workspace = :id')
+            ->setParameter(':id', $workspace->getId())
+            ->getQuery()
+            ->getResult();
     }
 }

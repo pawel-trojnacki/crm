@@ -84,4 +84,14 @@ class CompanyRepository extends ServiceEntityRepository
 
         return $qb;
     }
+
+    public function findAllCountByWorkspace(Workspace $workspace): int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->andWhere('c.workspace = :id')
+            ->setParameter(':id', $workspace->getId())
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
