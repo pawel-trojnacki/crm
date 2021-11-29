@@ -22,40 +22,8 @@
 {% if pager|length > 0 %}
 
 <ul class="cards-grid-secondary">
-
     {% for deal in pager %}
-    <li class="card">
-        <a href="{{ path('app_deal_show', {
-            slug: deal.slug
-        }) }}" class="card-body d-flex flex-column justify-content-between">
-
-            <div>
-                <h2 class="fs-6 fw-bold">
-                    {{ deal.name }}
-                </h2>
-                <small class="d-block">
-                    Status: <span>{{ deal.stage | title }}</span>
-                </small>
-                <small class="d-block mb-2">
-                    Company: <span>{{ deal.company.name | title }}</span>
-                </small>
-            </div>
-
-            <div>
-                <small class="text-muted d-block">
-                    Added {{ deal.createdAt | ago }}
-                </small>
-                <small class="text-muted d-block">
-                    By: {% if deal.creator %}
-                    {{ deal.creator.firstName ~ ' ' ~ deal.creator.lastName }}
-                    {% else %}
-                    unexisting user
-                    {% endif %}
-                </small>
-            </div>
-
-        </a>
-    </li>
+        {{ include('partials/_deal-card.html.twig', { deal: deal }) }}
     {% endfor %}
 </ul>
 

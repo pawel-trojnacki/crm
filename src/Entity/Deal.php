@@ -14,7 +14,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: DealRepository::class)]
 class Deal implements NoteParentEntityInterface
 {
-    public const STAGES = ['opportunity', 'proposal sent', 'in negociation', 'won', 'lost'];
+    public const ACTIVE_STAGES = ['opportunity', 'proposal sent', 'in negociation'];
+    public const STAGES = [...self::ACTIVE_STAGES, 'won', 'lost'];
 
     use TimestampableAttributeEntityTrait;
 

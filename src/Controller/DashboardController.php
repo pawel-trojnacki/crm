@@ -28,16 +28,22 @@ class DashboardController extends AbstractBaseController
         $companyNumber = $this->companyRepository->findAllCountByWorkspace($workspace);
         $contactNumber = $this->contactRepository->findAllCountByWorkspace($workspace);
 
+        $latestDeals = $this->dealRepository->findLatestByWorkspace($workspace);
+
         $chart = $this->chartService->createLastYearActivityChart($workspace);
+
+        $activeDealsChart = $this->chartService->createActiveDealsChart($workspace);
 
         return $this->render('dashboard/index.html.twig', [
             'workspace' => $workspace,
-            'chart' => $chart,
             'record_numbers' => [
                 'deal' => $dealNumber,
                 'company' => $companyNumber,
                 'contact' => $contactNumber,
-            ]
+            ],
+            'latest_deals' => $latestDeals,
+            'activity_chart' => $chart,
+            'active_deals_chart' => $activeDealsChart,
         ]);
     }
 }

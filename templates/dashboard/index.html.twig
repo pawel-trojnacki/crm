@@ -63,10 +63,52 @@
     </ul>
 </nav>
 
-<section>
-    <h2 class="fw-bold fs-5">Last Activity</h2>
-    <div class="my-3">
-        {{ render_chart(chart) }}
+<div class="row">
+
+    <section class="col-md-6 mb-5">
+        <h2 class="fw-bold fs-5 mb-3">Active Deals</h2>
+        {{ render_chart(active_deals_chart) }}
+    </section>
+
+    <section class="col-md-6 mb-5">
+        <h2 class="fw-bold fs-5 mb-4">Latest Deals</h2>
+
+        {% if latest_deals | length > 0 %}
+
+        <ul class="list-group">
+            {% for deal in latest_deals %}
+            <li class="list-group-item">
+                <a href="{{
+                    path('app_deal_show', { slug: deal.slug })
+                }}" class="text-reset">
+                    <h3 class="fw-bold fs-6 mb-1">
+                        {{ deal.name }}
+                    </h3>
+                    <small>
+                        Status: <span>{{ deal.stage | title }}</span>
+                    </small>
+                    |
+                    <small>
+                        Company: <span>{{ deal.company.name | title }}</span>
+                    </small>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% else %}
+
+        {{ include('partials/_no-results-alert.html.twig') }}
+
+        {% endif %}
+    </section>
+
+</div>
+
+<section class="mb-5">
+    <h2 class="fw-bold fs-5 mb-3">Team Activity</h2>
+    <div>
+        {{ render_chart(activity_chart) }}
     </div>
 </section>
 

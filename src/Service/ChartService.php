@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Deal;
 use App\Entity\Workspace;
 use App\Repository\CompanyRepository;
 use App\Repository\ContactRepository;
@@ -67,6 +68,8 @@ class ChartService
             ],
         ]);
 
+        $maxVal = max([...$dealData, ...$companyData, ...$contactData]);
+
         $chart->setOptions([
             'scales' => [
                 'yAxes' => [
@@ -74,16 +77,54 @@ class ChartService
                         'ticks' =>
                         [
                             'min' => 0,
-                            'max' => ceil(
-                                max(
-                                    [...$dealData, ...$companyData, ...$contactData]
-                                ) / 10
-                            ) * 10,
+                            'max' => $maxVal > 0 ? ceil($maxVal / 10) * 10 : 10,
                         ]
                     ],
                 ],
             ],
+            'elements' => [
+                'line' => [
+                    'tension' => 0,
+                ],
+            ],
         ]);
+
+        return $chart;
+    }
+
+    public function createActiveDealsChart(Workspace $workspace): Chart
+    {
+        $dealGroups = $this->dealRepository->findCountGroupByStage($workspace);
+
+        $chartData = $this->getDealStagesData($dealGroups);
+
+        $chart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
+
+        $chart->setData([
+            'labels' => array_map(fn ($stage) => ucwords($stage), Deal::ACTIVE_STAGES),
+            'datasets' => [
+                [
+                    'backgroundColor' => [self::PRIMARY, self::SECONDARY, self::TERTIARY],
+                    'data' => $chartData,
+                ],
+            ],
+        ]);
+
+        $chart->setOptions([
+            'scales' => [
+                'yAxes' => [
+                    ['ticks' =>
+                    [
+                        'min' => 0,
+                        'max' => max($chartData) > 0 ? ceil(max($chartData) / 10) * 10 : 10,
+                    ]],
+                ],
+            ],
+            'legend' => [
+                'display' => false,
+            ],
+        ]);
+
 
         return $chart;
     }
@@ -142,5 +183,23 @@ class ChartService
         }
 
         return $data;
+    }
+
+    private function getDealStagesData(array $dealGroups): array
+    {
+
+        $dealsGroupsAssociative = [];
+
+        foreach ($dealGroups as $d) {
+            $dealsGroupsAssociative[$d['stage']] = $d['dCount'];
+        }
+
+        $chartData = [];
+
+        foreach (Deal::ACTIVE_STAGES as $stage) {
+            $chartData[] = $dealsGroupsAssociative[$stage] ?? 0;
+        }
+
+        return $chartData;
     }
 }

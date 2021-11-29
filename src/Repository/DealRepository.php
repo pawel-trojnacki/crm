@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Deal;
-use App\Entity\User;
 use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -76,6 +75,18 @@ class DealRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    /** @return Deal[] */
+    public function findLatestByWorkspace(Workspace $workspace, int $limit = 3): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.workspace = :id')
+            ->setParameter(':id', $workspace->getId())
+            ->orderBy('d.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllCountByWorkspace(Workspace $workspace): int
     {
         return $this->createQueryBuilder('d')
@@ -86,7 +97,18 @@ class DealRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findCountFromLastYearByMonth(Workspace $workspace)
+    public function findCountGroupByStage(Workspace $workspace): array
+    {
+        return $this->createQueryBuilder('d')
+            ->select('count(d.id) AS dCount, d.stage')
+            ->groupBy('d.stage')
+            ->andWhere('d.workspace = :id')
+            ->setParameter(':id', $workspace->getId())
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findCountFromLastYearByMonth(Workspace $workspace): array
     {
         return $this->createQueryBuilder('d')
             ->select('count(d.id) AS dCount, MONTH(d.createdAt) AS dMonth')

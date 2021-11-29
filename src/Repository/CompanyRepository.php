@@ -95,7 +95,7 @@ class CompanyRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findCountFromLastYearByMonth(Workspace $workspace)
+    public function findCountFromLastYearByMonth(Workspace $workspace): array
     {
         return $this->createQueryBuilder('c')
             ->select('count(c.id) AS dCount, MONTH(c.createdAt) AS dMonth')
