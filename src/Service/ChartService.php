@@ -16,7 +16,7 @@ class ChartService
     private const SECONDARY = '#ef6e4b';
     private const TERTIARY = '#0fcce3';
 
-    private const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    private const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
     public function __construct(
         private CompanyRepository $companyRepository,
@@ -44,11 +44,11 @@ class ChartService
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Deals',
+                    'label' => 'Contacts',
                     'fill' => false,
                     'backgroundColor' => self::PRIMARY,
                     'borderColor' => self::PRIMARY,
-                    'data' => array_values($dealData),
+                    'data' => array_values($contactData),
                 ],
                 [
                     'label' => 'Companies',
@@ -58,11 +58,11 @@ class ChartService
                     'data' => array_values($companyData),
                 ],
                 [
-                    'label' => 'Contacts',
+                    'label' => 'Deals',
                     'fill' => false,
                     'backgroundColor' => self::TERTIARY,
                     'borderColor' => self::TERTIARY,
-                    'data' => array_values($contactData),
+                    'data' => array_values($dealData),
                 ],
             ],
         ]);
@@ -96,7 +96,7 @@ class ChartService
 
         $lastYearMonths = [(string) $counter];
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 11; $i++) {
             $counter--;
 
             if ($counter === 0) {

@@ -6,6 +6,63 @@
 
 {% block body %}
 
+<nav class="mb-5">
+    <ul class="cards-grid">
+
+        <li class="dashboard-card card">
+            <a href="{{
+            path('app_contact_index', {slug: app.user.workspace.slug})
+        }}" class="card-body">
+                <h2 class="fs-5 fw-bold">
+                    <i class="bi bi-briefcase pe-2"></i>
+                    Contacts
+                </h2>
+                <p>
+                    Total:
+                    <span class="fw-bold">
+                        {{record_numbers.contact}}
+                    </span>
+                </p>
+            </a>
+        </li>
+
+        <li class="dashboard-card card">
+            <a href="{{
+            path('app_company_index', {slug: app.user.workspace.slug})
+        }}" class="card-body">
+                <h2 class="fs-5 fw-bold">
+                    <i class="bi bi-folder pe-2"></i>
+                    Companies
+                </h2>
+                <p>
+                    Total:
+                    <span class="fw-bold">
+                        {{record_numbers.company}}
+                    </span>
+                </p>
+            </a>
+        </li>
+
+        <li class="dashboard-card card">
+            <a href="{{
+            path('app_deal_index', {slug: app.user.workspace.slug})
+        }}" class="card-body">
+                <h2 class="fs-5 fw-bold">
+                    <i class="bi bi-check2-square pe-2"></i>
+                    Deals
+                </h2>
+                <p>
+                    Total:
+                    <span class="fw-bold">
+                        {{record_numbers.deal}}
+                    </span>
+                </p>
+            </a>
+        </li>
+
+    </ul>
+</nav>
+
 <section>
     <h2 class="fw-bold fs-5">Last Activity</h2>
     <div class="my-3">

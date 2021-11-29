@@ -88,13 +88,11 @@ class DealRepository extends ServiceEntityRepository
 
     public function findCountFromLastYearByMonth(Workspace $workspace)
     {
-        $date = new \DateTime();
-        $delay = $date->modify('- 6 months');
         return $this->createQueryBuilder('d')
             ->select('count(d.id) AS dCount, MONTH(d.createdAt) AS dMonth')
             ->groupBy('dMonth')
             ->andWhere('d.createdAt >= :lastYear')
-            ->setParameter(':lastYear', $delay)
+            ->setParameter(':lastYear', new \DateTime('last year'))
             ->andWhere('d.workspace = :id')
             ->setParameter(':id', $workspace->getId())
             ->getQuery()

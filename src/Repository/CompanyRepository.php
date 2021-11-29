@@ -97,13 +97,11 @@ class CompanyRepository extends ServiceEntityRepository
 
     public function findCountFromLastYearByMonth(Workspace $workspace)
     {
-        $date = new \DateTime();
-        $delay = $date->modify('- 6 months');
         return $this->createQueryBuilder('c')
             ->select('count(c.id) AS dCount, MONTH(c.createdAt) AS dMonth')
             ->groupBy('dMonth')
             ->andWhere('c.createdAt >= :lastYear')
-            ->setParameter(':lastYear', $delay)
+            ->setParameter(':lastYear', new \DateTime('last year'))
             ->andWhere('c.workspace = :id')
             ->setParameter(':id', $workspace->getId())
             ->getQuery()

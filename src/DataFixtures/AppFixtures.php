@@ -63,36 +63,36 @@ class AppFixtures extends Fixture
             'workspace' => WorkspaceFactory::random(),
         ]);
 
-        CompanyFactory::createMany(15, fn () => [
+        CompanyFactory::createMany(40, fn () => [
             'workspace' => WorkspaceFactory::random(),
             'industry' => IndustryFactory::random(),
             'creator' => UserFactory::random(),
             'country' => $this->countryRepository->findOneBy(['isoCode' => 'US']),
-            'createdAt' => faker()->dateTimeBetween('-6 months', '-2 weeks'),
+            'createdAt' => faker()->dateTimeBetween('-1 year', '-2 weeks'),
             'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);
 
-        ContactFactory::createMany(30, fn () => [
+        ContactFactory::createMany(60, fn () => [
             'workspace' => WorkspaceFactory::random(),
             'creator' => UserFactory::random(),
             'company' => faker()->boolean(80) ? CompanyFactory::random() : null,
-            'createdAt' => faker()->dateTimeBetween('-6 months', '-2 weeks'),
+            'createdAt' => faker()->dateTimeBetween('-1 year', '-2 weeks'),
             'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);
 
-        ContactNoteFactory::createMany(120, fn () => [
+        ContactNoteFactory::createMany(200, fn () => [
             'contact' => ContactFactory::random(),
             'creator' => UserFactory::random(),
             'createdAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
             'updatedAt' => faker()->dateTimeBetween('-1 week', 'now'),
         ]);
 
-        DealFactory::createMany(20, fn () => [
+        DealFactory::createMany(35, fn () => [
             'workspace' => WorkspaceFactory::random(),
             'company' => CompanyFactory::random(),
             'creator' => UserFactory::random(),
             'users' => UserFactory::randomRange(1, 3),
-            'createdAt' => faker()->dateTimeBetween('-6 months', '-2 weeks'),
+            'createdAt' => faker()->dateTimeBetween('-1 year', '-2 weeks'),
             'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);
 
