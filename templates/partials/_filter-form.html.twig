@@ -27,7 +27,7 @@
 
     <div>
         <a href="{{ path(base_path, {
-            slug: workspace.slug
+            slug: clear_slug | default(false) ? clear_slug : app.user.workspace.slug
         }) }}" class="btn btn-outline-primary">Clear</a>
     </div>
 

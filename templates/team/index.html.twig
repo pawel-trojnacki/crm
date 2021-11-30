@@ -6,22 +6,16 @@
 
 {% block body %}
 
-{% if is_granted('ROLE_MANAGER') %}
-<div class="mb-4">
-    <a href="{{ path('app_team_create', {slug: workspace.slug}) }}" class="btn btn-primary">
-        Create User
-    </a>
-</div>
-{% endif %}
-
-<ul class="cards-grid">
+<ul class="cards-grid mb-3">
     {% for member in workspace.users | sort((a, b) => a.createdAt < b.createdAt) %}
     <li class="card">
         <div class="card-body">
             <div class="d-flex justify-content-between">
-                <h2 class="card-title fs-5 fw-bold">
-                    {{member.firstName ~ ' ' ~ member.lastName}}
-                </h2>
+                <a href="{{ path('app_profile_show', {slug: member.slug}) }}">
+                    <h2 class="card-title fs-6 fw-bold">
+                        {{member.firstName ~ ' ' ~ member.lastName}}
+                    </h2>
+                </a>
 
                 {% if 'ROLE_ADMIN' in member.roles %}
                 <p class="badge bg-primary">Admin</p>
@@ -35,12 +29,12 @@
 
             </div>
 
-            <p class="d-block mb-2 text-muted">Registered {{member.createdAt | ago}}</p>
+            <small class="d-block mb-1">Registered {{member.createdAt | ago}}</small>
 
-            <p>{{member.email}}</p>
+            <small class="d-block mb-3">{{member.email}}</small>
 
             {% if is_granted('ROLE_ADMIN') and 'ROLE_ADMIN' not in member.roles %}
-            <div class="d-flex">
+            <div class="d-flex w-100">
                 <div class="me-2">
                     <a href="{{
                                 path('app_team_edit', { slug: member.slug })
@@ -67,5 +61,13 @@
         </li>
         {% endfor %}
 </ul>
+
+{% if is_granted('ROLE_MANAGER') %}
+<div class="d-flex justify-content-end">
+    <a href="{{ path('app_team_create', {slug: workspace.slug}) }}" class="btn btn-primary">
+        Add user
+    </a>
+</div>
+{% endif %}
 
 {% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% set username = user.firstName ~ ' ' ~ app.user.lastName | title %}
+
+{% block title %}{{ username }}{% endblock %}
+
+{% block heading %}
+
+{% if is_user_page %}
+Hello, {{ user.firstName | title }}!
+{% else %}
+Team member: {{ username }}
+{% endif %}
+
+{% endblock %}
+
+{% block body %}
+
+<section>
+    <h2 class="fw-bold fs-5 mb-3">
+        {% if is_user_page %}
+        Deals assigned to you
+        {% else %}
+        Deals assigned to {{ user.firstName | title }}
+        {% endif %}
+    </h2>
+
+    {% if assigned_deals | length > 0 %}
+
+    <ul class="cards-grid-secondary">
+        {% for deal in assigned_deals %}
+        {{ include('partials/_deal-card.html.twig', { deal: deal }) }}
+        {% endfor %}
+    </ul>
+
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-primary" href="{{ path('app_deal_user_deals', { slug: user.slug }) }}">
+            See all
+        </a>
+    </div>
+
+    {% else %}
+
+    {{ include('partials/_no-results-alert.html.twig') }}
+
+    {% endif %}
+
+</section>
+
+
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Deal;
+use App\Entity\User;
 use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -33,16 +34,12 @@ class DealRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
-    public function createFindByWorkspaceQueryBuilder(
-        Workspace $workspace,
+    private function createFiltersQueryBuilder(
         ?string $search = null,
         ?string $stage = null,
         ?string $order = null
-
     ): QueryBuilder {
-        $qb = $this->createQueryBuilder('d')
-            ->andWhere('d.workspace = :id')
-            ->setParameter(':id', $workspace->getId());
+        $qb = $this->createQueryBuilder('d');
 
         if ($search) {
             $qb->andWhere('d.name LIKE :search')
@@ -75,8 +72,43 @@ class DealRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    public function createFindByWorkspaceQueryBuilder(
+        Workspace $workspace,
+        ?string $search = null,
+        ?string $stage = null,
+        ?string $order = null
+
+    ): QueryBuilder {
+        return $this->createFiltersQueryBuilder($search, $stage, $order)
+            ->andWhere('d.workspace = :id')
+            ->setParameter(':id', $workspace->getId());
+    }
+
+    public function createFindByAssignedUserQeuryBuilder(
+        User $user,
+        ?string $search = null,
+        ?string $stage = null,
+        ?string $order = null
+    ): QueryBuilder {
+        return $this->createFiltersQueryBuilder($search, $stage, $order)
+            ->andWhere(':user MEMBER OF d.users')
+            ->setParameter(':user', $user);
+    }
+
     /** @return Deal[] */
-    public function findLatestByWorkspace(Workspace $workspace, int $limit = 3): array
+    public function findLatestByAssignedUser(User $user, ?int $limit = 4): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere(':user MEMBER OF d.users')
+            ->setParameter(':user', $user)
+            ->orderBy('d.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** @return Deal[] */
+    public function findLatestByWorkspace(Workspace $workspace, ?int $limit = 3): array
     {
         return $this->createQueryBuilder('d')
             ->andWhere('d.workspace = :id')
