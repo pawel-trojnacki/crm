@@ -52,7 +52,7 @@
     <h2 class="fs-6 fw-normal text-muted text-uppercase">Your account</h2>
     <ul class="navbar-nav">
       <li>
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ path('app_profile_show', { slug: app.user.slug }) }}">
           <i class="bi bi-person"></i>
           <span class="ps-1">
             Your Profile

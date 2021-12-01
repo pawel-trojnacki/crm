@@ -1,51 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% set username = user.firstName ~ ' ' ~ app.user.lastName | title %}
-
-{% block title %}{{ username }}{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block heading %}
-
-{% if is_user_page %}
-Hello, {{ user.firstName | title }}!
-{% else %}
-Team member: {{ username }}
-{% endif %}
-
+Hello, {{ app.user.firstName | title }}!
 {% endblock %}
 
 {% block body %}
 
-<section>
-    <h2 class="fw-bold fs-5 mb-3">
-        {% if is_user_page %}
-        Deals assigned to you
-        {% else %}
-        Deals assigned to {{ user.firstName | title }}
-        {% endif %}
-    </h2>
+<div class="row">
+    <section class="col-md-6">
+        <h2 class="fs-5 fw-bold mb-3">Edit Account Details</h2>
 
-    {% if assigned_deals | length > 0 %}
+        {{form_start(user_form)}}
 
-    <ul class="cards-grid-secondary">
-        {% for deal in assigned_deals %}
-        {{ include('partials/_deal-card.html.twig', { deal: deal }) }}
-        {% endfor %}
-    </ul>
+        <div class="row">
+            <div class="col-md-6">
+                {{form_row(user_form.firstName)}}
+            </div>
+            <div class="col-md-6">
+                {{form_row(user_form.lastName)}}
+            </div>
+        </div>
 
-    <div class="d-flex justify-content-end">
-        <a class="btn btn-primary" href="{{ path('app_deal_user_deals', { slug: user.slug }) }}">
-            See all
-        </a>
-    </div>
+        {{form_row(user_form.email)}}
 
-    {% else %}
+        <button type="submit" class="btn btn-primary">
+            Save info
+        </button>
 
-    {{ include('partials/_no-results-alert.html.twig') }}
+        {{form_end(user_form)}}
+    </section>
 
-    {% endif %}
-
-</section>
+    <section class="col-md-6">
+        <h2 class="fs-5 fw-bold mb-3">Change Password</h2>
+        {{ include('partials/_password-form.html.twig') }}
+    </section>
+</div>
 
 
 {% endblock %}

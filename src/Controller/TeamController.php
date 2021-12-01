@@ -125,7 +125,7 @@ class TeamController extends AbstractBaseController
             $plainPassword = $passwordForm->get('plainPassword')->getData();
             $this->userRepository->register($user, $plainPassword);
 
-            $this->addFlashSuccess('User password has been updated');
+            $this->addFlashSuccess('User password has been changed');
 
             return $this->redirectToRoute('app_team_index', [
                 'slug' => $workspace->getSlug(),
@@ -135,7 +135,7 @@ class TeamController extends AbstractBaseController
         return $this->renderForm('team/edit.html.twig', [
             'user' => $user,
             'form' => $form,
-            'passwordForm' => $passwordForm,
+            'password_form' => $passwordForm,
         ]);
     }
 }

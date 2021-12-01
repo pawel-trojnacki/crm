@@ -34,10 +34,13 @@ class UserFormType extends AbstractType
         $builder
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('role', UserRoleType::class, [
+            ->add('email', EmailType::class);
+
+        if ($options['with_user_role']) {
+            $builder->add('role', UserRoleType::class, [
                 'help' => $help,
             ]);
+        }
 
         if ($options['with_password']) {
             $builder->add('plainPassword', PasswordRepeatedType::class);
@@ -49,6 +52,7 @@ class UserFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
             'with_password' => true,
+            'with_user_role' => true,
             'attr' => [
                 'autocomplete' => 'off',
             ],

@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class DealVoter extends Voter
+class ProfileVoter extends Voter
 {
     public const VIEW = 'PROFILE_VIEW';
     public const EDIT = 'PROFILE_EDIT';
