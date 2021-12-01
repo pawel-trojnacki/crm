@@ -53,7 +53,6 @@ class CompanyController extends AbstractBaseController
         $pager = $this->pagerService->createPager($qb, $currentPage);
 
         return $this->render('company/index.html.twig', [
-            'workspace' => $workspace,
             'industries' => $industries,
             'pager' => $pager,
             'search' => $search,
@@ -67,8 +66,6 @@ class CompanyController extends AbstractBaseController
     #[IsGranted('COMPANY_VIEW', subject: 'company')]
     public function show(Company $company, Request $request): Response
     {
-        $workspace = $company->getWorkspace();
-
         if ($request->isMethod('POST') && $request->request->get('delete-company')) {
 
             $this->denyAccessUnlessGranted(
@@ -96,7 +93,6 @@ class CompanyController extends AbstractBaseController
         }
 
         return $this->render('company/show.html.twig', [
-            'workspace' => $workspace,
             'company' => $company,
         ]);
     }
@@ -138,8 +134,6 @@ class CompanyController extends AbstractBaseController
     #[IsGranted('COMPANY_EDIT', subject: 'company')]
     public function edit(Company $company, Request $request): Response
     {
-        $workspace = $company->getWorkspace();
-
         $form = $this->createForm(CompanyFormType::class, $company);
 
         $form->handleRequest($request);

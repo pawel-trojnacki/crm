@@ -3,20 +3,23 @@ body {
   min-width: fit-content;
 }
 
+html {
+  font-size: 14px;
+}
+
 body {
-  font-family: "Karla", sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 label,
 legend {
-  font-weight: bold;
   color: $dark,
 }
 
 label.required:after,
 legend.required:after {
   content: " *";
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .form-check label.required:after {
@@ -29,6 +32,10 @@ h3,
 th,
 label {
   color: $dark;
+}
+
+h1, h2 {
+  font-weight: bold;
 }
 
 li.list-group-item {

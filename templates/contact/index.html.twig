@@ -12,7 +12,7 @@
     base_path: 'app_contact_index'
     }) }}
 
-    <a href="{{ path('app_contact_create', {slug: workspace.slug}) }}" class="btn btn-primary">
+    <a href="{{ path('app_contact_create', {slug: app.user.workspace.slug}) }}" class="btn btn-primary">
         Create contact
     </a>
 

@@ -19,7 +19,7 @@
                 </h2>
                 <p>
                     Total:
-                    <span class="fw-bold">
+                    <span class="text-dark">
                         {{record_numbers.contact}}
                     </span>
                 </p>
@@ -36,7 +36,7 @@
                 </h2>
                 <p>
                     Total:
-                    <span class="fw-bold">
+                    <span class="text-dark">
                         {{record_numbers.company}}
                     </span>
                 </p>
@@ -53,7 +53,7 @@
                 </h2>
                 <p>
                     Total:
-                    <span class="fw-bold">
+                    <span class="text-dark">
                         {{record_numbers.deal}}
                     </span>
                 </p>
@@ -81,7 +81,7 @@
                 <a href="{{
                     path('app_deal_show', { slug: deal.slug })
                 }}" class="text-reset">
-                    <h3 class="fw-bold fs-6 mb-1">
+                    <h3 class="fs-6 mb-1">
                         {{ deal.name }}
                     </h3>
                     <small>
@@ -110,6 +110,44 @@
     <div>
         {{ render_chart(activity_chart) }}
     </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="fw-bold fs-5 mb-4">Latest Notes</h2>
+
+    {% if latest_notes | length > 0 %}
+
+    <ul class="list-group">
+        {% for note in latest_notes %}
+        <li class="list-group-item px-3 py-4">
+            <h3 class=" fs-6 mb-3">
+                {{ note.creator.firstName ~ ' ' ~ note.creator.lastName }}
+                {% if note.contact | default(false) %}
+                on Contact
+                <a href="{{ path('app_contact_show', {slug: note.contact.slug}) }}">
+                {{ note.contact.firstName ~ ' ' ~ note.contact.lastName }}
+                </a>
+                {% endif %}
+                {% if note.deal | default(false) %}
+                on Deal
+                <a href="{{ path('app_deal_show', {slug: note.deal.slug}) }}">
+                {{ note.deal.name | u.truncate(16, '...', false) | title }}
+                </a>
+                {% endif %}
+                added {{ note.createdAt | ago }}
+            </h3>
+            <div>
+                {{ note.content | u.truncate(300, '...', false) }}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% else %}
+
+    {{ include('partials/_no-results-alert.html.twig') }}
+
+    {% endif %}
 </section>
 
 {% endblock %}

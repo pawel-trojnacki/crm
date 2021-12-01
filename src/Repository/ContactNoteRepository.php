@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Constant\ContactConstant;
 use App\Entity\Abstract\AbstractNoteEntity;
 use App\Entity\ContactNote;
+use App\Entity\Workspace;
 use App\Repository\Interface\NoteRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,5 +33,18 @@ class ContactNoteRepository extends ServiceEntityRepository implements NoteRepos
     {
         $this->_em->remove($contactNote);
         $this->_em->flush();
+    }
+
+    /** @return ContactNote[] */
+    public function findLatestByWorkspace(Workspace $workspace, ?int $limit = 10): array
+    {
+        return $this->createQueryBuilder('n')
+            ->join('n.contact', 'c')
+            ->andWhere('c.workspace = :id')
+            ->setParameter(':id', $workspace->getId())
+            ->orderBy('n.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 }

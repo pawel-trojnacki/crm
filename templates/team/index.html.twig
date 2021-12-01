@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% set workspace = app.user.workspace %}
+
 {% block title %}Team{% endblock %}
 
 {% block heading %} {{workspace.name | title}} Team {% endblock %}
@@ -11,11 +13,9 @@
     <li class="card">
         <div class="card-body">
             <div class="d-flex justify-content-between">
-                <a href="{{ path('app_profile_show', {slug: member.slug}) }}">
-                    <h2 class="card-title fs-6 fw-bold">
-                        {{member.firstName ~ ' ' ~ member.lastName}}
-                    </h2>
-                </a>
+                <h2 class="card-title fs-6 fw-bold">
+                    {{member.firstName ~ ' ' ~ member.lastName}}
+                </h2>
 
                 {% if 'ROLE_ADMIN' in member.roles %}
                 <p class="badge bg-primary">Admin</p>
@@ -58,11 +58,11 @@
             {% endif %}
 
         </div>
-        </li>
-        {% endfor %}
+    </li>
+    {% endfor %}
 </ul>
 
-{% if is_granted('ROLE_MANAGER') %}
+{% if is_granted('ROLE_ADMIN') %}
 <div class="d-flex justify-content-end">
     <a href="{{ path('app_team_create', {slug: workspace.slug}) }}" class="btn btn-primary">
         Add user

@@ -4,22 +4,22 @@
     }) }}" class="card-body d-flex flex-column justify-content-between">
 
         <div>
-            <h2 class="fs-6 fw-bold">
+            <h2 class="fs-6 fw-normal mb-3">
                 {{ deal.name }}
             </h2>
             <small class="d-block">
-                Status: <span>{{ deal.stage | title }}</span>
+                Status: <span class="text-dark">{{ deal.stage | title }}</span>
             </small>
-            <small class="d-block mb-2">
-                Company: <span>{{ deal.company.name | title }}</span>
+            <small class="d-block mb-3">
+                Company: <span class="text-dark">{{ deal.company.name | u.truncate(12, ' (...)', false) | title }}</span>
             </small>
         </div>
 
         <div>
-            <small class="text-muted d-block">
+            <small class="d-block">
                 Added {{ deal.createdAt | ago }}
             </small>
-            <small class="text-muted d-block">
+            <small class="d-block">
                 By: {% if deal.creator %}
                 {{ deal.creator.firstName ~ ' ' ~ deal.creator.lastName }}
                 {% else %}

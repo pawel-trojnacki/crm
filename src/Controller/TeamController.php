@@ -44,9 +44,7 @@ class TeamController extends AbstractBaseController
                 'slug' => $workspace->getSlug(),
             ]);
         }
-        return $this->render('team/index.html.twig', [
-            'workspace' => $workspace,
-        ]);
+        return $this->render('team/index.html.twig');
     }
 
     #[Route('/{slug}/team/create-user', name: 'app_team_create', methods: ['GET', 'POST'])]

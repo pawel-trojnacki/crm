@@ -13,7 +13,7 @@
     filter_addons: 'deal/_filter-form-addons.html.twig'
     }) }}
 
-    <a href="{{ path('app_deal_create', {slug: workspace.slug}) }}" class="btn btn-primary">
+    <a href="{{ path('app_deal_create', {slug: app.user.workspace.slug}) }}" class="btn btn-primary">
         Add deal
     </a>
 

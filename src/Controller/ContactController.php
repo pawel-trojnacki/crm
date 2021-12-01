@@ -49,7 +49,6 @@ class ContactController extends AbstractNoteController
         $pager = $this->pagerService->createPager($qb, $currentPage, 25);
 
         return $this->render('/contact/index.html.twig', [
-            'workspace' => $workspace,
             'pager' => $pager,
             'order' => $order,
             'search' => $search,

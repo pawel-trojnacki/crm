@@ -30,12 +30,12 @@
 
             <ul class="list-group mb-3">
                 <li class="list-group-item">
-                    Company: <span class="fw-bold">
+                    Company: <span class="text-dark">
                         {{ deal.company.name }}
                     </span>
                 </li>
                 <li class="list-group-item">
-                    Stage: <span class="fw-bold">
+                    Stage: <span class="text-dark">
                         {{ deal.stage | title }}
                     </span>
                 </li>
@@ -45,7 +45,7 @@
                     </span>
                     <ul>
                         {% for user in deal.users %}
-                        <li class="fw-bold">
+                        <li class="text-dark">
                             {{ user.firstName ~ ' ' ~ user.lastName }}
                         </li>
                         {% endfor %}
@@ -55,17 +55,17 @@
 
             <ul class="list-group">
                 <li class="list-group-item">
-                    Added by: <span class="fw-bold">
+                    Added by: <span class="text-dark">
                         {{ deal.creator.firstName ~ ' ' ~ deal.creator.lastName }}
                     </span>
                 </li>
                 <li class="list-group-item">
-                    Created: <span class="fw-bold">
+                    Created: <span class="text-dark">
                         {{ deal.createdAt | ago }}
                     </span>
                 </li>
                 <li class="list-group-item">
-                    Last update: <span class="fw-bold">
+                    Last update: <span class="text-dark">
                         {{ deal.updatedAt | ago }}
                     </span>
                 </li>

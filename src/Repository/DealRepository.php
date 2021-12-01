@@ -84,29 +84,6 @@ class DealRepository extends ServiceEntityRepository
             ->setParameter(':id', $workspace->getId());
     }
 
-    public function createFindByAssignedUserQeuryBuilder(
-        User $user,
-        ?string $search = null,
-        ?string $stage = null,
-        ?string $order = null
-    ): QueryBuilder {
-        return $this->createFiltersQueryBuilder($search, $stage, $order)
-            ->andWhere(':user MEMBER OF d.users')
-            ->setParameter(':user', $user);
-    }
-
-    /** @return Deal[] */
-    public function findLatestByAssignedUser(User $user, ?int $limit = 4): array
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere(':user MEMBER OF d.users')
-            ->setParameter(':user', $user)
-            ->orderBy('d.createdAt', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
     /** @return Deal[] */
     public function findLatestByWorkspace(Workspace $workspace, ?int $limit = 3): array
     {

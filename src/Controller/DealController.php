@@ -49,48 +49,12 @@ class DealController extends AbstractNoteController
         $pager = $this->pagerService->createPager($qb, $currentPage, 12);
 
         return $this->render('deal/index.html.twig', [
-            'workspace' => $workspace,
             'pager' => $pager,
             'search' => $search,
             'stage' => $stageId,
             'order' => $order,
             'sortOptions' => BaseSortConstant::SORT_OPTIONS,
             'stages' => Deal::STAGES,
-        ]);
-    }
-
-    #[Route('/user/{slug}/deals', name: 'app_deal_user_deals', methods: ['GET'])]
-    public function userDeals(User $user, Request $request): Response
-    {
-        $this->denyAccessUnlessGranted('WORKSPACE_VIEW', $user->getWorkspace());
-
-        $currentPage = $request->query->get('page', 1);
-        $search = $request->query->get('search');
-        $order = $request->query->get('order');
-
-        $stageId = $request->query->get('stageId');
-
-        $stage = is_numeric($stageId) ? Deal::STAGES[(int) $stageId - 1] : null;
-
-        $qb = $this->dealRepository->createFindByAssignedUserQeuryBuilder(
-            $user,
-            $search,
-            $stage,
-            $order
-        );
-
-        $pager = $this->pagerService->createPager($qb, $currentPage, 12);
-
-        return $this->render('deal/user-deals.html.twig', [
-            'user' => $user,
-            'pager' => $pager,
-            'search' => $search,
-            'stage' => $stageId,
-            'order' => $order,
-            'sortOptions' => BaseSortConstant::SORT_OPTIONS,
-            'stages' => Deal::STAGES,
-            'user' => $user,
-            'is_user_page' => $user->getId() === $this->getUser()->getId(),
         ]);
     }
 

@@ -8,16 +8,18 @@ use App\Repository\CompanyRepository;
 use App\Repository\ContactRepository;
 use App\Repository\DealRepository;
 use App\Service\ChartService;
+use App\Service\NoteService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractBaseController
 {
     public function __construct(
-        private ChartService $chartService,
         private DealRepository $dealRepository,
         private CompanyRepository $companyRepository,
         private ContactRepository $contactRepository,
+        private ChartService $chartService,
+        private NoteService $noteService,
     ) {
     }
 
@@ -34,6 +36,8 @@ class DashboardController extends AbstractBaseController
 
         $activeDealsChart = $this->chartService->createActiveDealsChart($workspace);
 
+        $latestNotes = $this->noteService->findLatestNotesByWorkspace($workspace);
+
         return $this->render('dashboard/index.html.twig', [
             'workspace' => $workspace,
             'record_numbers' => [
@@ -44,6 +48,7 @@ class DashboardController extends AbstractBaseController
             'latest_deals' => $latestDeals,
             'activity_chart' => $chart,
             'active_deals_chart' => $activeDealsChart,
+            'latest_notes' => $latestNotes,
         ]);
     }
 }

@@ -19,7 +19,7 @@
 
             <li class="list-group-item p-md-3">
                 <div class="mb-1 d-flex justify-content-between w-100">
-                    <h3 class="fs-6 fw-bold">
+                    <h3 class="fs-6 text-dark">
                         {{contact.firstName ~ ' ' ~ contact.lastName}}
                     </h3>
                     <div>
@@ -59,13 +59,13 @@
 
             {% if company.industry %}
             <li class="list-group-item">
-                Industry: <span class="fw-bold">{{company.industry.name}}</span>
+                Industry: <span class="text-dark">{{company.industry.name}}</span>
             </li>
             {% endif %}
 
             {% if company.website %}
             <li class="list-group-item">
-                Website: <span class="fw-bold">
+                Website: <span class="text-dark">
                     <a href="{{company.website}}" target="_blank" rel="noopener">
                         {{company.website}}
                     </a>
@@ -75,36 +75,36 @@
 
             {% if company.country %}
             <li class="list-group-item">
-                Country: <span class="fw-bold">{{company.country.name}}</span>
+                Country: <span class="text-dark">{{company.country.name}}</span>
             </li>
             {% endif %}
 
             {% if company.city %}
             <li class="list-group-item">
-                City: <span class="fw-bold">{{company.city}}</span>
+                City: <span class="text-dark">{{company.city}}</span>
             </li>
             {% endif %}
 
             {% if company.address %}
             <li class="list-group-item">
-                Address: <span class="fw-bold">{{company.address}}</span>
+                Address: <span class="text-dark">{{company.address}}</span>
             </li>
             {% endif %}
 
             {% if company.creator %}
             <li class="list-group-item">
-                Added by: <span class="fw-bold">
+                Added by: <span class="text-dark">
                     {{company.creator.firstName}} {{company.creator.lastName}}
                 </span>
             </li>
             {% endif %}
 
             <li class="list-group-item">
-                Created: <span class="fw-bold">{{company.createdAt | ago}}</span>
+                Created: <span class="text-dark">{{company.createdAt | ago}}</span>
             </li>
 
             <li class="list-group-item">
-                Last update: <span class="fw-bold">{{company.updatedAt | ago}}</span>
+                Last update: <span class="text-dark">{{company.updatedAt | ago}}</span>
             </li>
 
             <div class="d-flex justify-content-end my-3">
