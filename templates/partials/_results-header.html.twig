@@ -1,0 +1,19 @@
+<div class="mt-4 mb-3 d-flex justify-content-between align-items-start">
+    <p class="fs-5 fw-bold text-dark text-uppercase">
+        Showing
+        {% if pager.nbPages > 1 %}
+        {{ pager.currentPageOffsetStart ~ ' - ' ~ pager.currentPageOffsetEnd }} from {{ pager | length }}
+        {% else %}
+        {{ pager|length }}
+        {% endif %}
+        results
+    </p>
+    <div>
+        <a href="{{
+            path(create_path, {slug: create_path_slug | default(false) ? path_slug : app.user.workspace.slug})
+        }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle pe-1"></i>
+            {{ button_text }}
+        </a>
+    </div>
+</div>

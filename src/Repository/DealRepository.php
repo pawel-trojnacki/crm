@@ -37,7 +37,8 @@ class DealRepository extends ServiceEntityRepository
     private function createFiltersQueryBuilder(
         ?string $search = null,
         ?string $stage = null,
-        ?string $order = null
+        ?int $userId = null,
+        ?string $order = null,
     ): QueryBuilder {
         $qb = $this->createQueryBuilder('d');
 
@@ -49,6 +50,11 @@ class DealRepository extends ServiceEntityRepository
         if ($stage) {
             $qb->andWhere('d.stage = :stage')
                 ->setParameter(':stage', $stage);
+        }
+
+        if ($userId) {
+            $qb->andWhere(':userId MEMBER OF d.users')
+                ->setParameter(':userId', $userId);
         }
 
         switch ($order) {
@@ -76,10 +82,11 @@ class DealRepository extends ServiceEntityRepository
         Workspace $workspace,
         ?string $search = null,
         ?string $stage = null,
+        ?int $userId = null,
         ?string $order = null
 
     ): QueryBuilder {
-        return $this->createFiltersQueryBuilder($search, $stage, $order)
+        return $this->createFiltersQueryBuilder($search, $stage, $userId, $order)
             ->andWhere('d.workspace = :id')
             ->setParameter(':id', $workspace->getId());
     }

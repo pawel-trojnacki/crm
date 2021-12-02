@@ -6,18 +6,15 @@
 
 {% block body %}
 
-<div class="d-flex justify-content-between align-items-start my-4">
+{{ include('partials/_filter-form.html.twig', {
+base_path: 'app_company_index',
+filter_addons: 'company/_filter-form-addons.html.twig'
+}) }}
 
-    {{ include('partials/_filter-form.html.twig', {
-    base_path: 'app_company_index',
-    filter_addons: 'company/_filter-form-addons.html.twig'
-    }) }}
-
-    <a href="{{ path('app_company_create', {slug: app.user.workspace.slug}) }}" class="btn btn-primary">
-        Create company
-    </a>
-
-</div>
+{{ include('partials/_results-header.html.twig', {
+create_path: 'app_company_create',
+button_text: 'Add company'
+}) }}
 
 {% if pager | length > 0 %}
 

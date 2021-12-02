@@ -1,10 +1,29 @@
 <div class="pe-2">
     <select name="stageId" id="stage" class="form-select">
-        <option value="" disabled selected hidden>Choose an stage</option>
+        <option value="" disabled selected hidden>Choose a stage</option>
+
         {% for key, value in stages %}
+
         <option value="{{key + 1}}" {{ (key + 1 == stage) ? 'selected' : '' }}>
             {{value | title}}
         </option>
+
         {% endfor %}
+
+    </select>
+</div>
+
+<div class="pe-2" style="max-width: 160px">
+    <select name="user" id="user" class="form-select">
+        <option value="" disabled selected hidden>Assigned to:</option>
+
+        {% for member in team_members %}
+
+            <option value="{{member.slug}}">
+                {{ member.firstName | u.truncate(2, '.') | title ~ ' ' ~ member.lastName | title }}
+            </option>
+
+        {% endfor %}
+
     </select>
 </div>

@@ -12,6 +12,7 @@ use App\Form\DealFormType;
 use App\Form\NoteFormType;
 use App\Repository\DealNoteRepository;
 use App\Repository\DealRepository;
+use App\Repository\UserRepository;
 use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,7 @@ class DealController extends AbstractNoteController
     public function __construct(
         private DealRepository $dealRepository,
         private DealNoteRepository $dealNoteRepository,
+        private UserRepository $userRepository,
         private PagerService $pagerService,
     ) {
     }
@@ -39,10 +41,18 @@ class DealController extends AbstractNoteController
 
         $stage = is_numeric($stageId) ? Deal::STAGES[(int) $stageId - 1] : null;
 
+        $userSlug = $request->query->get('user');
+
+        $selectedUser = $this->userRepository->findOneBy(['slug' => $userSlug]);
+        $selectedUserId = $selectedUser ? $selectedUser->getId() : null;
+
+        $teamMemebers = $this->userRepository->findAllByWorkspaceAlphabetically($workspace);
+
         $qb = $this->dealRepository->createFindByWorkspaceQueryBuilder(
             $workspace,
             $search,
             $stage,
+            $selectedUserId,
             $order
         );
 
@@ -55,6 +65,7 @@ class DealController extends AbstractNoteController
             'order' => $order,
             'sortOptions' => BaseSortConstant::SORT_OPTIONS,
             'stages' => Deal::STAGES,
+            'team_members' => $teamMemebers,
         ]);
     }
 
