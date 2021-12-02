@@ -88,8 +88,8 @@ class ContactRepository extends ServiceEntityRepository
     public function findCountFromLastYearByMonth(Workspace $workspace): array
     {
         return $this->createQueryBuilder('c')
-            ->select('count(c.id) AS dCount, MONTH(c.createdAt) AS dMonth')
-            ->groupBy('dMonth')
+            ->select('count(c.id) AS eCount, MONTH(c.createdAt) AS eMonth')
+            ->groupBy('eMonth')
             ->andWhere('c.createdAt >= :lastYear')
             ->setParameter(':lastYear', new \DateTime('last year'))
             ->andWhere('c.workspace = :id')

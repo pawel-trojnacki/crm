@@ -30,11 +30,11 @@ class DashboardController extends AbstractBaseController
         $companyNumber = $this->companyRepository->findAllCountByWorkspace($workspace);
         $contactNumber = $this->contactRepository->findAllCountByWorkspace($workspace);
 
-        $latestDeals = $this->dealRepository->findLatestByWorkspace($workspace);
-
-        $chart = $this->chartService->createLastYearActivityChart($workspace);
-
         $activeDealsChart = $this->chartService->createActiveDealsChart($workspace);
+
+        $activityChart = $this->chartService->createLastYearActivityChart($workspace);
+
+        $industriesChart = $this->chartService->createPupularIndustriesChart($workspace);
 
         $latestNotes = $this->noteService->findLatestNotesByWorkspace($workspace);
 
@@ -45,9 +45,9 @@ class DashboardController extends AbstractBaseController
                 'company' => $companyNumber,
                 'contact' => $contactNumber,
             ],
-            'latest_deals' => $latestDeals,
-            'activity_chart' => $chart,
             'active_deals_chart' => $activeDealsChart,
+            'industries_chart' => $industriesChart,
+            'activity_chart' => $activityChart,
             'latest_notes' => $latestNotes,
         ]);
     }

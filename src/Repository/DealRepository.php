@@ -84,18 +84,6 @@ class DealRepository extends ServiceEntityRepository
             ->setParameter(':id', $workspace->getId());
     }
 
-    /** @return Deal[] */
-    public function findLatestByWorkspace(Workspace $workspace, ?int $limit = 3): array
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.workspace = :id')
-            ->setParameter(':id', $workspace->getId())
-            ->orderBy('d.createdAt', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
     public function findAllCountByWorkspace(Workspace $workspace): int
     {
         return $this->createQueryBuilder('d')
@@ -120,8 +108,8 @@ class DealRepository extends ServiceEntityRepository
     public function findCountFromLastYearByMonth(Workspace $workspace): array
     {
         return $this->createQueryBuilder('d')
-            ->select('count(d.id) AS dCount, MONTH(d.createdAt) AS dMonth')
-            ->groupBy('dMonth')
+            ->select('count(d.id) AS eCount, MONTH(d.createdAt) AS eMonth')
+            ->groupBy('eMonth')
             ->andWhere('d.createdAt >= :lastYear')
             ->setParameter(':lastYear', new \DateTime('last year'))
             ->andWhere('d.workspace = :id')

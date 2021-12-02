@@ -13,9 +13,10 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class ChartService
 {
-    private const PRIMARY = '#2600bc';
-    private const SECONDARY = '#ef6e4b';
-    private const TERTIARY = '#0fcce3';
+    private const BLUE = '#2600bc';
+    private const ORANGE = '#ef6e4b';
+    private const CYAN = '#0fcce3';
+    private const PINK = '#f82362';
 
     private const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
@@ -47,22 +48,22 @@ class ChartService
                 [
                     'label' => 'Contacts',
                     'fill' => false,
-                    'backgroundColor' => self::PRIMARY,
-                    'borderColor' => self::PRIMARY,
+                    'backgroundColor' => self::BLUE,
+                    'borderColor' => self::BLUE,
                     'data' => array_values($contactData),
                 ],
                 [
                     'label' => 'Companies',
                     'fill' => false,
-                    'backgroundColor' => self::SECONDARY,
-                    'borderColor' => self::SECONDARY,
+                    'backgroundColor' => self::ORANGE,
+                    'borderColor' => self::ORANGE,
                     'data' => array_values($companyData),
                 ],
                 [
                     'label' => 'Deals',
                     'fill' => false,
-                    'backgroundColor' => self::TERTIARY,
-                    'borderColor' => self::TERTIARY,
+                    'backgroundColor' => self::CYAN,
+                    'borderColor' => self::CYAN,
                     'data' => array_values($dealData),
                 ],
             ],
@@ -104,7 +105,7 @@ class ChartService
             'labels' => array_map(fn ($stage) => ucwords($stage), Deal::ACTIVE_STAGES),
             'datasets' => [
                 [
-                    'backgroundColor' => [self::PRIMARY, self::SECONDARY, self::TERTIARY],
+                    'backgroundColor' => [self::BLUE, self::ORANGE, self::CYAN],
                     'data' => $chartData,
                 ],
             ],
@@ -125,6 +126,34 @@ class ChartService
             ],
         ]);
 
+
+        return $chart;
+    }
+
+    public function createPupularIndustriesChart(Workspace $workspace): Chart|false
+    {
+        $companiesByIndustry = $this->companyRepository->findCountByIndustry($workspace);
+
+        if (count($companiesByIndustry) < 1) {
+            return false;
+        }
+
+        $labels = array_map(fn ($c) => $c['iName'], $companiesByIndustry);
+        $chartData = array_map(fn ($c) => $c['cCount'], $companiesByIndustry);
+
+        $chart = $this->chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
+
+        $chart->setData([
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => 'Companies',
+                    'backgroundColor' => [self::BLUE, self::ORANGE, self::CYAN, self::PINK],
+                    // 'borderColor' => self::BLUE,
+                    'data' => $chartData,
+                ],
+            ],
+        ]);
 
         return $chart;
     }
@@ -168,10 +197,10 @@ class ChartService
     public function setLastYearData(array $items): array
     {
 
-        $dealMonths = [];
+        $entityMonths = [];
 
-        foreach ($items as $d) {
-            $dealMonths[$d['dMonth']] = $d['dCount'];
+        foreach ($items as $i) {
+            $entityMonths[$i['eMonth']] = $i['eCount'];
         }
 
         $lastYearMonths = $this->getLastYearMonths();
@@ -179,7 +208,7 @@ class ChartService
         $data = [];
 
         foreach ($lastYearMonths as $m) {
-            $data[$m] = $dealMonths[(int) $m] ?? 0;
+            $data[$m] = $entityMonths[(int) $m] ?? 0;
         }
 
         return $data;

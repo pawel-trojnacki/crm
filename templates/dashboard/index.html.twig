@@ -71,36 +71,16 @@
     </section>
 
     <section class="col-md-6 mb-5">
-        <h2 class="fw-bold fs-5 mb-4">Latest Deals</h2>
+        <h2 class="fw-bold fs-5 mb-4">Popular industries</h2>
 
-        {% if latest_deals | length > 0 %}
-
-        <ul class="list-group">
-            {% for deal in latest_deals %}
-            <li class="list-group-item">
-                <a href="{{
-                    path('app_deal_show', { slug: deal.slug })
-                }}" class="text-reset">
-                    <h3 class="fs-6 mb-1">
-                        {{ deal.name }}
-                    </h3>
-                    <small>
-                        Status: <span>{{ deal.stage | title }}</span>
-                    </small>
-                    |
-                    <small>
-                        Company: <span>{{ deal.company.name | title }}</span>
-                    </small>
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-
+        {% if industries_chart %}
+        {{ render_chart(industries_chart) }}
         {% else %}
-
-        {{ include('partials/_no-results-alert.html.twig') }}
-
+        {{ include('partials/_no-results-alert.html.twig', {
+            message: 'Add some companies to see stats'
+        }) }}
         {% endif %}
+
     </section>
 
 </div>
@@ -125,13 +105,13 @@
                 {% if note.contact | default(false) %}
                 on Contact
                 <a href="{{ path('app_contact_show', {slug: note.contact.slug}) }}">
-                {{ note.contact.firstName ~ ' ' ~ note.contact.lastName }}
+                    {{ note.contact.firstName ~ ' ' ~ note.contact.lastName }}
                 </a>
                 {% endif %}
                 {% if note.deal | default(false) %}
                 on Deal
                 <a href="{{ path('app_deal_show', {slug: note.deal.slug}) }}">
-                {{ note.deal.name | u.truncate(16, '...', false) | title }}
+                    {{ note.deal.name | u.truncate(16, '...', false) | title }}
                 </a>
                 {% endif %}
                 added {{ note.createdAt | ago }}
