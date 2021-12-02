@@ -12,9 +12,19 @@
   }
 }
 
+.container-slim {
+  margin: 0 auto;
+  max-width: 720px;
+}
+
 .auth-form-wrapper {
   margin: 0 auto;
-  max-width: 600px;
+  max-width: 500px;
+  padding: 28px 18px;
+
+  @media (min-width: 600px) {
+    padding: 40px;
+  }
 }
 
 .cards-grid {
