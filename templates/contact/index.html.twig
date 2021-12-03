@@ -14,7 +14,8 @@ filter_addons: 'contact/_filter-form-addons.html.twig',
 
 {{ include('partials/_results-header.html.twig', {
 create_path: 'app_contact_create',
-button_text: 'Add contact'
+button_text: 'Add contact',
+csv_path: 'app_contact_csv'
 }) }}
 
 {% if pager | length > 0 %}

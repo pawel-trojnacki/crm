@@ -8,12 +8,23 @@
         {% endif %}
         results
     </p>
-    <div>
-        <a href="{{
-            path(create_path, {slug: create_path_slug | default(false) ? path_slug : app.user.workspace.slug})
-        }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle pe-1"></i>
-            {{ button_text }}
-        </a>
+    <div class="d-flex">
+        {% if csv_path | default(false) %}
+        <div class="pe-2">
+            <a class="btn btn-outline-primary" href="{{ path(csv_path, { slug: app.user.workspace.slug }) }}">
+                <i class="bi bi-download pe-1"></i>
+                Export
+            </a>
+        </div>
+        {% endif %}
+        
+        <div>
+            <a href="{{
+                path(create_path, {slug: create_path_slug | default(false) ? path_slug : app.user.workspace.slug})
+            }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle pe-1"></i>
+                {{ button_text }}
+            </a>
+        </div>
     </div>
 </div>

@@ -13,7 +13,8 @@ filter_addons: 'company/_filter-form-addons.html.twig'
 
 {{ include('partials/_results-header.html.twig', {
 create_path: 'app_company_create',
-button_text: 'Add company'
+button_text: 'Add company',
+csv_path: 'app_company_csv'
 }) }}
 
 {% if pager | length > 0 %}

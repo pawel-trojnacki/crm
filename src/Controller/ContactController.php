@@ -11,12 +11,12 @@ use App\Form\ContactFormType;
 use App\Form\NoteFormType;
 use App\Repository\ContactNoteRepository;
 use App\Repository\ContactRepository;
+use App\Service\CsvService;
 use App\Service\FilterService;
 use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ContactController extends AbstractNoteController
@@ -26,6 +26,7 @@ class ContactController extends AbstractNoteController
         private ContactNoteRepository $contactNoteRepository,
         private PagerService $pagerService,
         private FilterService $filterService,
+        private CsvService $csvService,
     ) {
     }
 
@@ -201,5 +202,18 @@ class ContactController extends AbstractNoteController
             ContactNote::class,
             'app_contact_show'
         );
+    }
+
+    #[Route('/{slug}/contacts/csv', name: 'app_contact_csv', methods: ['GET'])]
+    #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
+    public function outputCsv(Workspace $workspace): Response
+    {
+        $contacts = $this->contactRepository->findBy(['workspace' => $workspace]);
+
+        $csvData = $this->csvService->getCsvContacts($contacts);
+
+        $response = new Response($csvData);
+
+        return $this->csvService->returnCsvResponse($response, 'contacts');
     }
 }

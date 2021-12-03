@@ -11,12 +11,12 @@ use App\Form\CompanyFormType;
 use App\Repository\CompanyRepository;
 use App\Repository\ContactRepository;
 use App\Repository\IndustryRepository;
+use App\Service\CsvService;
 use App\Service\FilterService;
 use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CompanyController extends AbstractBaseController
@@ -27,6 +27,7 @@ class CompanyController extends AbstractBaseController
         private ContactRepository $contactRepository,
         private PagerService $pagerService,
         private FilterService $filterService,
+        private CsvService $csvService,
     ) {
     }
 
@@ -167,5 +168,18 @@ class CompanyController extends AbstractBaseController
             'company' => $company,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{slug}/companies/csv', name: 'app_company_csv', methods: ['GET'])]
+    #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
+    public function outputCsv(Workspace $workspace): Response
+    {
+        $companies = $this->companyRepository->findBy(['workspace' => $workspace]);
+
+        $csvData = $this->csvService->getCsvCompanies($companies);
+
+        $response = new Response($csvData);
+
+        return $this->csvService->returnCsvResponse($response, 'companies');
     }
 }
