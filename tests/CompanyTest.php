@@ -143,7 +143,7 @@ class CompanyTest extends KernelTestCase
         }
 
         /** @var Company[] $savedCompanies */
-        $companies = $this->companyRepository->createPagerQueryBuilder(
+        $companies = $this->companyRepository->createFindByWorskpaceQueryBuilder(
             workspace: $workspace,
             order: 'date-desc',
         )->getQuery()->getResult();
@@ -152,7 +152,7 @@ class CompanyTest extends KernelTestCase
         $this->assertTrue($companies[1]->getCreatedAt() > $companies[2]->getCreatedAt());
 
         /** @var Company[] $companies */
-        $companies = $this->companyRepository->createPagerQueryBuilder(
+        $companies = $this->companyRepository->createFindByWorskpaceQueryBuilder(
             workspace: $workspace,
             order: 'date-asc',
         )->getQuery()->getResult();
@@ -176,7 +176,7 @@ class CompanyTest extends KernelTestCase
         }
 
         /** @var Company[] $companies */
-        $companies = $this->companyRepository->createPagerQueryBuilder(
+        $companies = $this->companyRepository->createFindByWorskpaceQueryBuilder(
             workspace: $workspace,
             search: 'app',
         )->getQuery()->getResult();
@@ -185,7 +185,7 @@ class CompanyTest extends KernelTestCase
         $this->assertSame('Apple', $companies[0]->getName());
 
         /** @var Company[] $companies */
-        $companies = $this->companyRepository->createPagerQueryBuilder(
+        $companies = $this->companyRepository->createFindByWorskpaceQueryBuilder(
             workspace: $workspace,
             search: 'o',
         )->getQuery()->getResult();
