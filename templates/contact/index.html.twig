@@ -7,7 +7,8 @@
 {% block body %}
 
 {{ include('partials/_filter-form.html.twig', {
-base_path: 'app_contact_index'
+base_path: 'app_contact_index',
+filter_addons: 'contact/_filter-form-addons.html.twig',
 }) }}
 
 

@@ -1,0 +1,18 @@
+{% set select_name = filter_name | default(false) ? filter_name : 'user' %}
+
+<div class="pe-2" style="max-width: 160px">
+    <select name="{{ select_name }}" id="{{ select_name }}" class="form-select">
+        <option value="" disabled selected hidden>
+            {{ placeholder | default(false) ? placeholder : 'Added by:' }}
+        </option>
+
+        {% for member in team_members %}
+
+            <option value="{{member.slug}}" {{ member.id == selected_user_id ? 'selected' : '' }}>
+                {{ member.firstName | u.truncate(2, '.') | title ~ ' ' ~ member.lastName | title }}
+            </option>
+
+        {% endfor %}
+
+    </select>
+</div>

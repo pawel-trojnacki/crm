@@ -48,41 +48,12 @@ class CompanyRepository extends ServiceEntityRepository
         Workspace $workspace,
         ?string $search = null,
         ?string $industry = null,
+        ?int $userId = null,
         ?string $order = null,
     ): QueryBuilder {
-        $qb = $this->createQueryBuilder('c')
+        return $this->createFiltersQueryBuilder($search, $industry, $userId, $order)
             ->andWhere('c.workspace = :id')
             ->setParameter(':id', $workspace->getId());
-
-        if ($search) {
-            $qb->andWhere('c.name LIKE :search')
-                ->setParameter(':search', '%' . $search . '%');
-        }
-
-        if ($industry) {
-            $qb->andWhere('c.industry = :industry')
-                ->setParameter(':industry', $industry);
-        }
-
-        switch ($order) {
-            case 'date-desc':
-                $qb->orderBy('c.createdAt', 'DESC');
-                break;
-            case 'date-asc':
-                $qb->orderBy('c.createdAt', 'ASC');
-                break;
-            case 'name-desc':
-                $qb->orderBy('c.name', 'DESC');
-                break;
-            case 'name-asc':
-                $qb->orderBy('c.name', 'ASC');
-                break;
-            default:
-                $qb->orderBy('c.createdAt', 'DESC');
-                break;
-        }
-
-        return $qb;
     }
 
     public function findAllCountByWorkspace(Workspace $workspace): int
@@ -120,5 +91,49 @@ class CompanyRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    private function createFiltersQueryBuilder(
+        ?string $search = null,
+        ?string $industry = null,
+        ?int $userId = null,
+        ?string $order = null,
+    ): QueryBuilder {
+        $qb = $this->createQueryBuilder('c');
+
+        if ($search) {
+            $qb->andWhere('c.name LIKE :search')
+                ->setParameter(':search', '%' . $search . '%');
+        }
+
+        if ($industry) {
+            $qb->andWhere('c.industry = :industry')
+                ->setParameter(':industry', $industry);
+        }
+
+        if ($userId) {
+            $qb->andWhere('c.creator = :userId')
+                ->setParameter(':userId', $userId);
+        }
+
+        switch ($order) {
+            case 'date-desc':
+                $qb->orderBy('c.createdAt', 'DESC');
+                break;
+            case 'date-asc':
+                $qb->orderBy('c.createdAt', 'ASC');
+                break;
+            case 'name-desc':
+                $qb->orderBy('c.name', 'DESC');
+                break;
+            case 'name-asc':
+                $qb->orderBy('c.name', 'ASC');
+                break;
+            default:
+                $qb->orderBy('c.createdAt', 'DESC');
+                break;
+        }
+
+        return $qb;
     }
 }

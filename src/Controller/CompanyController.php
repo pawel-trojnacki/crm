@@ -11,6 +11,7 @@ use App\Form\CompanyFormType;
 use App\Repository\CompanyRepository;
 use App\Repository\ContactRepository;
 use App\Repository\IndustryRepository;
+use App\Service\FilterService;
 use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +26,7 @@ class CompanyController extends AbstractBaseController
         private IndustryRepository $industryRepository,
         private ContactRepository $contactRepository,
         private PagerService $pagerService,
+        private FilterService $filterService,
     ) {
     }
 
@@ -34,19 +36,17 @@ class CompanyController extends AbstractBaseController
     {
         $industries = $this->industryRepository->findAllAlphabetically();
 
-        $currentPage = $request->query->get('page', 1);
-        $search = $request->query->get('search');
-        $industry = $request->query->get('industry');
-        $order = $request->query->get('order');
-
-        if (!is_numeric($currentPage)) {
-            throw new NotFoundHttpException('Page not found');
-        }
+        $currentPage = $this->filterService->getCurrentPage($request);
+        $search = $this->filterService->getSearch($request);
+        $order = $this->filterService->getOrder($request);
+        $industry = $this->filterService->getIndustry($request);
+        $selectedUserId = $this->filterService->getUserIdBySlugParam($request);
 
         $qb = $this->companyRepository->createFindByWorskpaceQueryBuilder(
             $workspace,
             $search,
             $industry,
+            $selectedUserId,
             $order
         );
 
@@ -59,6 +59,8 @@ class CompanyController extends AbstractBaseController
             'industry' => $industry,
             'order' => $order,
             'sortOptions' => BaseSortConstant::SORT_OPTIONS,
+            'team_members' => $this->filterService->findTeamMembersByWorkspace($workspace),
+            'selected_user_id' => $selectedUserId,
         ]);
     }
 

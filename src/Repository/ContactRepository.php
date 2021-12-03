@@ -35,44 +35,13 @@ class ContactRepository extends ServiceEntityRepository
 
     public function createFindByWorkspaceQueryBuilder(
         Workspace $workspace,
-        ?string $order = null,
         ?string $search = null,
+        ?int $userId = null,
+        ?string $order = null,
     ): QueryBuilder {
-
-        $qb = $this->createQueryBuilder('q')
-            ->andWhere('q.workspace = :id')
+        return $this->createFiltersQueryBuilder($search, $userId, $order)
+            ->andWhere('c.workspace = :id')
             ->setParameter(':id', $workspace->getId());
-
-        if ($search) {
-            $qb->andWhere('q.firstName LIKE :search OR q.lastName LIKE :search')
-                ->setParameter(':search', '%' . $search . '%');
-        }
-
-        switch ($order) {
-            case 'date-desc':
-                $qb->orderBy('q.createdAt', 'DESC');
-                break;
-            case 'date-asc':
-                $qb->orderBy('q.createdAt', 'ASC');
-                break;
-            case 'name-desc':
-                $qb->orderBy('q.firstName', 'DESC');
-                break;
-            case 'name-asc':
-                $qb->orderBy('q.firstName', 'ASC');
-                break;
-            case 'surname-desc':
-                $qb->orderBy('q.lastName', 'DESC');
-                break;
-            case 'surname-asc':
-                $qb->orderBy('q.lastName', 'ASC');
-                break;
-            default:
-                $qb->orderBy('q.createdAt', 'DESC');
-                break;
-        }
-
-        return $qb;
     }
 
     public function findAllCountByWorkspace(Workspace $workspace): int
@@ -96,5 +65,49 @@ class ContactRepository extends ServiceEntityRepository
             ->setParameter(':id', $workspace->getId())
             ->getQuery()
             ->getResult();
+    }
+
+    private function createFiltersQueryBuilder(
+        ?string $search = null,
+        ?int $userId = null,
+        ?string $order = null,
+    ): QueryBuilder {
+        $qb = $this->createQueryBuilder('c');
+
+        if ($search) {
+            $qb->andWhere('c.firstName LIKE :search OR c.lastName LIKE :search')
+                ->setParameter(':search', '%' . $search . '%');
+        }
+
+        if ($userId) {
+            $qb->andWhere('c.creator = :userId')
+                ->setParameter(':userId', $userId);
+        }
+
+        switch ($order) {
+            case 'date-desc':
+                $qb->orderBy('c.createdAt', 'DESC');
+                break;
+            case 'date-asc':
+                $qb->orderBy('c.createdAt', 'ASC');
+                break;
+            case 'name-desc':
+                $qb->orderBy('c.firstName', 'DESC');
+                break;
+            case 'name-asc':
+                $qb->orderBy('c.firstName', 'ASC');
+                break;
+            case 'surname-desc':
+                $qb->orderBy('c.lastName', 'DESC');
+                break;
+            case 'surname-asc':
+                $qb->orderBy('c.lastName', 'ASC');
+                break;
+            default:
+                $qb->orderBy('c.createdAt', 'DESC');
+                break;
+        }
+
+        return $qb;
     }
 }

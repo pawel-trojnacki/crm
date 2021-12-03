@@ -34,50 +34,6 @@ class DealRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
-    private function createFiltersQueryBuilder(
-        ?string $search = null,
-        ?string $stage = null,
-        ?int $userId = null,
-        ?string $order = null,
-    ): QueryBuilder {
-        $qb = $this->createQueryBuilder('d');
-
-        if ($search) {
-            $qb->andWhere('d.name LIKE :search')
-                ->setParameter(':search', '%' . $search . '%');
-        }
-
-        if ($stage) {
-            $qb->andWhere('d.stage = :stage')
-                ->setParameter(':stage', $stage);
-        }
-
-        if ($userId) {
-            $qb->andWhere(':userId MEMBER OF d.users')
-                ->setParameter(':userId', $userId);
-        }
-
-        switch ($order) {
-            case 'date-desc':
-                $qb->orderBy('d.createdAt', 'DESC');
-                break;
-            case 'date-asc':
-                $qb->orderBy('d.createdAt', 'ASC');
-                break;
-            case 'name-desc':
-                $qb->orderBy('d.name', 'DESC');
-                break;
-            case 'name-asc':
-                $qb->orderBy('d.name', 'ASC');
-                break;
-            default:
-                $qb->orderBy('d.createdAt', 'DESC');
-                break;
-        }
-
-        return $qb;
-    }
-
     public function createFindByWorkspaceQueryBuilder(
         Workspace $workspace,
         ?string $search = null,
@@ -123,5 +79,49 @@ class DealRepository extends ServiceEntityRepository
             ->setParameter(':id', $workspace->getId())
             ->getQuery()
             ->getResult();
+    }
+
+    private function createFiltersQueryBuilder(
+        ?string $search = null,
+        ?string $stage = null,
+        ?int $userId = null,
+        ?string $order = null,
+    ): QueryBuilder {
+        $qb = $this->createQueryBuilder('d');
+
+        if ($search) {
+            $qb->andWhere('d.name LIKE :search')
+                ->setParameter(':search', '%' . $search . '%');
+        }
+
+        if ($stage) {
+            $qb->andWhere('d.stage = :stage')
+                ->setParameter(':stage', $stage);
+        }
+
+        if ($userId) {
+            $qb->andWhere(':userId MEMBER OF d.users')
+                ->setParameter(':userId', $userId);
+        }
+
+        switch ($order) {
+            case 'date-desc':
+                $qb->orderBy('d.createdAt', 'DESC');
+                break;
+            case 'date-asc':
+                $qb->orderBy('d.createdAt', 'ASC');
+                break;
+            case 'name-desc':
+                $qb->orderBy('d.name', 'DESC');
+                break;
+            case 'name-asc':
+                $qb->orderBy('d.name', 'ASC');
+                break;
+            default:
+                $qb->orderBy('d.createdAt', 'DESC');
+                break;
+        }
+
+        return $qb;
     }
 }

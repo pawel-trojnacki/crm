@@ -6,13 +6,12 @@ use App\Constant\BaseSortConstant;
 use App\Controller\Abstract\AbstractNoteController;
 use App\Entity\Deal;
 use App\Entity\DealNote;
-use App\Entity\User;
 use App\Entity\Workspace;
 use App\Form\DealFormType;
 use App\Form\NoteFormType;
 use App\Repository\DealNoteRepository;
 use App\Repository\DealRepository;
-use App\Repository\UserRepository;
+use App\Service\FilterService;
 use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +23,8 @@ class DealController extends AbstractNoteController
     public function __construct(
         private DealRepository $dealRepository,
         private DealNoteRepository $dealNoteRepository,
-        private UserRepository $userRepository,
         private PagerService $pagerService,
+        private FilterService $filterService,
     ) {
     }
 
@@ -33,20 +32,14 @@ class DealController extends AbstractNoteController
     #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
     public function index(Workspace $workspace, Request $request): Response
     {
-        $currentPage = $request->query->get('page', 1);
-        $search = $request->query->get('search');
-        $order = $request->query->get('order');
+        $currentPage = $this->filterService->getCurrentPage($request);
+        $search = $this->filterService->getSearch($request);
+        $order = $this->filterService->getOrder($request);
+        $selectedUserId = $this->filterService->getUserIdBySlugParam($request);
 
-        $stageId = $request->query->get('stageId');
+        $stageId = $this->filterService->getStageId($request);
 
         $stage = is_numeric($stageId) ? Deal::STAGES[(int) $stageId - 1] : null;
-
-        $userSlug = $request->query->get('user');
-
-        $selectedUser = $this->userRepository->findOneBy(['slug' => $userSlug]);
-        $selectedUserId = $selectedUser ? $selectedUser->getId() : null;
-
-        $teamMemebers = $this->userRepository->findAllByWorkspaceAlphabetically($workspace);
 
         $qb = $this->dealRepository->createFindByWorkspaceQueryBuilder(
             $workspace,
@@ -65,7 +58,8 @@ class DealController extends AbstractNoteController
             'order' => $order,
             'sortOptions' => BaseSortConstant::SORT_OPTIONS,
             'stages' => Deal::STAGES,
-            'team_members' => $teamMemebers,
+            'team_members' => $this->filterService->findTeamMembersByWorkspace($workspace),
+            'selected_user_id' => $selectedUserId,
         ]);
     }
 
