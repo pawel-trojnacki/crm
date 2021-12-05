@@ -24,6 +24,8 @@ class AppFixtures extends Fixture
     public function __construct(
         private CountryRepository $countryRepository,
         private UserPasswordHasherInterface $passwordHasher,
+        private string $testAdminPassword,
+        private string $testUserPassword,
     ) {
     }
 
@@ -46,26 +48,51 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
+        $workspaceDate = new \DateTime();
+        $workspaceDate->modify('-2 years');
+
         WorkspaceFactory::createOne([
             'name' => 'First Workspace',
+            'createdAt' => $workspaceDate,
+            'updatedAt' => faker()->dateTimeBetween('-2 years', 'now'),
         ]);
 
         UserFactory::createOne([
-            'email' => 'test@email.com',
-            'password' => $this->hashUserPassword('00000000'),
+            'email' => 'testadmin@email.com',
+            'password' => $this->hashUserPassword($this->testAdminPassword),
             'workspace' => WorkspaceFactory::random(),
             'roles' => ['ROLE_ADMIN'],
+            'createdAt' => $workspaceDate,
+            'updatedAt' => faker()->dateTimeBetween('-2 years', 'now'),
+        ]);
+
+        UserFactory::createOne([
+            'email' => 'testuser@email.com',
+            'password' => $this->hashUserPassword($this->testUserPassword),
+            'workspace' => WorkspaceFactory::random(),
+            'roles' => ['ROLE_USER'],
+            'createdAt' => faker()->dateTimeBetween('-2 years', '-1 year'),
+            'updatedAt' => faker()->dateTimeBetween('-1 year', 'now'),
         ]);
 
         UserFactory::createMany(3, [
             'workspace' => WorkspaceFactory::random(),
+            'roles' => faker()->boolean() ? ['ROLE_USER'] : ['ROLE_MANAGER'],
+            'createdAt' => faker()->dateTimeBetween('-2 years', '-1 year'),
+            'updatedAt' => faker()->dateTimeBetween('-1 year', 'now'),
         ]);
+
+        $countires = [
+            $this->countryRepository->findOneBy(['isoCode' => 'US']),
+            $this->countryRepository->findOneBy(['isoCode' => 'CA']),
+            $this->countryRepository->findOneBy(['isoCode' => 'GB']),
+        ];
 
         CompanyFactory::createMany(40, fn () => [
             'workspace' => WorkspaceFactory::random(),
             'industry' => IndustryFactory::random(),
             'creator' => UserFactory::random(),
-            'country' => $this->countryRepository->findOneBy(['isoCode' => 'US']),
+            'country' => faker()->randomElement($countires),
             'createdAt' => faker()->dateTimeBetween('-1 year', '-2 weeks'),
             'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);

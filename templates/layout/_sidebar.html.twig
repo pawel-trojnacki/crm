@@ -1,3 +1,5 @@
+{% set workspace_slug = app.user ? app.user.workspace.slug : '' %}
+
 <aside class="sidebar">
 
   <a class="brand fs-4 fw-bold lh-1 mb-5" href="#">CRM</a>
@@ -6,7 +8,7 @@
     <h2 class="fs-6 fw-normal text-muted text-uppercase">Workspace</h2>
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="{{ path('app_dashboard_index', { slug: app.user.workspace.slug }) }}">
+        <a class="nav-link" href="{{ path('app_dashboard_index', { slug: workspace_slug }) }}">
           <i class="bi bi-grid"></i>
           <span class="ps-1">
             Dashboard
@@ -14,7 +16,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ path('app_team_index', { slug: app.user.workspace.slug }) }}">
+        <a class="nav-link" href="{{ path('app_team_index', { slug: workspace_slug }) }}">
           <i class="bi bi-people"></i>
           <span class="ps-1">
             Team
@@ -22,7 +24,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ path('app_contact_index', { slug: app.user.workspace.slug }) }}">
+        <a class="nav-link" href="{{ path('app_contact_index', { slug: workspace_slug }) }}">
           <i class="bi bi-briefcase"></i>
           <span class="ps-1">
             Contacts
@@ -30,7 +32,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ path('app_company_index', { slug: app.user.workspace.slug }) }}">
+        <a class="nav-link" href="{{ path('app_company_index', { slug: workspace_slug }) }}">
           <i class="bi bi-folder"></i>
           <span class="ps-1">
             Companies
@@ -38,7 +40,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ path('app_deal_index', { slug: app.user.workspace.slug }) }}">
+        <a class="nav-link" href="{{ path('app_deal_index', { slug: workspace_slug }) }}">
           <i class="bi bi-check2-square"></i>
           <span class="ps-1">
             Deals
