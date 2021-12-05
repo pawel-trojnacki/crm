@@ -13,7 +13,8 @@ filter_addons: 'deal/_filter-form-addons.html.twig'
 
 {{ include('partials/_results-header.html.twig', {
 create_path: 'app_deal_create',
-button_text: 'Add deal'
+button_text: 'Add deal',
+csv_path: 'app_deal_csv'
 }) }}
 
 {% if pager|length > 0 %}

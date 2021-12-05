@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Company;
 use App\Entity\Contact;
+use App\Entity\Deal;
 use Symfony\Component\HttpFoundation\Response;
 
 class CsvService
@@ -54,6 +55,29 @@ class CsvService
                 $company->getCity(),
                 $company->getWebsite(),
                 $company->getAddress(),
+            ]) . PHP_EOL;
+        }
+
+        return $csvData;
+    }
+
+    /** @param Deal[] $deals */
+    public function getCsvDeals(array $deals): string
+    {
+        $csvData = 'name,description,company,assigned to' . PHP_EOL;
+
+        foreach ($deals as $deal) {
+            $userNames = array_map(function ($user) {
+                return $user->getFirstName() . ' ' . $user->getLastName();
+            }, $deal->getUsers()->getValues());
+
+            $assignedUsers = implode('; ', $userNames);
+
+            $csvData .= implode(',', [
+                str_replace(',', ' ', $deal->getName()),
+                str_replace(',', ' ', $deal->getDescription()),
+                str_replace(',', ' ', $deal->getCompany()->getName()),
+                $assignedUsers,
             ]) . PHP_EOL;
         }
 

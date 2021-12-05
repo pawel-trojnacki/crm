@@ -11,6 +11,7 @@ use App\Form\DealFormType;
 use App\Form\NoteFormType;
 use App\Repository\DealNoteRepository;
 use App\Repository\DealRepository;
+use App\Service\CsvService;
 use App\Service\FilterService;
 use App\Service\PagerService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -25,6 +26,7 @@ class DealController extends AbstractNoteController
         private DealNoteRepository $dealNoteRepository,
         private PagerService $pagerService,
         private FilterService $filterService,
+        private CsvService $csvService,
     ) {
     }
 
@@ -194,5 +196,18 @@ class DealController extends AbstractNoteController
             DealNote::class,
             'app_deal_show',
         );
+    }
+
+    #[Route('/{slug}/deals/csv', name: 'app_deal_csv', methods: ['GET'])]
+    #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
+    public function outputCsv(Workspace $workspace): Response
+    {
+        $deals = $this->dealRepository->findBy(['workspace' => $workspace]);
+
+        $csvData = $this->csvService->getCsvDeals($deals);
+
+        $response = new Response($csvData);
+
+        return $this->csvService->returnCsvResponse($response, 'deals');
     }
 }
