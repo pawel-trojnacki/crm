@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Form\FieldTypes\PasswordRepeatedType;
+use App\Form\FieldType\PasswordRepeatedType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

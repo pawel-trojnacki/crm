@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\FieldTypes;
+namespace App\Form\FieldType;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;

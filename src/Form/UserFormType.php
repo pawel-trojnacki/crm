@@ -3,8 +3,8 @@
 namespace App\Form;
 
 use App\Entity\User;
-use App\Form\FieldTypes\PasswordRepeatedType;
-use App\Form\FieldTypes\UserRoleType;
+use App\Form\FieldType\PasswordRepeatedType;
+use App\Form\FieldType\UserRoleType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
