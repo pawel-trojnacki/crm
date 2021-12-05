@@ -40,13 +40,11 @@ class AppFixtures extends Fixture
             file_get_contents(__DIR__ . '/../../sql/countries.sql')
         );
 
-        $manager->flush();
+        $manager->getConnection()->executeQuery(
+            file_get_contents(__DIR__ . '/../../sql/industries.sql')
+        );
 
-        foreach (IndustryFactory::INDUSTRIES as $industry) {
-            IndustryFactory::createOne([
-                'name' => $industry
-            ]);
-        }
+        $manager->flush();
 
         WorkspaceFactory::createOne([
             'name' => 'First Workspace',

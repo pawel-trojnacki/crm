@@ -28,8 +28,6 @@ use Zenstruck\Foundry\Proxy;
  */
 final class IndustryFactory extends ModelFactory
 {
-    public const INDUSTRIES = ['Transport', 'IT', 'Education', 'Construction', 'Food'];
-
     public function __construct()
     {
         parent::__construct();
