@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Calendar {% endblock %}
+
+{# {% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.1.0/main.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.1.0/main.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.1.0/main.min.css">
+{% endblock %} #}
+
+{% block heading %} Calendar {% endblock %}
+
+{% block body %}
+<div id="calendar-holder" data-events-url="{{ path('fc_load_events') }}"></div>
+{% endblock %}

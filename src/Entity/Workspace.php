@@ -62,12 +62,20 @@ class Workspace
     )]
     private $deals;
 
+    #[ORM\OneToMany(
+        mappedBy: 'workspace',
+        targetEntity: Meeting::class,
+        cascade: ['persist', 'remove']
+    )]
+    private $meetings;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->companies = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->deals = new ArrayCollection();
+        $this->meetings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,7 +123,6 @@ class Workspace
         return $this->companies;
     }
 
-
     /**
      * @return Collection|User[]
      */
@@ -130,5 +137,35 @@ class Workspace
     public function getDeals(): Collection
     {
         return $this->deals;
+    }
+
+    /**
+     * @return Collection|Meeting[]
+     */
+    public function getMeetings(): Collection
+    {
+        return $this->meetings;
+    }
+
+    public function addMeeting(Meeting $meeting): self
+    {
+        if (!$this->meetings->contains($meeting)) {
+            $this->meetings[] = $meeting;
+            $meeting->setWorkspace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMeeting(Meeting $meeting): self
+    {
+        if ($this->meetings->removeElement($meeting)) {
+            // set the owning side to null (unless already changed)
+            if ($meeting->getWorkspace() === $this) {
+                $meeting->setWorkspace(null);
+            }
+        }
+
+        return $this;
     }
 }

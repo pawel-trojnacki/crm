@@ -9,6 +9,7 @@ use App\Factory\ContactNoteFactory;
 use App\Factory\DealFactory;
 use App\Factory\DealNoteFactory;
 use App\Factory\IndustryFactory;
+use App\Factory\MeetingFactory;
 use App\Factory\UserFactory;
 use App\Factory\WorkspaceFactory;
 use App\Repository\CountryRepository;
@@ -126,6 +127,10 @@ class AppFixtures extends Fixture
             'creator' => UserFactory::random(),
             'createdAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
             'updatedAt' => faker()->dateTimeBetween('-1 week', 'now'),
+        ]);
+
+        MeetingFactory::createMany(15, fn () => [
+            'workspace' => WorkspaceFactory::random(),
         ]);
     }
 }
