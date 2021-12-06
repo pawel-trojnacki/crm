@@ -1,42 +1,48 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Manage Workspace
+Manage Workspace
 {% endblock %}
 
 {% block heading %}
-	Manage Workspace
+Manage Workspace
 {% endblock %}
 
 {% block body %}
 
-	<section class="mb-5">
-		<h2 class="fs-5 fw-bold mb-3">Change workspace name</h2>
-		<form action="" method="POST">
-			<div class="mb-3" style="max-width: 600px">
-				<label for="workspace-name" class="form-label">New name</label>
-				<input type="text" class="form-control" id="workspace-name" name="edit-workspace-name">
-			</div>
-			<button type="submit" class="btn btn-primary">Save new name</button>
-		</form>
-	</section>
+{% set name_error = errors | length > 0 ? errors[0] : '' %}
 
-	<section class="mb-5">
-		<h2 class="fs-5 fw-bold mb-3">Delete workspace</h2>
-        <div class="alert alert-danger" style="max-width: 600px">
-        Be cautious! By deleting workspace, you remove all data assigned to it, such as contacts,
-        companies and deals, as well as all workspace members accounts.
-        </div>
-		<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-workspace-modal">
-			Delete
-		</button>
+<section class="mb-5">
+	<h2 class="fs-5 fw-bold mb-3">Change workspace name</h2>
+	<form action="" method="POST">
+		<div class="mb-3" style="max-width: 600px">
+			<label for="workspace-name" class="form-label">New name</label>
+			<input type="text" class="form-control {{ name_error ? 'is-invalid' : '' }}" id="workspace-name"
+				name="edit-workspace-name" value="{{ edited_name }}" required>
+			{% if name_error %}
+			<small class="text-danger">{{ name_error.message }}</small>
+			{% endif %}
+		</div>
+		<button type="submit" class="btn btn-primary">Save new name</button>
+	</form>
+</section>
 
-		{{ include('partials/_delete-modal.html.twig', {
-            id: 'delete-workspace-modal',
-            delete_name: 'delete-workspace',
-            delete_id: 'delete-workspace-modal'
-        }) }}
+<section class="mb-5">
+	<h2 class="fs-5 fw-bold mb-3">Delete workspace</h2>
+	<div class="alert alert-danger" style="max-width: 600px">
+		Be cautious! By deleting workspace, you remove all data assigned to it, such as contacts,
+		companies and deals, as well as all workspace members accounts.
+	</div>
+	<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-workspace-modal">
+		Delete
+	</button>
 
-	</section>
+	{{ include('partials/_delete-modal.html.twig', {
+	id: 'delete-workspace-modal',
+	delete_name: 'delete-workspace',
+	delete_id: 'delete-workspace-modal'
+	}) }}
+
+</section>
 
 {% endblock %}

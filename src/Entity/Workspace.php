@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: WorkspaceRepository::class)]
 class Workspace
@@ -20,6 +21,11 @@ class Workspace
     private int $id;
 
     #[ORM\Column(type: 'string', length: 30)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 6,
+        max: 30
+    )]
     private string $name;
 
     /**
@@ -53,7 +59,7 @@ class Workspace
         mappedBy: 'workspace',
         targetEntity: Deal::class,
         cascade: ['persist', 'remove']
-        )]
+    )]
     private $deals;
 
     public function __construct()
