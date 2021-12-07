@@ -107,8 +107,6 @@ class AppFixtures extends Fixture
         ContactNoteFactory::createMany(200, fn () => [
             'parent' => ContactFactory::random(),
             'creator' => UserFactory::random(),
-            'createdAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
-            'updatedAt' => faker()->dateTimeBetween('-1 week', 'now'),
         ]);
 
         DealFactory::createMany(35, fn () => [
@@ -123,8 +121,6 @@ class AppFixtures extends Fixture
         DealNoteFactory::createMany(120, fn () => [
             'parent' => DealFactory::random(),
             'creator' => UserFactory::random(),
-            'createdAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
-            'updatedAt' => faker()->dateTimeBetween('-1 week', 'now'),
         ]);
 
         MeetingFactory::createMany(15, fn () => [

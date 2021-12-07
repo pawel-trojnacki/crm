@@ -72,7 +72,7 @@ class Contact implements NoteParentEntityInterface
         targetEntity: ContactNote::class,
         cascade: ['persist', 'remove']
     )]
-    private $contactNotes;
+    private $notes;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
@@ -189,7 +189,7 @@ class Contact implements NoteParentEntityInterface
      */
     public function getNotes(): Collection
     {
-        return $this->contactNotes;
+        return $this->notes;
     }
 
     public function getCreator(): ?User

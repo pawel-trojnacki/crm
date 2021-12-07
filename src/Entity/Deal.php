@@ -70,7 +70,7 @@ class Deal implements NoteParentEntityInterface
         targetEntity: DealNote::class,
         cascade: ['persist', 'remove']
     )]
-    private $dealNotes;
+    private $notes;
 
     public function __construct()
     {
@@ -196,6 +196,6 @@ class Deal implements NoteParentEntityInterface
      */
     public function getNotes(): Collection
     {
-        return $this->dealNotes;
+        return $this->notes;
     }
 }

@@ -102,16 +102,16 @@
         <li class="list-group-item px-3 py-4">
             <h3 class=" fs-6 mb-3">
                 {{ note.creator.firstName ~ ' ' ~ note.creator.lastName }}
-                {% if note.contact | default(false) %}
+                {% if note.type is same as('ContactNote') %}
                 on Contact
-                <a href="{{ path('app_contact_show', {slug: note.contact.slug}) }}">
-                    {{ note.contact.firstName ~ ' ' ~ note.contact.lastName }}
+                <a href="{{ path('app_contact_show', {slug: note.parent.slug}) }}">
+                    {{ note.parent.firstName ~ ' ' ~ note.parent.lastName }}
                 </a>
                 {% endif %}
-                {% if note.deal | default(false) %}
+                {% if note.type is same as('DealNote') %}
                 on Deal
-                <a href="{{ path('app_deal_show', {slug: note.deal.slug}) }}">
-                    {{ note.deal.name | u.truncate(16, '...', false) | title }}
+                <a href="{{ path('app_deal_show', {slug: note.parent.slug}) }}">
+                    {{ note.parent.name | u.truncate(16, '...', false) | title }}
                 </a>
                 {% endif %}
                 added {{ note.createdAt | ago }}

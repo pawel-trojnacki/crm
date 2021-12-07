@@ -37,6 +37,8 @@ final class DealNoteFactory extends ModelFactory
     {
         return [
             'content' => self::faker()->text(500),
+            'createdAt' => self::faker()->dateTimeBetween('-2 weeks', 'now'),
+            'updatedAt' => self::faker()->dateTimeBetween('-1 week', 'now'),
         ];
     }
 

@@ -11,17 +11,23 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: DealNoteRepository::class)]
 class DealNote extends AbstractNoteEntity
 {
-    #[ORM\ManyToOne(targetEntity: Deal::class, inversedBy: 'dealNotes')]
+    #[ORM\ManyToOne(targetEntity: Deal::class, inversedBy: 'notes')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $parent;
 
-    public function __construct(Deal $parent, User $creator, string $content) 
+    public function __construct(Deal $parent, User $creator, string $content)
     {
         parent::__construct($creator, $content);
         $this->parent = $parent;
     }
 
-    public static function createFromDto(Deal $parent, User $creator, NoteDto $dto): self {
+    public function getType()
+    {
+        return 'DealNote';
+    }
+
+    public static function createFromDto(Deal $parent, User $creator, NoteDto $dto): self
+    {
         return new self($parent, $creator, $dto->content);
     }
 
