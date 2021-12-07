@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Constant\ContactConstant;
 use App\Controller\Abstract\AbstractBaseController;
+use App\Dto\ContactDto;
 use App\Dto\NoteDto;
+use App\Dto\Transformer\ContactDtoTransformer;
+use App\Dto\Transformer\NoteDtoTransformer;
 use App\Entity\Contact;
 use App\Entity\ContactNote;
 use App\Entity\Workspace;
@@ -25,6 +28,8 @@ class ContactController extends AbstractBaseController
     public function __construct(
         private ContactRepository $contactRepository,
         private ContactNoteRepository $contactNoteRepository,
+        private ContactDtoTransformer $contactDtoTransformer,
+        private NoteDtoTransformer $noteDtoTransformer,
         private PagerService $pagerService,
         private FilterService $filterService,
         private CsvService $csvService,
@@ -144,13 +149,10 @@ class ContactController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Contact $contact */
-            $contact = $form->getData();
+            /** @var ContactDto $contactDto */
+            $contactDto = $form->getData();
 
-            $user = $this->getUser();
-            $contact->setCreator($user);
-
-            $contact->setWorkspace($workspace);
+            $contact = Contact::createFromDto($workspace, $this->getUser(), $contactDto);
 
             $this->contactRepository->save($contact);
 
@@ -174,15 +176,19 @@ class ContactController extends AbstractBaseController
     {
         $workspace = $contact->getWorkspace();
 
-        $form = $this->createForm(ContactFormType::class, $contact, [
+        $contactDto = $this->contactDtoTransformer->transformFromObject($contact);
+
+        $form = $this->createForm(ContactFormType::class, $contactDto, [
             'workspace' => $workspace,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Contact $contact */
-            $contact = $form->getData();
+            /** @var ContactDto $contactDto */
+            $contactDto = $form->getData();
+
+            $contact->updateFromDto($contactDto);
 
             $this->contactRepository->save($contact);
 
@@ -226,7 +232,7 @@ class ContactController extends AbstractBaseController
             'Current user is not authorized to edit this note'
         );
 
-        $noteDto = NoteDto::createFromNoteEntity($note);
+        $noteDto = $this->noteDtoTransformer->transformFromObject($note);
 
         $form = $this->createForm(NoteFormType::class, $noteDto, [
             'label_text' => 'Edit note',

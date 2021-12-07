@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
+use App\Dto\ContactDto;
 use App\Entity\Company;
-use App\Entity\Contact;
 use App\Repository\CompanyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -43,7 +43,7 @@ class ContactFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Contact::class,
+            'data_class' => ContactDto::class,
             'attr' => [
                 'autocomplete' => 'off',
             ],

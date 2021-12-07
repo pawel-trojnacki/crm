@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Constant\BaseSortConstant;
 use App\Controller\Abstract\AbstractBaseController;
 use App\Dto\CompanyDto;
+use App\Dto\Transformer\CompanyDtoTransformer;
 use App\Entity\Company;
 use App\Entity\Contact;
 use App\Entity\Workspace;
@@ -26,6 +27,7 @@ class CompanyController extends AbstractBaseController
         private CompanyRepository $companyRepository,
         private IndustryRepository $industryRepository,
         private ContactRepository $contactRepository,
+        private CompanyDtoTransformer $companyDtoTransformer,
         private PagerService $pagerService,
         private FilterService $filterService,
         private CsvService $csvService,
@@ -135,7 +137,7 @@ class CompanyController extends AbstractBaseController
     #[IsGranted('COMPANY_EDIT', subject: 'company')]
     public function edit(Company $company, Request $request): Response
     {
-        $companyDto = CompanyDto::createFromCompany($company);
+        $companyDto = $this->companyDtoTransformer->transformFromObject($company);
 
         $form = $this->createForm(CompanyFormType::class, $companyDto);
 

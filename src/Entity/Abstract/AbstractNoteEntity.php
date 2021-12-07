@@ -9,6 +9,8 @@ use Ramsey\Uuid\Uuid;
 
 abstract class AbstractNoteEntity
 {
+    protected const NOTE_TYPE = 'DEFAULT_NOTE_TYPE';
+
     #[ORM\Id]
     #[ORM\Column(type: 'string')]
     protected $id;
@@ -26,6 +28,8 @@ abstract class AbstractNoteEntity
     #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
     protected $creator;
 
+    protected NoteParentEntityInterface $parent;
+
     public function __construct(User $creator, string $content)
     {
         $this->id = Uuid::uuid4();
@@ -33,6 +37,11 @@ abstract class AbstractNoteEntity
         $this->updatedAt = new \DateTime();
         $this->creator = $creator;
         $this->content = $content;
+    }
+
+    public function getType(): string
+    {
+        return $this::NOTE_TYPE;
     }
 
     public function getId(): string
@@ -74,5 +83,8 @@ abstract class AbstractNoteEntity
         return $this->creator;
     }
 
-    abstract function getParent(): ?NoteParentEntityInterface;
+    public function getParent(): NoteParentEntityInterface
+    {
+        return $this->parent;
+    }
 }

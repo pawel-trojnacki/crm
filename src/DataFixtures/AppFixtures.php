@@ -100,8 +100,6 @@ class AppFixtures extends Fixture
             'workspace' => WorkspaceFactory::random(),
             'creator' => UserFactory::random(),
             'company' => faker()->boolean(80) ? CompanyFactory::random() : null,
-            'createdAt' => faker()->dateTimeBetween('-1 year', '-2 weeks'),
-            'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);
 
         ContactNoteFactory::createMany(200, fn () => [

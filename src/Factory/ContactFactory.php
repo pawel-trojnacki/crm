@@ -43,6 +43,8 @@ final class ContactFactory extends ModelFactory
             'email' => self::faker()->email(),
             'phone' => self::faker()->phoneNumber(),
             'position' => self::faker()->randomElement($positions),
+            'createdAt' => self::faker()->dateTimeBetween('-1 year', '-2 weeks'),
+            'updatedAt' => self::faker()->dateTimeBetween('-2 weeks', 'now'),
         ];
     }
 

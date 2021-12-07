@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Dto\CompanyDto;
-use App\Entity\Company;
 use App\Entity\Country;
 use App\Entity\Industry;
 use App\Repository\IndustryRepository;

@@ -11,20 +11,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ContactNoteRepository::class)]
 class ContactNote extends AbstractNoteEntity
 {
+    public const NOTE_TYPE = 'CONTACT_NOTE';
 
     #[ORM\ManyToOne(targetEntity: Contact::class, inversedBy: 'notes')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private $parent;
+    protected NoteParentEntityInterface $parent;
 
     public function __construct(Contact $parent, User $creator, string $content)
     {
         parent::__construct($creator, $content);
         $this->parent = $parent;
-    }
-
-    public function getType()
-    {
-        return 'ContactNote';
     }
 
     public static function createFromDto(Contact $parent, User $creator, NoteDto $dto): self
@@ -37,10 +33,5 @@ class ContactNote extends AbstractNoteEntity
         $this->content = $dto->content;
 
         return $this;
-    }
-
-    public function getParent(): NoteParentEntityInterface
-    {
-        return $this->parent;
     }
 }

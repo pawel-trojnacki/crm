@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Constant\BaseSortConstant;
 use App\Controller\Abstract\AbstractBaseController;
 use App\Dto\NoteDto;
+use App\Dto\Transformer\NoteDtoTransformer;
 use App\Entity\Deal;
 use App\Entity\DealNote;
 use App\Entity\Workspace;
@@ -25,6 +26,7 @@ class DealController extends AbstractBaseController
     public function __construct(
         private DealRepository $dealRepository,
         private DealNoteRepository $dealNoteRepository,
+        private NoteDtoTransformer $noteDtoTransformer,
         private PagerService $pagerService,
         private FilterService $filterService,
         private CsvService $csvService,
@@ -220,7 +222,7 @@ class DealController extends AbstractBaseController
             'Current user is not authorized to edit this note'
         );
 
-        $noteDto = NoteDto::createFromNoteEntity($note);
+        $noteDto = $this->noteDtoTransformer->transformFromObject($note);
 
         $form = $this->createForm(NoteFormType::class, $noteDto, [
             'label_text' => 'Edit note',
