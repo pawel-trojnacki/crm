@@ -41,6 +41,8 @@ final class CompanyFactory extends ModelFactory
             'address' => self::faker()->boolean(80) ? self::faker()->streetAddress() : null,
             'website' => self::faker()->boolean(80) ?
                 'http://www.' . self::faker()->domainName() : null,
+            'createdAt' => self::faker()->dateTimeBetween('-1 year', '-2 weeks'),
+            'updatedAt' => self::faker()->dateTimeBetween('-2 weeks', 'now'),
         ];
     }
 

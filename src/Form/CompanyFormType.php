@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Dto\CompanyDto;
 use App\Entity\Company;
 use App\Entity\Country;
 use App\Entity\Industry;
@@ -52,7 +53,7 @@ class CompanyFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Company::class,
+            'data_class' => CompanyDto::class,
             'attr' => [
                 'autocomplete' => 'off',
             ],

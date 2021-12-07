@@ -39,7 +39,7 @@ class ContactNoteRepository extends ServiceEntityRepository implements NoteRepos
     public function findLatestByWorkspace(Workspace $workspace, ?int $limit = 10): array
     {
         return $this->createQueryBuilder('n')
-            ->join('n.contact', 'c')
+            ->join('n.parent', 'c')
             ->andWhere('c.workspace = :id')
             ->setParameter(':id', $workspace->getId())
             ->orderBy('n.createdAt', 'DESC')

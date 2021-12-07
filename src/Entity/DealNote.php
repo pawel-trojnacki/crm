@@ -2,40 +2,38 @@
 
 namespace App\Entity;
 
+use App\Dto\NoteDto;
 use App\Entity\Abstract\AbstractNoteEntity;
 use App\Entity\Interface\NoteParentEntityInterface;
-use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\DealNoteRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DealNoteRepository::class)]
 class DealNote extends AbstractNoteEntity
 {
-    use TimestampableAttributeEntityTrait;
-
     #[ORM\ManyToOne(targetEntity: Deal::class, inversedBy: 'dealNotes')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private $deal;
+    private $parent;
 
-    public function getDeal(): ?Deal
+    public function __construct(Deal $parent, User $creator, string $content) 
     {
-        return $this->deal;
+        parent::__construct($creator, $content);
+        $this->parent = $parent;
     }
 
-    public function setDeal(?Deal $deal): self
+    public static function createFromDto(Deal $parent, User $creator, NoteDto $dto): self {
+        return new self($parent, $creator, $dto->content);
+    }
+
+    public function updateFromDto(NoteDto $dto): self
     {
-        $this->deal = $deal;
+        $this->content = $dto->content;
 
         return $this;
     }
 
-    public function setParent(NoteParentEntityInterface $deal): self
+    public function getParent(): NoteParentEntityInterface
     {
-        return $this->setDeal($deal);
-    }
-
-    public function getParent(): ?NoteParentEntityInterface
-    {
-        return $this->getDeal();
+        return $this->parent;
     }
 }

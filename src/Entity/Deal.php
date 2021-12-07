@@ -66,7 +66,7 @@ class Deal implements NoteParentEntityInterface
     private $workspace;
 
     #[ORM\OneToMany(
-        mappedBy: 'deal',
+        mappedBy: 'parent',
         targetEntity: DealNote::class,
         cascade: ['persist', 'remove']
     )]

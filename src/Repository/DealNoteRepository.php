@@ -38,7 +38,7 @@ class DealNoteRepository extends ServiceEntityRepository implements NoteReposito
     public function findLatestByWorkspace(Workspace $workspace, ?int $limit = 10): array
     {
         return $this->createQueryBuilder('n')
-            ->join('n.deal', 'd')
+            ->join('n.parent', 'd')
             ->andWhere('d.workspace = :id')
             ->setParameter(':id', $workspace->getId())
             ->orderBy('n.createdAt', 'DESC')

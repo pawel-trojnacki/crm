@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Constant\BaseSortConstant;
 use App\Controller\Abstract\AbstractBaseController;
+use App\Dto\CompanyDto;
 use App\Entity\Company;
 use App\Entity\Contact;
 use App\Entity\Workspace;
@@ -109,13 +110,10 @@ class CompanyController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Company $company */
-            $company = $form->getData();
+            /** @var CompanyDto $companyDto */
+            $companyDto = $form->getData();
 
-            $user = $this->getUser();
-            $company->setCreator($user);
-
-            $company->setWorkspace($workspace);
+            $company = Company::createFromDto($workspace, $this->getUser(), $companyDto);
 
             $this->companyRepository->save($company);
 
@@ -137,13 +135,17 @@ class CompanyController extends AbstractBaseController
     #[IsGranted('COMPANY_EDIT', subject: 'company')]
     public function edit(Company $company, Request $request): Response
     {
-        $form = $this->createForm(CompanyFormType::class, $company);
+        $companyDto = CompanyDto::createFromCompany($company);
+
+        $form = $this->createForm(CompanyFormType::class, $companyDto);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Company $company */
-            $company = $form->getData();
+            /** @var CompanyDto $companyDto */
+            $companyDto = $form->getData();
+
+            $company->updateFromDto($companyDto);
 
             $this->companyRepository->save($company);
 

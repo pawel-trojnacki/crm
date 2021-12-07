@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Constant\ContactConstant;
-use App\Controller\Abstract\AbstractNoteController;
+use App\Controller\Abstract\AbstractBaseController;
+use App\Dto\NoteDto;
 use App\Entity\Contact;
 use App\Entity\ContactNote;
 use App\Entity\Workspace;
@@ -19,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ContactController extends AbstractNoteController
+class ContactController extends AbstractBaseController
 {
     public function __construct(
         private ContactRepository $contactRepository,
@@ -65,14 +66,25 @@ class ContactController extends AbstractNoteController
     {
         $workspace = $contact->getWorkspace();
 
-        $form = $this->createForm(NoteFormType::class, null, [
-            'data_class' => ContactNote::class,
-        ]);
+        $form = $this->createForm(NoteFormType::class);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->saveNote($this->contactNoteRepository, $workspace, $form, $contact);
+            $this->denyAccessUnlessGranted(
+                'WORKSPACE_ADD_ITEM',
+                $workspace,
+                'Current user is not authorized to create a note'
+            );
+
+            /** @var NoteDto $note */
+            $noteDto = $form->getData();
+
+            $note = ContactNote::createFromDto($contact, $this->getUser(), $noteDto);
+
+            $this->contactNoteRepository->save($note);
+
+            $this->addFlashSuccess('Note has been created');
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
@@ -96,7 +108,19 @@ class ContactController extends AbstractNoteController
         }
 
         if ($request->isMethod('POST') && $request->request->get('delete-note')) {
-            $this->deleteNote($this->contactNoteRepository, $request);
+            $noteId = $request->request->get('delete-id');
+
+            $note = $this->contactNoteRepository->findOneBy(['id' => $noteId]);
+
+            $this->denyAccessUnlessGranted(
+                'NOTE_EDIT',
+                $note,
+                'Current user is not authorized to delete this note',
+            );
+
+            $this->contactNoteRepository->delete($note);
+
+            $this->addFlashSuccess('Note has been deleted');
 
             return $this->redirectToRoute('app_contact_show', [
                 'slug' => $contact->getSlug(),
@@ -191,17 +215,44 @@ class ContactController extends AbstractNoteController
         name: 'app_contact_edit_note',
         methods: ['GET', 'POST']
     )]
-    public function editContactNote(string $slug, int $id, Request $request): Response
+    public function editContactNote(string $slug, string $id, Request $request): Response
     {
-        return $this->editNote(
-            $id,
-            $slug,
-            $request,
-            $this->contactNoteRepository,
-            $this->contactRepository,
-            ContactNote::class,
-            'app_contact_show'
+        $contact = $this->contactRepository->findOneBy(['slug' => $slug]);
+        $note = $this->contactNoteRepository->findOneBy(['id' => $id]);
+
+        $this->denyAccessUnlessGranted(
+            'NOTE_EDIT',
+            $note,
+            'Current user is not authorized to edit this note'
         );
+
+        $noteDto = NoteDto::createFromNoteEntity($note);
+
+        $form = $this->createForm(NoteFormType::class, $noteDto, [
+            'label_text' => 'Edit note',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var NoteDto $noteDto */
+            $noteDto = $form->getData();
+
+            $note->updateFromDto($noteDto);
+
+            $this->contactNoteRepository->save($note);
+
+            $this->addFlashSuccess('Note has been updated');
+
+            return $this->redirectToRoute('app_contact_show', [
+                'slug' => $contact->getSlug(),
+            ]);
+        }
+
+        return $this->renderForm('note/edit.html.twig', [
+            'parent' => $contact,
+            'form' => $form,
+        ]);
     }
 
     #[Route('/{slug}/contacts/csv', name: 'app_contact_csv', methods: ['GET'])]

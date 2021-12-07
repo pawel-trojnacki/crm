@@ -94,8 +94,6 @@ class AppFixtures extends Fixture
             'industry' => IndustryFactory::random(),
             'creator' => UserFactory::random(),
             'country' => faker()->randomElement($countires),
-            'createdAt' => faker()->dateTimeBetween('-1 year', '-2 weeks'),
-            'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);
 
         ContactFactory::createMany(60, fn () => [
@@ -107,7 +105,7 @@ class AppFixtures extends Fixture
         ]);
 
         ContactNoteFactory::createMany(200, fn () => [
-            'contact' => ContactFactory::random(),
+            'parent' => ContactFactory::random(),
             'creator' => UserFactory::random(),
             'createdAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
             'updatedAt' => faker()->dateTimeBetween('-1 week', 'now'),
@@ -123,7 +121,7 @@ class AppFixtures extends Fixture
         ]);
 
         DealNoteFactory::createMany(120, fn () => [
-            'deal' => DealFactory::random(),
+            'parent' => DealFactory::random(),
             'creator' => UserFactory::random(),
             'createdAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
             'updatedAt' => faker()->dateTimeBetween('-1 week', 'now'),

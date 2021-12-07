@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Constant\BaseSortConstant;
-use App\Controller\Abstract\AbstractNoteController;
+use App\Controller\Abstract\AbstractBaseController;
+use App\Dto\NoteDto;
 use App\Entity\Deal;
 use App\Entity\DealNote;
 use App\Entity\Workspace;
@@ -19,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DealController extends AbstractNoteController
+class DealController extends AbstractBaseController
 {
     public function __construct(
         private DealRepository $dealRepository,
@@ -71,14 +72,25 @@ class DealController extends AbstractNoteController
     {
         $workspace = $deal->getWorkspace();
 
-        $form = $this->createForm(NoteFormType::class, null, [
-            'data_class' => DealNote::class,
-        ]);
+        $form = $this->createForm(NoteFormType::class);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->saveNote($this->dealNoteRepository, $workspace, $form, $deal);
+            $this->denyAccessUnlessGranted(
+                'WORKSPACE_ADD_ITEM',
+                $workspace,
+                'Current user is not authorized to create a note'
+            );
+
+            /** @var NoteDto $note */
+            $noteDto = $form->getData();
+
+            $note = DealNote::createFromDto($deal, $this->getUser(), $noteDto);
+
+            $this->dealNoteRepository->save($note);
+
+            $this->addFlashSuccess('Note has been created');
 
             return $this->redirectToRoute('app_deal_show', [
                 'slug' => $deal->getSlug(),
@@ -86,7 +98,19 @@ class DealController extends AbstractNoteController
         }
 
         if ($request->isMethod('POST') && $request->request->get('delete-note')) {
-            $this->deleteNote($this->dealNoteRepository, $request);
+            $noteId = $request->request->get('delete-id');
+
+            $note = $this->dealNoteRepository->findOneBy(['id' => $noteId]);
+
+            $this->denyAccessUnlessGranted(
+                'NOTE_EDIT',
+                $note,
+                'Current user is not authorized to delete this note',
+            );
+
+            $this->dealNoteRepository->delete($note);
+
+            $this->addFlashSuccess('Note has been deleted');
 
             return $this->redirectToRoute('app_deal_show', [
                 'slug' => $deal->getSlug(),
@@ -185,17 +209,44 @@ class DealController extends AbstractNoteController
         name: 'app_deal_edit_note',
         methods: ['GET', 'POST']
     )]
-    public function editDealNote(string $slug, int $id, Request $request): Response
+    public function editDealNote(string $slug, string $id, Request $request): Response
     {
-        return $this->editNote(
-            $id,
-            $slug,
-            $request,
-            $this->dealNoteRepository,
-            $this->dealRepository,
-            DealNote::class,
-            'app_deal_show',
+        $deal = $this->dealRepository->findOneBy(['slug' => $slug]);
+        $note = $this->dealNoteRepository->findOneBy(['id' => $id]);
+
+        $this->denyAccessUnlessGranted(
+            'NOTE_EDIT',
+            $note,
+            'Current user is not authorized to edit this note'
         );
+
+        $noteDto = NoteDto::createFromNoteEntity($note);
+
+        $form = $this->createForm(NoteFormType::class, $noteDto, [
+            'label_text' => 'Edit note',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var NoteDto $noteDto */
+            $noteDto = $form->getData();
+
+            $note->updateFromDto($noteDto);
+
+            $this->dealNoteRepository->save($note);
+
+            $this->addFlashSuccess('Note has been updated');
+
+            return $this->redirectToRoute('app_deal_show', [
+                'slug' => $deal->getSlug(),
+            ]);
+        }
+
+        return $this->renderForm('note/edit.html.twig', [
+            'parent' => $deal,
+            'form' => $form,
+        ]);
     }
 
     #[Route('/{slug}/deals/csv', name: 'app_deal_csv', methods: ['GET'])]

@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Dto\NoteDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -27,7 +28,8 @@ class NoteFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label_text' => 'Create note'
+            'data_class' => NoteDto::class,
+            'label_text' => 'Create note',
         ]);
     }
 }

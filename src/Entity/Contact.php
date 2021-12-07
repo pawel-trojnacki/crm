@@ -68,7 +68,7 @@ class Contact implements NoteParentEntityInterface
     private $company;
 
     #[ORM\OneToMany(
-        mappedBy: 'contact',
+        mappedBy: 'parent',
         targetEntity: ContactNote::class,
         cascade: ['persist', 'remove']
     )]

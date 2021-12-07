@@ -2,41 +2,40 @@
 
 namespace App\Entity;
 
+use App\Dto\NoteDto;
 use App\Entity\Abstract\AbstractNoteEntity;
 use App\Entity\Interface\NoteParentEntityInterface;
-use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\ContactNoteRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ContactNoteRepository::class)]
 class ContactNote extends AbstractNoteEntity
 {
-    use TimestampableAttributeEntityTrait;
 
     #[ORM\ManyToOne(targetEntity: Contact::class, inversedBy: 'contactNotes')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private $contact;
+    private $parent;
 
-
-    public function getContact(): ?Contact
+    public function __construct(Contact $parent, User $creator, string $content)
     {
-        return $this->contact;
+        parent::__construct($creator, $content);
+        $this->parent = $parent;
     }
 
-    public function setContact(?Contact $contact): self
+    public static function createFromDto(Contact $parent, User $creator, NoteDto $dto): self
     {
-        $this->contact = $contact;
+        return new self($parent, $creator, $dto->content);
+    }
+
+    public function updateFromDto(NoteDto $dto): self
+    {
+        $this->content = $dto->content;
 
         return $this;
     }
 
-    public function setParent($contact): self
+    public function getParent(): NoteParentEntityInterface
     {
-        return $this->setContact($contact);
-    }
-
-    public function getParent(): ?NoteParentEntityInterface
-    {
-        return $this->getContact();
+        return $this->parent;
     }
 }
