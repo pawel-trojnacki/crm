@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Constant\BaseSortConstant;
 use App\Controller\Abstract\AbstractBaseController;
+use App\Dto\DealDto;
 use App\Dto\NoteDto;
+use App\Dto\Transformer\DealDtoTransformer;
 use App\Dto\Transformer\NoteDtoTransformer;
 use App\Entity\Deal;
 use App\Entity\DealNote;
@@ -26,6 +28,7 @@ class DealController extends AbstractBaseController
     public function __construct(
         private DealRepository $dealRepository,
         private DealNoteRepository $dealNoteRepository,
+        private DealDtoTransformer $dealDtoTransformer,
         private NoteDtoTransformer $noteDtoTransformer,
         private PagerService $pagerService,
         private FilterService $filterService,
@@ -152,11 +155,10 @@ class DealController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Deal $deal */
-            $deal = $form->getData();
+            /** @var DealDto $dto */
+            $dto = $form->getData();
 
-            $deal->setWorkspace($workspace);
-            $deal->setCreator($this->getUser());
+            $deal = Deal::createFromDto($workspace, $this->getUser(), $dto);
 
             $this->dealRepository->save($deal);
 
@@ -178,15 +180,19 @@ class DealController extends AbstractBaseController
     {
         $workspace = $deal->getWorkspace();
 
-        $form = $this->createForm(DealFormType::class, $deal, [
+        $dealDto = $this->dealDtoTransformer->transformFromObject($deal);
+
+        $form = $this->createForm(DealFormType::class, $dealDto, [
             'workspace' => $workspace,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted()  && $form->isValid()) {
-            /** @var Deal $deal */
-            $deal = $form->getData();
+            /** @var DealDto $dto */
+            $dto = $form->getData();
+
+            $deal->updateFromDto($dto);
 
             $this->dealRepository->save($deal);
 

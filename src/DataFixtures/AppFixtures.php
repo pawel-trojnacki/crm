@@ -56,22 +56,18 @@ class AppFixtures extends Fixture
 
         $this->workspaceRepository->save($workspace);
 
-        $testAdmin = new User($workspace, 'John', 'Doe', 'testadmin@email.com');
-        $testAdmin->addRole('ROLE_ADMIN');
+        $testAdmin = new User($workspace, 'John', 'Doe', 'testadmin@email.com', 'ROLE_ADMIN');
         $testAdmin->setCreatedAt($workspaceDate);
 
         $this->userRepository->register($testAdmin, $this->testAdminPassword);
 
-        $testUser = new User($workspace, 'Jane', 'Doe', 'testuser@email.com');
+        $testUser = new User($workspace, 'Jane', 'Doe', 'testuser@email.com', 'ROLE_USER');
         $testUser->setCreatedAt($workspaceDate);
 
         $this->userRepository->register($testUser, $this->testUserPassword);
 
         UserFactory::createMany(3, [
             'workspace' => WorkspaceFactory::random(),
-            'roles' => faker()->boolean() ? ['ROLE_USER'] : ['ROLE_MANAGER'],
-            'createdAt' => faker()->dateTimeBetween('-2 years', '-1 year'),
-            'updatedAt' => faker()->dateTimeBetween('-1 year', 'now'),
         ]);
 
         $countires = [

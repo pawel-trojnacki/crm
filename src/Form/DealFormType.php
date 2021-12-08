@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Dto\DealDto;
 use App\Entity\Company;
 use App\Entity\Deal;
 use App\Entity\User;
@@ -67,7 +68,7 @@ class DealFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Deal::class,
+            'data_class' => DealDto::class,
             'attr' => [
                 'autocomplete' => 'off',
             ],

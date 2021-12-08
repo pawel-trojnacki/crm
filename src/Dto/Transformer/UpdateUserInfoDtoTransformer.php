@@ -6,8 +6,10 @@ use App\Dto\Transformer\Interface\DtoTransformerInterface;
 use App\Dto\UpdateUserInfoDto;
 use App\Entity\User;
 
-class UpdateUserInfoDtoTransformer implements DtoTransformerInterface {
-    public function transformFromObject(User $user) {
+class UpdateUserInfoDtoTransformer implements DtoTransformerInterface
+{
+    public function transformFromObject(User $user): UpdateUserInfoDto
+    {
         $dto = new UpdateUserInfoDto();
 
         $dto->firstName = $user->getFirstName();

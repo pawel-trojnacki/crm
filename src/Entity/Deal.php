@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Dto\DealDto;
 use App\Entity\Interface\NoteParentEntityInterface;
 use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\DealRepository;
@@ -9,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
+use Ramsey\Uuid\Uuid;
 
 #[ORM\Entity(repositoryClass: DealRepository::class)]
 class Deal implements NoteParentEntityInterface
@@ -20,16 +21,18 @@ class Deal implements NoteParentEntityInterface
     use TimestampableAttributeEntityTrait;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'string')]
     private $id;
 
+    #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'deals')]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private $workspace;
+
+    #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EAGER')]
+    #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
+    private $creator;
+
     #[ORM\Column(type: 'string', length: 80)]
-    #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 5,
-        max: 80,
-    )]
     private $name;
 
     /**
@@ -38,32 +41,18 @@ class Deal implements NoteParentEntityInterface
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private $slug;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    #[Assert\Length(
-        min: 10,
-        max: 1000,
-    )]
-    private $description;
-
     #[ORM\Column(type: 'string', length: 25)]
-    #[Assert\NotBlank]
     private $stage;
-
-    #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EAGER')]
-    #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
-    private $creator;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'deals', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
-    #[Assert\NotBlank]
     private $company;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     private $users;
 
-    #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'deals')]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private $workspace;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private $description;
 
     #[ORM\OneToMany(
         mappedBy: 'parent',
@@ -72,27 +61,63 @@ class Deal implements NoteParentEntityInterface
     )]
     private $notes;
 
-    public function __construct()
-    {
-        $this->users = new ArrayCollection();
+    public function __construct(
+        Workspace $workspace,
+        User $creator,
+        string $name,
+        string $stage,
+        Company $company,
+        ?Collection $users = null,
+        ?string $description = null,
+    ) {
+        $this->id = Uuid::uuid4();
+        $this->workspace = $workspace;
+        $this->creator = $creator;
+        $this->name = $name;
+        $this->stage = $stage;
+        $this->company = $company;
+        $this->description = $description;
+
+        if($users) {
+            $this->users = $users;
+        } else {
+            $this->users = new ArrayCollection();
+        }
+        
         $this->dealNotes = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public static function createFromDto(Workspace $workspace, User $creator, DealDto $dto): self
+    {
+        return new self(
+            $workspace,
+            $creator,
+            $dto->name,
+            $dto->stage,
+            $dto->company,
+            $dto->users,
+            $dto->description
+        );
+    }
+
+    public function updateFromDto(DealDto $dto): self {
+        $this->name = $dto->name;
+        $this->stage = $dto->stage;
+        $this->company = $dto->company;
+        $this->users = $dto->users;
+        $this->description = $dto->description;
+
+        return $this;
+    }
+
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     public function getSlug(): ?string
@@ -112,23 +137,9 @@ class Deal implements NoteParentEntityInterface
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getStage(): ?string
+    public function getStage(): string
     {
         return $this->stage;
-    }
-
-    public function setStage(string $stage): self
-    {
-        $this->stage = $stage;
-
-        return $this;
     }
 
     public function getCreator(): ?User
@@ -136,23 +147,9 @@ class Deal implements NoteParentEntityInterface
         return $this->creator;
     }
 
-    public function setCreator(?User $creator): self
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    public function getCompany(): ?Company
+    public function getCompany(): Company
     {
         return $this->company;
-    }
-
-    public function setCompany(?Company $company): self
-    {
-        $this->company = $company;
-
-        return $this;
     }
 
     /**
@@ -163,32 +160,9 @@ class Deal implements NoteParentEntityInterface
         return $this->users;
     }
 
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        $this->users->removeElement($user);
-
-        return $this;
-    }
-
-    public function getWorkspace(): ?Workspace
+    public function getWorkspace(): Workspace
     {
         return $this->workspace;
-    }
-
-    public function setWorkspace(?Workspace $workspace): self
-    {
-        $this->workspace = $workspace;
-
-        return $this;
     }
 
     /**
