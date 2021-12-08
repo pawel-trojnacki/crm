@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Deal;
-use App\Entity\User;
 use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -38,7 +37,7 @@ class DealRepository extends ServiceEntityRepository
         Workspace $workspace,
         ?string $search = null,
         ?string $stage = null,
-        ?int $userId = null,
+        ?string $userId = null,
         ?string $order = null
 
     ): QueryBuilder {
@@ -84,7 +83,7 @@ class DealRepository extends ServiceEntityRepository
     private function createFiltersQueryBuilder(
         ?string $search = null,
         ?string $stage = null,
-        ?int $userId = null,
+        ?string $userId = null,
         ?string $order = null,
     ): QueryBuilder {
         $qb = $this->createQueryBuilder('d');

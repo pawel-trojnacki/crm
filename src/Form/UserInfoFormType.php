@@ -2,8 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\User;
-use App\Form\FieldType\PasswordRepeatedType;
+use App\Dto\UpdateUserInfoDto;
 use App\Form\FieldType\UserRoleType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -11,18 +10,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserFormType extends AbstractType
+class UserInfoFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var User|null $user */
-        $user = $options['data'] ?? null;
+        /** @var UpdateUserInfoDto|null $user */
+        $dto = $options['data'] ?? null;
         $help = null;
 
-        if ($user) {
-            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+        if ($dto) {
+            if (in_array('ROLE_ADMIN', $dto->roles)) {
                 $data = 'Admin';
-            } elseif (in_array('ROLE_MANAGER', $user->getRoles())) {
+            } elseif (in_array('ROLE_MANAGER', $dto->roles)) {
                 $data = 'Manager';
             } else {
                 $data = 'User';
@@ -30,29 +29,24 @@ class UserFormType extends AbstractType
 
             $help = 'Current user role: ' . $data;
         }
-
+        
         $builder
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('email', EmailType::class);
 
-        if ($options['with_user_role']) {
-            $builder->add('role', UserRoleType::class, [
-                'help' => $help,
-            ]);
-        }
-
-        if ($options['with_password']) {
-            $builder->add('plainPassword', PasswordRepeatedType::class);
-        }
+            if ($options['with_roles']) {
+                $builder->add('role', UserRoleType::class, [
+                    'help' => $help,
+                ]);
+            }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
-            'with_password' => true,
-            'with_user_role' => true,
+            'data_class' => UpdateUserInfoDto::class,
+            'with_roles' => false,
             'attr' => [
                 'autocomplete' => 'off',
             ],

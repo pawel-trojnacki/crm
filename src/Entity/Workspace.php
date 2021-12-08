@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: WorkspaceRepository::class)]
@@ -16,9 +17,8 @@ class Workspace
     use TimestampableAttributeEntityTrait;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private int $id;
+    #[ORM\Column(type: 'string')]
+    private $id;
 
     #[ORM\Column(type: 'string', length: 30)]
     #[Assert\NotBlank]
@@ -26,13 +26,13 @@ class Workspace
         min: 6,
         max: 30
     )]
-    private string $name;
+    private $name;
 
     /**
      * @Gedmo\Slug(fields={"name"})
      */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private string $slug;
+    private $slug;
 
     #[ORM\OneToMany(
         mappedBy: 'workspace',
@@ -69,8 +69,10 @@ class Workspace
     )]
     private $meetings;
 
-    public function __construct()
+    public function __construct(string $name)
     {
+        $this->id = Uuid::uuid4();
+        $this->name = $name;
         $this->contacts = new ArrayCollection();
         $this->companies = new ArrayCollection();
         $this->users = new ArrayCollection();
@@ -78,24 +80,23 @@ class Workspace
         $this->meetings = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
+    public function changeName(string $name): self {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -145,27 +146,5 @@ class Workspace
     public function getMeetings(): Collection
     {
         return $this->meetings;
-    }
-
-    public function addMeeting(Meeting $meeting): self
-    {
-        if (!$this->meetings->contains($meeting)) {
-            $this->meetings[] = $meeting;
-            $meeting->setWorkspace($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMeeting(Meeting $meeting): self
-    {
-        if ($this->meetings->removeElement($meeting)) {
-            // set the owning side to null (unless already changed)
-            if ($meeting->getWorkspace() === $this) {
-                $meeting->setWorkspace(null);
-            }
-        }
-
-        return $this;
     }
 }

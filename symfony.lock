@@ -11,9 +11,6 @@
     "brick/math": {
         "version": "0.9.3"
     },
-    "cocur/slugify": {
-        "version": "v4.0.0"
-    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.4"
     },

@@ -26,7 +26,7 @@ class FilterService
         return $currentPage;
     }
 
-    public function getUserIdBySlugParam(Request $request, ?string $param = 'user'): ?int
+    public function getUserIdBySlugParam(Request $request, ?string $param = 'user'): ?string
     {
         $userSlug = $request->query->get($param);
 

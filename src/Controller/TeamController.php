@@ -3,10 +3,15 @@
 namespace App\Controller;
 
 use App\Controller\Abstract\AbstractBaseController;
+use App\Dto\RegisterUserDto;
+use App\Dto\Transformer\UpdateUserInfoDtoTransformer;
+use App\Dto\UpdatePasswordDto;
+use App\Dto\UpdateUserInfoDto;
 use App\Entity\User;
 use App\Entity\Workspace;
+use App\Form\MemberFormType;
 use App\Form\PasswordFormType;
-use App\Form\UserFormType;
+use App\Form\UserInfoFormType;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +23,7 @@ class TeamController extends AbstractBaseController
 {
     public function __construct(
         private UserRepository $userRepository,
+        private UpdateUserInfoDtoTransformer $updateUserInfoDtoTransformer,
     ) {
     }
 
@@ -51,19 +57,17 @@ class TeamController extends AbstractBaseController
     #[IsGranted('WORKSPACE_EDIT', subject: 'workspace')]
     public function create(Workspace $workspace, Request $request): Response
     {
-        $form = $this->createForm(UserFormType::class);
+        $form = $this->createForm(MemberFormType::class);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var User $user */
-            $user = $form->getData();
-            $user->setWorkspace($workspace);
+            /** @var RegisterUserDto $dto */
+            $dto = $form->getData();
 
-            $userRole = $form->get('role')->getData();
-            $user->addRole($userRole);
+            $user = User::createFromRegisterDto($workspace, $dto);
 
-            $plainPassword = $form->get('plainPassword')->getData();
+            $plainPassword = $dto->plainPassword;
 
             $this->userRepository->register($user, $plainPassword);
 
@@ -94,8 +98,10 @@ class TeamController extends AbstractBaseController
             throw new AccessDeniedException('Cannot edit admin user');
         }
 
-        $form = $this->createForm(UserFormType::class, $user, [
-            'with_password' => false,
+        $updateUserInfoDto = $this->updateUserInfoDtoTransformer->transformFromObject($user);
+
+        $form = $this->createForm(UserInfoFormType::class, $updateUserInfoDto, [
+            'with_roles' => true,
         ]);
 
         $passwordForm = $this->createForm(PasswordFormType::class);
@@ -103,13 +109,11 @@ class TeamController extends AbstractBaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var User $user */
-            $user = $form->getData();
+            /** @var UpdateUserInfoDto $dto */
+            $dto = $form->getData();
 
-            $userRole = $form->get('role')->getData();
-
-            $user->setRoles([$userRole]);
-
+            $user->updateFromDto($dto);
+            
             $this->userRepository->save($user);
 
             $this->addFlashSuccess('User info has been updated');
@@ -122,8 +126,10 @@ class TeamController extends AbstractBaseController
         $passwordForm->handleRequest($request);
 
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
-            $plainPassword = $passwordForm->get('plainPassword')->getData();
-            $this->userRepository->register($user, $plainPassword);
+            /** @var UpdatePasswordDto $passwordDto  */
+            $passwordDto = $passwordForm->getData();
+
+            $this->userRepository->register($user, $passwordDto->plainPassword);
 
             $this->addFlashSuccess('User password has been changed');
 

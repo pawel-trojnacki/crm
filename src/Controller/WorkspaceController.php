@@ -31,7 +31,7 @@ class WorkspaceController extends AbstractBaseController
         $editedName = $request->request->get('edit-workspace-name');
 
         if ($request->isMethod('POST') && $editedName) {
-            $workspace->setName($editedName);
+            $workspace->changeName($editedName);
 
             $errors = $this->validator->validate($workspace);
 

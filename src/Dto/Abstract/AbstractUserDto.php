@@ -2,6 +2,8 @@
 
 namespace App\Dto\Abstract;
 
+use App\Entity\User;
+use App\Validator\UniqueField;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AbstractUserDto
@@ -22,5 +24,6 @@ class AbstractUserDto
 
     #[Assert\NotBlank]
     #[Assert\Email]
+    #[UniqueField(['entityClass' => User::class, 'field' => 'email'])]
     public string $email;
 }

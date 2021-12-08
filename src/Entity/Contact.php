@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Dto\ContactDto;
 use App\Entity\Interface\NoteParentEntityInterface;
+use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\ContactRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,15 +15,11 @@ use Ramsey\Uuid\Uuid;
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 class Contact implements NoteParentEntityInterface
 {
+    use TimestampableAttributeEntityTrait;
+    
     #[ORM\Id]
     #[ORM\Column(type: 'string')]
     private $id;
-
-    #[ORM\Column(type: 'datetime')]
-    private $createdAt;
-
-    #[ORM\Column(type: 'datetime')]
-    private $updatedAt;
 
     #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'contacts')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -75,8 +72,6 @@ class Contact implements NoteParentEntityInterface
         ?Company $company,
     ) {
         $this->id = Uuid::uuid4();
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
         $this->workspace = $workspace;
         $this->creator = $creator;
         $this->firstName = $firstName;
@@ -104,7 +99,6 @@ class Contact implements NoteParentEntityInterface
 
     public function updateFromDto(ContactDto $dto): self
     {
-        $this->updatedAt = new \DateTime();
         $this->firstName = $dto->firstName;
         $this->lastName = $dto->lastName;
         $this->phone = $dto->phone;
@@ -118,30 +112,6 @@ class Contact implements NoteParentEntityInterface
     public function getId(): string
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTime $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): \DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTime $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
     }
 
     public function getFirstName(): string

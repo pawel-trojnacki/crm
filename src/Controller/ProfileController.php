@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Controller\Abstract\AbstractBaseController;
+use App\Dto\Transformer\UpdateUserInfoDtoTransformer;
+use App\Dto\UpdatePasswordDto;
+use App\Dto\UpdateUserInfoDto;
 use App\Entity\User;
 use App\Form\PasswordFormType;
-use App\Form\UserFormType;
+use App\Form\UserInfoFormType;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +19,7 @@ class ProfileController extends AbstractBaseController
 {
     public function __construct(
         private UserRepository $userRepository,
+        private UpdateUserInfoDtoTransformer $updateUserInfoDtoTransformer,
     ) {
     }
 
@@ -23,10 +27,9 @@ class ProfileController extends AbstractBaseController
     #[IsGranted('PROFILE_VIEW', subject: 'user')]
     public function show(User $user, Request $request): Response
     {
-        $userForm = $this->createForm(UserFormType::class, $user, [
-            'with_user_role' => false,
-            'with_password' => false,
-        ]);
+        $updateUserInfoDto = $this->updateUserInfoDtoTransformer->transformFromObject($user);
+
+        $userForm = $this->createForm(UserInfoFormType::class, $updateUserInfoDto);
 
         $passwordForm = $this->createForm(PasswordFormType::class);
 
@@ -34,16 +37,18 @@ class ProfileController extends AbstractBaseController
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {
             $this->denyAccessUnlessGranted('PROFILE_EDIT', $user);
+            /** @var UpdateUserInfoDto $dto */
 
-            /** @var User $editedUser */
-            $editedUser = $userForm->getData();
+            $dto = $userForm->getData();
 
-            $this->userRepository->save($editedUser);
+            $user->updateFromDto($dto);
+
+            $this->userRepository->save($user);
 
             $this->addFlashSuccess('You account has been updated');
 
             return $this->redirectToRoute('app_profile_show', [
-                'slug' => $editedUser->getSlug(),
+                'slug' => $user->getSlug(),
             ]);
         }
 
@@ -52,8 +57,10 @@ class ProfileController extends AbstractBaseController
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
             $this->denyAccessUnlessGranted('PROFILE_EDIT', $user);
 
-            $plainPassword = $passwordForm->get('plainPassword')->getData();
-            $this->userRepository->register($user, $plainPassword);
+            /** @var UpdatePasswordDto $passwordDto  */
+            $passwordDto = $passwordForm->getData();
+
+            $this->userRepository->register($user, $passwordDto->plainPassword);
 
             $this->addFlashSuccess('Your password has been changed');
 

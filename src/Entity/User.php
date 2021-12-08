@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Dto\RegisterUserDto;
+use App\Dto\UpdatePasswordDto;
 use App\Dto\UpdateUserInfoDto;
+use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -16,15 +18,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use TimestampableAttributeEntityTrait;
+
     #[ORM\Id]
     #[ORM\Column(type: 'string')]
     private $id;
-
-    #[ORM\Column(type: 'datetime')]
-    private $createdAt;
-
-    #[ORM\Column(type: 'datetime')]
-    private $updatedAt;
 
     #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -40,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Gedmo\Slug(fields={"firstName", "lastName"})
      */
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private string $slug;
+    private $slug;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $email;
@@ -56,15 +54,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         string $firstName,
         string $lastName,
         string $email,
+        ?string $role,
     ) {
         $this->id = Uuid::uuid4();
         $this->workspace = $workspace;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->email = $email;
-        $this->roles = ['ROLE_USER'];
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
+
+        if($role) {
+            $this->addRole($role);
+        } else {
+            $this->addRole('ROLE_USER');
+        }
     }
 
     public function __toString()
@@ -75,18 +77,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public static function createFromRegisterDto(
         Workspace $workspace,
         RegisterUserDto $dto,
-        ?bool $asAdmin = false,
     ): self {
         $user = new self(
             $workspace,
             $dto->firstName,
             $dto->lastName,
             $dto->email,
+            $dto->role,
         );
-
-        if ($asAdmin) {
-            $user->addRole('ROLE_ADMIN');
-        }
 
         return $user;
     }
@@ -97,6 +95,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->firstName = $dto->firstName;
         $this->lastName = $dto->lastName;
         $this->email = $dto->email;
+        
+        if($dto->role) {
+            $this->roles = [$dto->role];
+        }
 
         return $this;
     }
@@ -104,30 +106,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): string
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTime $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): \DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTime $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
     }
 
     public function getEmail(): string

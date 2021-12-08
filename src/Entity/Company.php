@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Dto\CompanyDto;
+use App\Entity\Trait\TimestampableAttributeEntityTrait;
 use App\Repository\CompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,15 +14,11 @@ use Ramsey\Uuid\Uuid;
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 class Company
 {
+    use TimestampableAttributeEntityTrait;
+
     #[ORM\Id]
     #[ORM\Column(type: 'string')]
     private $id;
-
-    #[ORM\Column(type: 'datetime')]
-    private \DateTime $createdAt;
-
-    #[ORM\Column(type: 'datetime')]
-    private \DateTime $updatedAt;
 
     #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'companies')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -77,8 +74,6 @@ class Company
         ?Country $country = null,
     ) {
         $this->id = Uuid::uuid4();
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
         $this->workspace = $workspace;
         $this->creator = $creator;
         $this->name = $name;
@@ -107,7 +102,6 @@ class Company
 
     public function updateFromDto(CompanyDto $dto): self
     {
-        $this->updatedAt = new \DateTime();
         $this->name = $dto->name;
         $this->industry = $dto->industry;
         $this->website = $dto->website;
@@ -121,30 +115,6 @@ class Company
     public function getId(): string
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTime $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): \DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTime $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
     }
 
     public function getName(): string

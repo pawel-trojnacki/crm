@@ -7,4 +7,6 @@ use App\Dto\Abstract\AbstractUserDto;
 class UpdateUserInfoDto extends AbstractUserDto
 {
     public ?array $roles = ['ROLE_USER'];
+
+    public ?string $role = null;
 }

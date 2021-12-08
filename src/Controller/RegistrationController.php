@@ -34,15 +34,15 @@ class RegistrationController extends AbstractBaseController
             /** @var string $workspaceName */
             $workspaceName = $form->get('workspace')->getData();
 
-            $workspace = new Workspace();
-            $workspace->setName($workspaceName);
+            $workspace = new Workspace($workspaceName);
 
             $this->workspaceRepository->save($workspace);
 
             /** @var RegisterUserDto $dto */
             $dto = $form->getData();
+            $dto->role = 'ROLE_ADMIN';
 
-            $user = User::createFromRegisterDto($workspace, $dto, true);
+            $user = User::createFromRegisterDto($workspace, $dto);
 
             $this->userRepository->register($user, $dto->plainPassword);
 

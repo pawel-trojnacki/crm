@@ -51,8 +51,7 @@ class AppFixtures extends Fixture
         $workspaceDate = new \DateTime();
         $workspaceDate->modify('-2 years');
 
-        $workspace = new Workspace();
-        $workspace->setName('First Workspace');
+        $workspace = new Workspace('First Workspace');
         $workspace->setCreatedAt($workspaceDate);
 
         $this->workspaceRepository->save($workspace);

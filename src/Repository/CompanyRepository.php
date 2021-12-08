@@ -48,7 +48,7 @@ class CompanyRepository extends ServiceEntityRepository
         Workspace $workspace,
         ?string $search = null,
         ?string $industry = null,
-        ?int $userId = null,
+        ?string $userId = null,
         ?string $order = null,
     ): QueryBuilder {
         return $this->createFiltersQueryBuilder($search, $industry, $userId, $order)
@@ -96,7 +96,7 @@ class CompanyRepository extends ServiceEntityRepository
     private function createFiltersQueryBuilder(
         ?string $search = null,
         ?string $industry = null,
-        ?int $userId = null,
+        ?string $userId = null,
         ?string $order = null,
     ): QueryBuilder {
         $qb = $this->createQueryBuilder('c');

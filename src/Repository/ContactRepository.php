@@ -36,7 +36,7 @@ class ContactRepository extends ServiceEntityRepository
     public function createFindByWorkspaceQueryBuilder(
         Workspace $workspace,
         ?string $search = null,
-        ?int $userId = null,
+        ?string $userId = null,
         ?string $order = null,
     ): QueryBuilder {
         return $this->createFiltersQueryBuilder($search, $userId, $order)
@@ -69,7 +69,7 @@ class ContactRepository extends ServiceEntityRepository
 
     private function createFiltersQueryBuilder(
         ?string $search = null,
-        ?int $userId = null,
+        ?string $userId = null,
         ?string $order = null,
     ): QueryBuilder {
         $qb = $this->createQueryBuilder('c');

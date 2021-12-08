@@ -8,5 +8,5 @@ class RegisterUserDto extends AbstractUserDto
 {
     public string $plainPassword;
 
-    public ?array $roles = ['ROLE_USER'];
+    public ?string $role = null;
 }

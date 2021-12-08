@@ -5,13 +5,13 @@ namespace App\Entity;
 use App\Repository\MeetingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Ramsey\Uuid\Uuid;
 
 #[ORM\Entity(repositoryClass: MeetingRepository::class)]
 class Meeting
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'string')]
     private $id;
 
     #[ORM\Column(type: 'string', length: 50)]
@@ -33,7 +33,21 @@ class Meeting
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $endAt;
 
-    public function getId(): ?int
+    public function __construct(
+        Workspace $workspace,
+        string $name,
+        \DateTime $beginAt,
+        ?\DateTime $endAt = null,
+    )
+    {
+        $this->id = Uuid::uuid4();
+        $this->workspace = $workspace;
+        $this->name = $name;
+        $this->beginAt = $beginAt;
+        $this->endAt = $endAt;
+    }
+
+    public function getId(): string
     {
         return $this->id;
     }
@@ -41,13 +55,6 @@ class Meeting
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     public function getSlug(): ?string
@@ -67,34 +74,13 @@ class Meeting
         return $this->workspace;
     }
 
-    public function setWorkspace(?Workspace $workspace): self
-    {
-        $this->workspace = $workspace;
-
-        return $this;
-    }
-
     public function getBeginAt(): ?\DateTimeInterface
     {
         return $this->beginAt;
     }
 
-    public function setBeginAt(\DateTimeInterface $beginAt): self
-    {
-        $this->beginAt = $beginAt;
-
-        return $this;
-    }
-
     public function getEndAt(): ?\DateTimeInterface
     {
         return $this->endAt;
-    }
-
-    public function setEndAt(?\DateTimeInterface $endAt): self
-    {
-        $this->endAt = $endAt;
-
-        return $this;
     }
 }
