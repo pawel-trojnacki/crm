@@ -16,7 +16,7 @@ use Ramsey\Uuid\Uuid;
 class Contact implements NoteParentEntityInterface
 {
     use TimestampableAttributeEntityTrait;
-    
+
     #[ORM\Id]
     #[ORM\Column(type: 'string')]
     private $id;
@@ -61,6 +61,9 @@ class Contact implements NoteParentEntityInterface
     )]
     private $notes;
 
+    #[ORM\OneToMany(mappedBy: 'contact', targetEntity: Meeting::class)]
+    private $meetings;
+
     public function __construct(
         Workspace $workspace,
         User $creator,
@@ -81,6 +84,7 @@ class Contact implements NoteParentEntityInterface
         $this->position = $position;
         $this->company = $company;
         $this->contactNotes = new ArrayCollection();
+        $this->meetings = new ArrayCollection();
     }
 
     public static function createFromDto(Workspace $workspace, User $creator, ContactDto $dto): self
@@ -172,5 +176,25 @@ class Contact implements NoteParentEntityInterface
     public function getCreator(): User
     {
         return $this->creator;
+    }
+
+    /**
+     * @return Collection|Meeting[]
+     */
+    public function getMeetings(): Collection
+    {
+        return $this->meetings;
+    }
+
+    /**
+     * @return Collection|Meeting[]
+     */
+    public function getUpcomingMeetings(): Collection
+    {
+        $currentDate = (new \DateTime())->setTime(0, 0);
+
+        $upcomingMeetings = $this->meetings->filter(fn ($m) => $m->getBeginAt() > $currentDate);
+
+        return $upcomingMeetings;
     }
 }

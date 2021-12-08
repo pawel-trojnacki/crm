@@ -22,6 +22,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_MANAGER = 'ROLE_MANAGER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
 
+    public const ROLES = [self::ROLE_USER, self::ROLE_MANAGER, self::ROLE_ADMIN];
+
     use TimestampableAttributeEntityTrait;
 
     #[ORM\Id]
@@ -78,17 +80,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return ucwords($this->firstName . ' ' . $this->lastName);
     }
 
-    public static function createFromRegisterDto(
-        Workspace $workspace,
-        RegisterUserDto $dto,
-    ): self {
-        $user = new self(
-            $workspace,
-            $dto->firstName,
-            $dto->lastName,
-            $dto->email,
-            $dto->role,
-        );
+    public static function createFromRegisterDto(Workspace $workspace, RegisterUserDto $dto): self
+    {
+        $user = new self($workspace, $dto->firstName, $dto->lastName, $dto->email, $dto->role);
 
         return $user;
     }
@@ -98,7 +92,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedAt = new \DateTime();
         $this->firstName = $dto->firstName;
         $this->lastName = $dto->lastName;
-        $this->email = $dto->email;
 
         if ($dto->role) {
             $this->roles = [$dto->role];

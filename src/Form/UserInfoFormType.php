@@ -33,8 +33,7 @@ class UserInfoFormType extends AbstractType
 
         $builder
             ->add('firstName', TextType::class)
-            ->add('lastName', TextType::class)
-            ->add('email', EmailType::class);
+            ->add('lastName', TextType::class);
 
         if ($options['with_roles']) {
             $builder->add('role', UserRoleType::class, [

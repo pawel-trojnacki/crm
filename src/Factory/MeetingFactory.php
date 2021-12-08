@@ -37,6 +37,11 @@ final class MeetingFactory extends ModelFactory
     {
         return [
             'name' => self::faker()->sentence(3),
+            'importance' => self::faker()->randomElement([
+                Meeting::IMORTANCE_HIGH,
+                Meeting::IMPORTANCE_LOW,
+                Meeting::IMPORTANCE_NORMAL,
+            ]),
             'beginAt' => self::faker()->dateTimeBetween('now', '+3 months'),
         ];
     }

@@ -106,6 +106,7 @@ class AppFixtures extends Fixture
 
         MeetingFactory::createMany(15, fn () => [
             'workspace' => WorkspaceFactory::random(),
+            'contact' => ContactFactory::random(),
         ]);
     }
 }

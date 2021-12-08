@@ -3,10 +3,12 @@
 namespace App\Dto;
 
 use App\Entity\Company;
+use App\Entity\Deal;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class DealDto {
+class DealDto
+{
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 5,
@@ -15,6 +17,7 @@ class DealDto {
     public string $name;
 
     #[Assert\NotBlank]
+    #[Assert\Choice(choices: Deal::STAGES)]
     public string $stage;
 
     #[Assert\NotBlank]

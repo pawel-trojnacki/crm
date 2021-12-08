@@ -89,15 +89,7 @@ class Deal implements NoteParentEntityInterface
 
     public static function createFromDto(Workspace $workspace, User $creator, DealDto $dto): self
     {
-        return new self(
-            $workspace,
-            $creator,
-            $dto->name,
-            $dto->stage,
-            $dto->company,
-            $dto->users,
-            $dto->description
-        );
+        return new self($workspace, $creator, $dto->name, $dto->stage, $dto->company, $dto->users, $dto->description);
     }
 
     public function updateFromDto(DealDto $dto): self

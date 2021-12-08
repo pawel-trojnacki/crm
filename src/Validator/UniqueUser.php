@@ -5,18 +5,17 @@ namespace App\Validator;
 use Symfony\Component\Validator\Constraint;
 
 #[\Attribute]
-class UniqueField extends Constraint {
-    public string $message = 'This value is already used';
-
-    public string $entityClass;
+class UniqueUser extends Constraint
+{
+    public string $message = 'User already exists';
 
     public string $field;
 
     public function getRequiredOptions(): array
     {
-        return ['entityClass', 'field'];
+        return ['field'];
     }
-    
+
     public function getTargets(): string
     {
         return self::PROPERTY_CONSTRAINT;
@@ -24,7 +23,6 @@ class UniqueField extends Constraint {
 
     public function validatedBy(): string
     {
-        return self::class.'Validator';
+        return self::class . 'Validator';
     }
-
 }
