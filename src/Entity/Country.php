@@ -22,6 +22,13 @@ class Country
     #[ORM\Column(type: 'string', length: 7)]
     private $isdCode;
 
+    public function __construct(string $name, string $isoCode, string $isdCode)
+    {
+        $this->name = $name;
+        $this->isoCode = $isoCode;
+        $this->isdCode = $isdCode;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -32,34 +39,13 @@ class Country
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getIsoCode(): ?string
+    public function getIsoCode(): string
     {
         return $this->isoCode;
     }
 
-    public function setIsoCode(string $isoCode): self
-    {
-        $this->isoCode = $isoCode;
-
-        return $this;
-    }
-
-    public function getIsdCode(): ?string
+    public function getIsdCode(): string
     {
         return $this->isdCode;
-    }
-
-    public function setIsdCode(string $isdCode): self
-    {
-        $this->isdCode = $isdCode;
-
-        return $this;
     }
 }
