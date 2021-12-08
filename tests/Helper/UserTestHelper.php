@@ -5,7 +5,8 @@ namespace App\Tests\Helper;
 use App\Entity\User;
 use App\Entity\Workspace;
 
-class UserTestHelper {
+class UserTestHelper
+{
     public const DEFAULTS = [
         'firstName' => 'John',
         'lastName' => 'Doe',
@@ -14,14 +15,14 @@ class UserTestHelper {
 
     public static function createDefaultUser(Workspace $workspace): User
     {
-        $user = new User();
-
-        $user->setWorkspace($workspace);
-        $user->setFirstName(self::DEFAULTS['firstName']);
-        $user->setLastName(self::DEFAULTS['lastName']);
-        $user->setEmail(self::DEFAULTS['email']);
+        $user = new User(
+            $workspace,
+            self::DEFAULTS['firstName'],
+            self::DEFAULTS['lastName'],
+            self::DEFAULTS['email'],
+            'ROLE_USER',
+        );
 
         return $user;
     }
-
 }

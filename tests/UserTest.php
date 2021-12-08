@@ -46,7 +46,7 @@ class UserTest extends KernelTestCase
         $user = $this->userRepository->findOneBy(['email' => UserTestHelper::DEFAULTS['email']]);
 
         $this->assertInstanceOf(User::class, $user);
-        $this->assertIsInt($user->getId());
+        $this->assertIsString($user->getId());
         $this->assertSame(UserTestHelper::DEFAULTS['firstName'], $user->getFirstName());
         $this->assertSame(UserTestHelper::DEFAULTS['lastName'], $user->getLastName());
         $this->assertIsArray($user->getRoles());

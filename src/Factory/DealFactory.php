@@ -39,6 +39,8 @@ final class DealFactory extends ModelFactory
             'name' => self::faker()->sentence(5),
             'stage' => self::faker()->randomElement(Deal::STAGES),
             'description' => self::faker()->text(),
+            'createdAt' => self::faker()->dateTimeBetween('-1 year', '-2 weeks'),
+            'updatedAt' => self::faker()->dateTimeBetween('-2 weeks', 'now'),
         ];
     }
 

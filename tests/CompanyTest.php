@@ -37,20 +37,20 @@ class CompanyTest extends KernelTestCase
     public function testCompanyIsCorrectlyCreatedInDatabase(): void
     {
         $workspace = WorkspaceTestHelper::createDefaultWorkspace();
-
         $this->workspaceRepository->save($workspace);
 
         $user = UserTestHelper::createDefaultUser($workspace);
-
         $this->userRepository->register($user, 'some password');
 
-        $company = new Company();
-        $company->setName('Some Company');
-        $company->setWorkspace($workspace);
-        $company->setWebsite('www.example.com');
-        $company->setAddress('286 Adah Forest');
-        $company->setCity('West Williamberg');
-        $company->setCreator($user);
+        $company = new Company(
+            $workspace,
+            $user,
+            'Some Company',
+            null,
+            'www.example.com',
+            '286 Adah Forest',
+            'West Williamberg',
+        );
 
         $this->companyRepository->save($company);
 
@@ -59,7 +59,7 @@ class CompanyTest extends KernelTestCase
         ]);
 
         $this->assertInstanceOf(Company::class, $savedCompany);
-        $this->assertIsInt($savedCompany->getId());
+        $this->assertIsString($savedCompany->getId());
         $this->assertSame($workspace, $savedCompany->getWorkspace());
         $this->assertSame('www.example.com', $savedCompany->getWebsite());
         $this->assertSame('286 Adah Forest', $savedCompany->getAddress());
@@ -76,12 +76,12 @@ class CompanyTest extends KernelTestCase
     public function testCompanyIsDeletedFromDatabase(): void
     {
         $workspace = WorkspaceTestHelper::createDefaultWorkspace();
-
         $this->workspaceRepository->save($workspace);
 
-        $company = new Company();
-        $company->setName('Some Company');
-        $company->setWorkspace($workspace);
+        $user = UserTestHelper::createDefaultUser($workspace);
+        $this->userRepository->register($user, 'some password');
+
+        $company = new Company($workspace, $user, 'Some Company');
 
         $this->companyRepository->save($company);
 
@@ -104,13 +104,13 @@ class CompanyTest extends KernelTestCase
     public function testCompaniesAreFetchedOrderedAlphabetically(): void
     {
         $workspace = WorkspaceTestHelper::createDefaultWorkspace();
-
         $this->workspaceRepository->save($workspace);
 
+        $user = UserTestHelper::createDefaultUser($workspace);
+        $this->userRepository->register($user, 'some password');
+
         foreach (['Microsoft', 'Apple', 'Netflix'] as $name) {
-            $company = new Company();
-            $company->setName($name);
-            $company->setWorkspace($workspace);
+            $company = new Company($workspace, $user, $name);
 
             $this->companyRepository->save($company);
         }
@@ -130,13 +130,13 @@ class CompanyTest extends KernelTestCase
     public function testCompaniesArePropperlySortedByDate(): void
     {
         $workspace = WorkspaceTestHelper::createDefaultWorkspace();
-
         $this->workspaceRepository->save($workspace);
 
+        $user = UserTestHelper::createDefaultUser($workspace);
+        $this->userRepository->register($user, 'some password');
+
         for ($i = 0; $i < 3; $i++) {
-            $company = new Company();
-            $company->setWorkspace($workspace);
-            $company->setName(faker()->company());
+            $company = new Company($workspace, $user, faker()->company());
             $company->setCreatedAt(faker()->dateTimeBetween('-1 month', 'now'));
 
             $this->companyRepository->save($company);
@@ -164,13 +164,13 @@ class CompanyTest extends KernelTestCase
     public function testCompaniesAreSearchedByProvidedPhrase(): void
     {
         $workspace = WorkspaceTestHelper::createDefaultWorkspace();
-
         $this->workspaceRepository->save($workspace);
 
+        $user = UserTestHelper::createDefaultUser($workspace);
+        $this->userRepository->register($user, 'some password');
+
         foreach (['Microsoft', 'Apple', 'Netflix', 'Google', 'Amazon'] as $name) {
-            $company = new Company();
-            $company->setName($name);
-            $company->setWorkspace($workspace);
+            $company = new Company($workspace, $user, $name);
 
             $this->companyRepository->save($company);
         }
@@ -204,12 +204,12 @@ class CompanyTest extends KernelTestCase
     public function testCompanyIsDeletedFromDatabaseWhenRelatedWorkspaceIsDeleted(): void
     {
         $workspace = WorkspaceTestHelper::createDefaultWorkspace();
-
         $this->workspaceRepository->save($workspace);
 
-        $company = new Company();
-        $company->setName('Some Company');
-        $company->setWorkspace($workspace);
+        $user = UserTestHelper::createDefaultUser($workspace);
+        $this->userRepository->register($user, 'some password');
+
+        $company = new Company($workspace, $user, 'Some Company');
 
         $this->companyRepository->save($company);
 

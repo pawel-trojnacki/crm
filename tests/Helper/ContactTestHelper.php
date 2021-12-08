@@ -2,7 +2,9 @@
 
 namespace App\Tests\Helper;
 
+use App\Entity\Company;
 use App\Entity\Contact;
+use App\Entity\User;
 use App\Entity\Workspace;
 
 class ContactTestHelper
@@ -15,16 +17,21 @@ class ContactTestHelper
         'position' => 'manager',
     ];
 
-    public static function createDefaultContact(Workspace $workspace): Contact
-    {
-        $contact = new Contact();
-
-        $contact->setFirstName(self::DEFAULTS['firstName']);
-        $contact->setLastName(self::DEFAULTS['lastName']);
-        $contact->setEmail(self::DEFAULTS['email']);
-        $contact->setPhone(self::DEFAULTS['phone']);
-        $contact->setPosition(self::DEFAULTS['position']);
-        $contact->setWorkspace($workspace);
+    public static function createDefaultContact(
+        Workspace $workspace,
+        User $creator,
+        ?Company $company = null
+    ): Contact {
+        $contact = new Contact(
+            $workspace,
+            $creator,
+            self::DEFAULTS['firstName'],
+            self::DEFAULTS['lastName'],
+            self::DEFAULTS['email'],
+            self::DEFAULTS['phone'],
+            self::DEFAULTS['position'],
+            $company,
+        );
 
         return $contact;
     }

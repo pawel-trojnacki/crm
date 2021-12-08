@@ -46,13 +46,14 @@ class ContactNoteTest extends KernelTestCase
         $user = UserTestHelper::createDefaultUser($workspace);
         $this->userRepository->register($user, 'some password');
 
-        $contact = ContactTestHelper::createDefaultContact($workspace);
+        $contact = ContactTestHelper::createDefaultContact($workspace, $user);
         $this->contactRepository->save($contact);
 
-        $contactNote = new ContactNote();
-        $contactNote->setContent(self::DEFAULT_CONTENT);
-        $contactNote->setContact($contact);
-        $contactNote->setCreator($user);
+        $contactNote = new ContactNote(
+            $contact,
+            $user,
+            self::DEFAULT_CONTENT,
+        );
 
         $this->contactNoteRepository->save($contactNote);
 
@@ -68,11 +69,11 @@ class ContactNoteTest extends KernelTestCase
         ]);
 
         $savedNote = $this->contactNoteRepository->findOneBy([
-            'contact' => $savedContact,
+            'parent' => $savedContact,
         ]);
 
         $this->assertInstanceOf(ContactNote::class, $savedNote);
-        $this->assertIsInt($savedNote->getId());
+        $this->assertIsString($savedNote->getId());
         $this->assertSame(self::DEFAULT_CONTENT, $savedNote->getContent());
         $this->assertSame(
             UserTestHelper::DEFAULTS['email'],
@@ -99,7 +100,7 @@ class ContactNoteTest extends KernelTestCase
         $this->assertInstanceOf(
             ContactNote::class,
             $this->contactNoteRepository->findOneBy([
-                'contact' => $savedContact,
+                'parent' => $savedContact,
             ])
         );
 
@@ -107,7 +108,7 @@ class ContactNoteTest extends KernelTestCase
 
         $this->assertNull(
             $this->contactNoteRepository->findOneBy([
-                'contact' => $savedContact,
+                'parent' => $savedContact,
             ])
         );
     }

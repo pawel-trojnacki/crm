@@ -21,9 +21,7 @@ class IndustryTest extends KernelTestCase
 
     public function testIndustryIsCreatedInDatabse(): void
     {
-        $industry = new Industry();
-
-        $industry->setName('transport');
+        $industry = new Industry('transport');
 
         $this->industryRepository->save($industry);
 
@@ -38,9 +36,7 @@ class IndustryTest extends KernelTestCase
 
     public function testIndustryIsRemovedFromDatabase(): void
     {
-        $industry = new Industry();
-
-        $industry->setName('transport');
+        $industry = new Industry('transport');
 
         $this->industryRepository->save($industry);
 

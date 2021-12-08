@@ -8,8 +8,7 @@ class WorkspaceTestHelper
 {
     public static function createDefaultWorkspace(): Workspace
     {
-        $workspace = new Workspace();
-        $workspace->setName('Some Workspace');
+        $workspace = new Workspace('Some Workspace');
 
         return $workspace;
     }

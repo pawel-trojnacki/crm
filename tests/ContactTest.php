@@ -38,8 +38,7 @@ class ContactTest extends KernelTestCase
         $user = UserTestHelper::createDefaultUser($workspace);
         $this->userRepository->register($user, 'some password');
 
-        $contact = ContactTestHelper::createDefaultContact($workspace);
-        $contact->setCreator($user);
+        $contact = ContactTestHelper::createDefaultContact($workspace, $user);
         $this->contactRepository->save($contact);
 
         return $contact;
@@ -58,7 +57,7 @@ class ContactTest extends KernelTestCase
         ]);
 
         $this->assertInstanceOf(Contact::class, $savedContact);
-        $this->assertIsInt($savedContact->getId());
+        $this->assertIsString($savedContact->getId());
         $this->assertSame(
             ContactTestHelper::DEFAULTS['firstName'],
             $savedContact->getFirstName()

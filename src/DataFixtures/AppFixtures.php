@@ -99,8 +99,6 @@ class AppFixtures extends Fixture
             'company' => CompanyFactory::random(),
             'creator' => UserFactory::random(),
             'users' => UserFactory::randomRange(1, 3),
-            'createdAt' => faker()->dateTimeBetween('-1 year', '-2 weeks'),
-            'updatedAt' => faker()->dateTimeBetween('-2 weeks', 'now'),
         ]);
 
         DealNoteFactory::createMany(120, fn () => [
