@@ -17,7 +17,7 @@ class PasswordRepeatedType extends AbstractType
             'type' => PasswordType::class,
             // instead of being set onto the object directly,
             // this is read and encoded in the service
-            'mapped' => false,
+            // 'mapped' => false,
             'attr' => ['autocomplete' => 'new-password'],
             // 'label' => 'Password',
             'first_options'  => [

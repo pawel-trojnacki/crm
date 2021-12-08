@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Abstract\AbstractBaseController;
+use App\Dto\RegisterUserDto;
 use App\Entity\User;
 use App\Entity\Workspace;
 use App\Form\RegistrationFormType;
@@ -38,14 +39,12 @@ class RegistrationController extends AbstractBaseController
 
             $this->workspaceRepository->save($workspace);
 
-            /** @var User $user */
-            $user = $form->getData();
-            $plainPassword = $form->get('plainPassword')->getData();
+            /** @var RegisterUserDto $dto */
+            $dto = $form->getData();
 
-            $user->addRole('ROLE_ADMIN');
-            $user->setWorkspace($workspace);
+            $user = User::createFromRegisterDto($workspace, $dto, true);
 
-            $this->userRepository->register($user, $plainPassword);
+            $this->userRepository->register($user, $dto->plainPassword);
 
             return $this->userAuthenticator->authenticateUser(
                 $user,

@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Entity\Workspace;
 use App\Factory\CompanyFactory;
 use App\Factory\ContactFactory;
 use App\Factory\ContactNoteFactory;
@@ -13,6 +14,8 @@ use App\Factory\MeetingFactory;
 use App\Factory\UserFactory;
 use App\Factory\WorkspaceFactory;
 use App\Repository\CountryRepository;
+use App\Repository\UserRepository;
+use App\Repository\WorkspaceRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -25,15 +28,11 @@ class AppFixtures extends Fixture
     public function __construct(
         private CountryRepository $countryRepository,
         private UserPasswordHasherInterface $passwordHasher,
+        private UserRepository $userRepository,
+        private WorkspaceRepository $workspaceRepository,
         private string $testAdminPassword,
         private string $testUserPassword,
     ) {
-    }
-
-    private function hashUserPassword(string $plainPassword): string
-    {
-        $user = new User();
-        return $this->passwordHasher->hashPassword($user, $plainPassword);
     }
 
     public function load(ObjectManager $manager): void
@@ -52,29 +51,22 @@ class AppFixtures extends Fixture
         $workspaceDate = new \DateTime();
         $workspaceDate->modify('-2 years');
 
-        WorkspaceFactory::createOne([
-            'name' => 'First Workspace',
-            'createdAt' => $workspaceDate,
-            'updatedAt' => faker()->dateTimeBetween('-2 years', 'now'),
-        ]);
+        $workspace = new Workspace();
+        $workspace->setName('First Workspace');
+        $workspace->setCreatedAt($workspaceDate);
 
-        UserFactory::createOne([
-            'email' => 'testadmin@email.com',
-            'password' => $this->hashUserPassword($this->testAdminPassword),
-            'workspace' => WorkspaceFactory::random(),
-            'roles' => ['ROLE_ADMIN'],
-            'createdAt' => $workspaceDate,
-            'updatedAt' => faker()->dateTimeBetween('-2 years', 'now'),
-        ]);
+        $this->workspaceRepository->save($workspace);
 
-        UserFactory::createOne([
-            'email' => 'testuser@email.com',
-            'password' => $this->hashUserPassword($this->testUserPassword),
-            'workspace' => WorkspaceFactory::random(),
-            'roles' => ['ROLE_USER'],
-            'createdAt' => faker()->dateTimeBetween('-2 years', '-1 year'),
-            'updatedAt' => faker()->dateTimeBetween('-1 year', 'now'),
-        ]);
+        $testAdmin = new User($workspace, 'John', 'Doe', 'testadmin@email.com');
+        $testAdmin->addRole('ROLE_ADMIN');
+        $testAdmin->setCreatedAt($workspaceDate);
+
+        $this->userRepository->register($testAdmin, $this->testAdminPassword);
+
+        $testUser = new User($workspace, 'Jane', 'Doe', 'testuser@email.com');
+        $testUser->setCreatedAt($workspaceDate);
+
+        $this->userRepository->register($testUser, $this->testUserPassword);
 
         UserFactory::createMany(3, [
             'workspace' => WorkspaceFactory::random(),
