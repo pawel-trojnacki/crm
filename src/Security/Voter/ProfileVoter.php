@@ -50,7 +50,7 @@ class ProfileVoter extends Voter
 
     private function canView(User $member, User $user): bool
     {
-        return $member === $user && $this->security->isGranted('ROLE_USER');
+        return $member === $user && $this->security->isGranted(User::ROLE_USER);
     }
 
     private function canEdit(User $member, User $user): bool
@@ -59,6 +59,6 @@ class ProfileVoter extends Voter
             return false;
         }
 
-        return $this->security->isGranted('ROLE_MANAGER');
+        return $this->security->isGranted(User::ROLE_MANAGER);
     }
 }

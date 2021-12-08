@@ -55,7 +55,7 @@ class WorkspaceVoter extends Voter
 
     public function canView(Workspace $workspace, User $user): bool
     {
-        return $this->security->isGranted('ROLE_USER') && $workspace === $user->getWorkspace();
+        return $this->security->isGranted(User::ROLE_USER) && $workspace === $user->getWorkspace();
     }
 
     public function canEdit(Workspace $workspace, User $user): bool
@@ -64,7 +64,7 @@ class WorkspaceVoter extends Voter
             return false;
         }
 
-        return $this->security->isGranted('ROLE_ADMIN');
+        return $this->security->isGranted(User::ROLE_ADMIN);
     }
 
     public function canAddItem(Workspace $workspace, User $user): bool
@@ -73,6 +73,6 @@ class WorkspaceVoter extends Voter
             return false;
         }
 
-        return $this->security->isGranted('ROLE_MANAGER');
+        return $this->security->isGranted(User::ROLE_MANAGER);
     }
 }

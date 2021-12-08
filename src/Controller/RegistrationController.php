@@ -40,7 +40,7 @@ class RegistrationController extends AbstractBaseController
 
             /** @var RegisterUserDto $dto */
             $dto = $form->getData();
-            $dto->role = 'ROLE_ADMIN';
+            $dto->role = User::ROLE_ADMIN;
 
             $user = User::createFromRegisterDto($workspace, $dto);
 

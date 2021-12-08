@@ -18,6 +18,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_MANAGER = 'ROLE_MANAGER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+
     use TimestampableAttributeEntityTrait;
 
     #[ORM\Id]
@@ -62,10 +66,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->lastName = $lastName;
         $this->email = $email;
 
-        if($role) {
+        if ($role) {
             $this->addRole($role);
         } else {
-            $this->addRole('ROLE_USER');
+            $this->addRole(self::ROLE_USER);
         }
     }
 
@@ -95,8 +99,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->firstName = $dto->firstName;
         $this->lastName = $dto->lastName;
         $this->email = $dto->email;
-        
-        if($dto->role) {
+
+        if ($dto->role) {
             $this->roles = [$dto->role];
         }
 

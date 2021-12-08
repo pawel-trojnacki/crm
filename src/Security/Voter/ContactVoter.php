@@ -53,7 +53,7 @@ class ContactVoter extends Voter
     {
         $workspace = $user->getWorkspace();
 
-        return $workspace === $contact->getWorkspace() && $this->security->isGranted('ROLE_USER');
+        return $workspace === $contact->getWorkspace() && $this->security->isGranted(User::ROLE_USER);
     }
 
     private function canEdit(Contact $contact, User $user): bool
@@ -62,7 +62,7 @@ class ContactVoter extends Voter
             return false;
         }
 
-        return $this->security->isGranted('ROLE_ADMIN') ||
-            $this->security->isGranted('ROLE_MANAGER') && $contact->getCreator() === $user;
+        return $this->security->isGranted(User::ROLE_ADMIN) ||
+            $this->security->isGranted(User::ROLE_MANAGER) && $contact->getCreator() === $user;
     }
 }

@@ -19,7 +19,6 @@ use App\Repository\WorkspaceRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 use function Zenstruck\Foundry\faker;
 
@@ -27,7 +26,6 @@ class AppFixtures extends Fixture
 {
     public function __construct(
         private CountryRepository $countryRepository,
-        private UserPasswordHasherInterface $passwordHasher,
         private UserRepository $userRepository,
         private WorkspaceRepository $workspaceRepository,
         private string $testAdminPassword,
@@ -56,12 +54,12 @@ class AppFixtures extends Fixture
 
         $this->workspaceRepository->save($workspace);
 
-        $testAdmin = new User($workspace, 'John', 'Doe', 'testadmin@email.com', 'ROLE_ADMIN');
+        $testAdmin = new User($workspace, 'John', 'Doe', 'testadmin@email.com', User::ROLE_ADMIN);
         $testAdmin->setCreatedAt($workspaceDate);
 
         $this->userRepository->register($testAdmin, $this->testAdminPassword);
 
-        $testUser = new User($workspace, 'Jane', 'Doe', 'testuser@email.com', 'ROLE_USER');
+        $testUser = new User($workspace, 'Jane', 'Doe', 'testuser@email.com', User::ROLE_USER);
         $testUser->setCreatedAt($workspaceDate);
 
         $this->userRepository->register($testUser, $this->testUserPassword);

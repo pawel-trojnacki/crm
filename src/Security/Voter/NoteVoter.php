@@ -54,7 +54,7 @@ class NoteVoter extends Voter
             return false;
         }
 
-        return $this->security->isGranted('ROLE_ADMIN') ||
-            $this->security->isGranted('ROLE_MANAGER') && $note->getCreator() === $user;
+        return $this->security->isGranted(User::ROLE_ADMIN) ||
+            $this->security->isGranted(User::ROLE_MANAGER) && $note->getCreator() === $user;
     }
 }

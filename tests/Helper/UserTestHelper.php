@@ -20,7 +20,7 @@ class UserTestHelper
             self::DEFAULTS['firstName'],
             self::DEFAULTS['lastName'],
             self::DEFAULTS['email'],
-            'ROLE_USER',
+            User::ROLE_USER,
         );
 
         return $user;

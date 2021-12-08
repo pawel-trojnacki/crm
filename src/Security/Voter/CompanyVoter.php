@@ -53,7 +53,7 @@ class CompanyVoter extends Voter
     {
         $workspace = $user->getWorkspace();
 
-        return $workspace === $company->getWorkspace() && $this->security->isGranted('ROLE_USER');
+        return $workspace === $company->getWorkspace() && $this->security->isGranted(User::ROLE_USER);
     }
 
     private function canEdit(Company $company, User $user): bool
@@ -62,7 +62,7 @@ class CompanyVoter extends Voter
             return false;
         }
 
-        return $this->security->isGranted('ROLE_ADMIN') ||
-            $this->security->isGranted('ROLE_MANAGER') && $company->getCreator() === $user;
+        return $this->security->isGranted(User::ROLE_ADMIN) ||
+            $this->security->isGranted(User::ROLE_MANAGER) && $company->getCreator() === $user;
     }
 }

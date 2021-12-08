@@ -40,7 +40,7 @@ final class UserFactory extends ModelFactory
             'password' => self::faker()->password(),
             'firstName' => self::faker()->firstName(),
             'lastName' => self::faker()->lastName(),
-            'role' => self::faker()->boolean() ? 'ROLE_USER' : 'ROLE_MANAGER',
+            'role' => self::faker()->boolean() ? User::ROLE_USER : User::ROLE_MANAGER,
             'createdAt' => self::faker()->dateTimeBetween('-2 years', '-1 year'),
             'updatedAt' => self::faker()->dateTimeBetween('-1 year', 'now'),
         ];

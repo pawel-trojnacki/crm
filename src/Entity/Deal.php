@@ -67,7 +67,7 @@ class Deal implements NoteParentEntityInterface
         string $name,
         string $stage,
         Company $company,
-        ?Collection $users = null,
+        Collection|array $users = null,
         ?string $description = null,
     ) {
         $this->id = Uuid::uuid4();
@@ -78,12 +78,12 @@ class Deal implements NoteParentEntityInterface
         $this->company = $company;
         $this->description = $description;
 
-        if($users) {
+        if ($users) {
             $this->users = $users;
         } else {
             $this->users = new ArrayCollection();
         }
-        
+
         $this->dealNotes = new ArrayCollection();
     }
 
@@ -100,7 +100,8 @@ class Deal implements NoteParentEntityInterface
         );
     }
 
-    public function updateFromDto(DealDto $dto): self {
+    public function updateFromDto(DealDto $dto): self
+    {
         $this->name = $dto->name;
         $this->stage = $dto->stage;
         $this->company = $dto->company;

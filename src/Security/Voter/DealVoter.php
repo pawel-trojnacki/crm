@@ -53,7 +53,7 @@ class DealVoter extends Voter
     {
         $workspace = $user->getWorkspace();
 
-        return $workspace === $deal->getWorkspace() && $this->security->isGranted('ROLE_USER');
+        return $workspace === $deal->getWorkspace() && $this->security->isGranted(User::ROLE_USER);
     }
 
     private function canEdit(Deal $deal, User $user): bool
@@ -62,7 +62,7 @@ class DealVoter extends Voter
             return false;
         }
 
-        return $this->security->isGranted('ROLE_ADMIN') ||
-            $this->security->isGranted('ROLE_MANAGER') && $deal->getCreator() === $user;
+        return $this->security->isGranted(User::ROLE_ADMIN) ||
+            $this->security->isGranted(User::ROLE_MANAGER) && $deal->getCreator() === $user;
     }
 }

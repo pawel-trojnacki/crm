@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Dto\UpdateUserInfoDto;
+use App\Entity\User;
 use App\Form\FieldType\UserRoleType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -19,9 +20,9 @@ class UserInfoFormType extends AbstractType
         $help = null;
 
         if ($dto) {
-            if (in_array('ROLE_ADMIN', $dto->roles)) {
+            if (in_array(User::ROLE_ADMIN, $dto->roles)) {
                 $data = 'Admin';
-            } elseif (in_array('ROLE_MANAGER', $dto->roles)) {
+            } elseif (in_array(User::ROLE_MANAGER, $dto->roles)) {
                 $data = 'Manager';
             } else {
                 $data = 'User';
@@ -29,17 +30,17 @@ class UserInfoFormType extends AbstractType
 
             $help = 'Current user role: ' . $data;
         }
-        
+
         $builder
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('email', EmailType::class);
 
-            if ($options['with_roles']) {
-                $builder->add('role', UserRoleType::class, [
-                    'help' => $help,
-                ]);
-            }
+        if ($options['with_roles']) {
+            $builder->add('role', UserRoleType::class, [
+                'help' => $help,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
