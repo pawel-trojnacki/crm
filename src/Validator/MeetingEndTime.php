@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute]
 class MeetingEndTime extends Constraint
 {
-    public string $message = 'End date should be greater than begin date';
+    public string $message = 'The end date should be greater than the begin date';
 
     public function getRequiredOptions(): array
     {

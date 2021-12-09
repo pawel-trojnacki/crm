@@ -11,14 +11,14 @@ use Ramsey\Uuid\Uuid;
 #[ORM\Entity(repositoryClass: MeetingRepository::class)]
 class Meeting
 {
-    public const IMORTANCE_HIGH = 'High';
-    public const IMPORTANCE_NORMAL = 'Normal';
-    public const IMPORTANCE_LOW = 'Low';
+    public const IMPORTANCE_LOW = 0;
+    public const IMPORTANCE_NORMAL = 1;
+    public const IMORTANCE_HIGH = 2;
 
-    public const IMPORTANCE_OPTIONS = [
-        self::IMORTANCE_HIGH,
-        self::IMPORTANCE_NORMAL,
-        self::IMPORTANCE_LOW,
+    private static $importanceOptions = [
+        'Low' => self::IMPORTANCE_LOW,
+        'Normal' => self::IMPORTANCE_NORMAL,
+        'High' => self::IMORTANCE_HIGH,
     ];
 
     #[ORM\Id]
@@ -38,7 +38,7 @@ class Meeting
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $workspace;
 
-    #[ORM\Column(type: 'string', length: 20)]
+    #[ORM\Column(type: 'integer')]
     private $importance;
 
     #[ORM\Column(type: 'datetime')]
@@ -54,7 +54,7 @@ class Meeting
     public function __construct(
         Workspace $workspace,
         string $name,
-        string $importance,
+        int $importance,
         \DateTime $beginAt,
         ?\DateTime $endAt = null,
         ?Contact $contact = null,
@@ -84,6 +84,11 @@ class Meeting
         return $this;
     }
 
+    public static function getImportanceOptions(): array
+    {
+        return self::$importanceOptions;
+    }
+
     public function getId(): string
     {
         return $this->id;
@@ -111,12 +116,12 @@ class Meeting
         return $this->workspace;
     }
 
-    public function getImportance(): string
+    public function getImportance(): int
     {
         return $this->importance;
     }
 
-    public function getBeginAt(): ?\DateTimeInterface
+    public function getBeginAt(): \DateTimeInterface
     {
         return $this->beginAt;
     }

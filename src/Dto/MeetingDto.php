@@ -3,7 +3,6 @@
 namespace App\Dto;
 
 use App\Entity\Contact;
-use App\Entity\Meeting;
 use App\Validator\MeetingEndTime as MeetingEndTimeAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,8 +17,7 @@ class MeetingDto
     public string $name;
 
     #[Assert\NotBlank]
-    #[Assert\Choice(choices: Meeting::IMPORTANCE_OPTIONS, message: 'Choose a valid option')]
-    public string $importance;
+    public int $importance;
 
     #[Assert\NotBlank]
     #[Assert\Type(\DateTime::class)]

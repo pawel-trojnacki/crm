@@ -13,6 +13,12 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class CalendarSubscriber implements EventSubscriberInterface
 {
+    private const COLOR_LOW = '#0fcce3';
+    private const COLOR_NORMAL = '#ef6e4b';
+    private const COLOR_HIGH = '#f82362';
+
+    private static $color = [self::COLOR_LOW, self::COLOR_NORMAL, self::COLOR_HIGH];
+
     public function __construct(
         private MeetingRepository $meetingRepository,
         private UrlGeneratorInterface $router,
@@ -56,8 +62,8 @@ class CalendarSubscriber implements EventSubscriberInterface
             );
 
             $meetingEvent->setOptions([
-                'backgroundColor' => 'red',
-                'borderColor' => 'red',
+                'backgroundColor' => self::$color[$meeting->getImportance()],
+                'borderColor' => self::$color[$meeting->getImportance()],
             ]);
 
             $meetingEvent->addOption(

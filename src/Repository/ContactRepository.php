@@ -54,6 +54,17 @@ class ContactRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+     /** @return Contact[] */
+     public function findAllByWorkspaceAlphabetically(Workspace $workspace): array
+     {
+         return $this->createQueryBuilder('c')
+             ->andWhere('c.workspace = :id')
+             ->setParameter(':id', $workspace->getId())
+             ->orderBy('c.firstName', 'ASC')
+             ->getQuery()
+             ->getResult();
+     }
+
     public function findCountFromLastYearByMonth(Workspace $workspace): array
     {
         return $this->createQueryBuilder('c')

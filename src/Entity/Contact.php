@@ -87,6 +87,11 @@ class Contact implements NoteParentEntityInterface
         $this->meetings = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return ucwords($this->firstName . ' ' . $this->lastName);
+    }
+
     public static function createFromDto(Workspace $workspace, User $creator, ContactDto $dto): self
     {
         return new self(
