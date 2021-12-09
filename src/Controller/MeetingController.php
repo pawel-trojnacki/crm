@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Controller\Abstract\AbstractBaseController;
 use App\Dto\MeetingDto;
+use App\Dto\Transformer\MeetingDtoTransformer;
 use App\Entity\Meeting;
 use App\Entity\Workspace;
 use App\Form\MeetingFormType;
@@ -17,6 +18,7 @@ class MeetingController extends AbstractBaseController
 {
     public function __construct(
         private MeetingRepository $meetingRepository,
+        private MeetingDtoTransformer $meetingDtoTransformer,
     ) {
     }
 
@@ -58,6 +60,40 @@ class MeetingController extends AbstractBaseController
 
         return $this->renderForm('meeting/create.html.twig', [
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/meeting/{slug}/edit', name: 'app_meeting_edit', methods: ['GET', 'POST'])]
+    public function edit(Meeting $meeting, Request $request): Response
+    {
+        $workspace = $meeting->getWorkspace();
+
+        $meetingDto = $this->meetingDtoTransformer->transformFromObject($meeting);
+
+        $form = $this->createForm(MeetingFormType::class, $meetingDto, [
+            'workspace' => $workspace,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var MeetingDto $dto */
+            $dto = $form->getData();
+
+            $meeting->updateFromDto($dto);
+
+            $this->meetingRepository->save($meeting);
+
+            $this->addFlashSuccess(sprintf('Meeting %s has been updated', $meeting->getName()));
+
+            return $this->redirectToRoute('app_meeting_show', [
+                'slug' => $meeting->getSlug(),
+            ]);
+        }
+
+        return $this->renderForm('meeting/edit.html.twig', [
+            'form' => $form,
+            'meeting' => $meeting,
         ]);
     }
 }

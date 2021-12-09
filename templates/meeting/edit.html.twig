@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Add Meeting
+	Edit Meeting
 {% endblock %}
 
 {% block heading %}
-	Add Meeting
+	Edit Meeting: {{ meeting.name | title }}
 {% endblock %}
 
 {% block body %}
 
-{{ include('meeting/_form.html.twig') }}
+{{ include('meeting/_form.html.twig', { button_text: 'Update meeting' }) }}
 
 {% endblock %}

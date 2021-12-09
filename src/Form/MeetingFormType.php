@@ -44,8 +44,7 @@ class MeetingFormType extends AbstractType
                 ),
                 'placeholder' => 'Choose a contact',
                 'required' => false,
-            ])
-            ->add('submit', SubmitType::class);
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
