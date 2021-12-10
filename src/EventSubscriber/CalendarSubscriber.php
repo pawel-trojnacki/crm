@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Constant\Design\MeetingColorConstant;
 use App\Entity\User;
 use App\Repository\MeetingRepository;
 use CalendarBundle\CalendarEvents;
@@ -13,12 +14,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class CalendarSubscriber implements EventSubscriberInterface
 {
-    private const COLOR_LOW = '#0fcce3';
-    private const COLOR_NORMAL = '#ef6e4b';
-    private const COLOR_HIGH = '#f82362';
-
-    private static $color = [self::COLOR_LOW, self::COLOR_NORMAL, self::COLOR_HIGH];
-
     public function __construct(
         private MeetingRepository $meetingRepository,
         private UrlGeneratorInterface $router,
@@ -48,10 +43,6 @@ class CalendarSubscriber implements EventSubscriberInterface
         /** @var User $user */
         $user = $token->getUser();
 
-        $start = $calendar->getStart();
-        $end = $calendar->getEnd();
-        $filters = $calendar->getFilters();
-
         $meetings = $this->meetingRepository->findBy(['workspace' => $user->getWorkspace()]);
 
         foreach ($meetings as $meeting) {
@@ -62,8 +53,8 @@ class CalendarSubscriber implements EventSubscriberInterface
             );
 
             $meetingEvent->setOptions([
-                'backgroundColor' => self::$color[$meeting->getImportance()],
-                'borderColor' => self::$color[$meeting->getImportance()],
+                'backgroundColor' => MeetingColorConstant::COLORS[$meeting->getImportance()],
+                'borderColor' => MeetingColorConstant::COLORS[$meeting->getImportance()],
             ]);
 
             $meetingEvent->addOption(

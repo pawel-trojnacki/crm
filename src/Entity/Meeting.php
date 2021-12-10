@@ -38,6 +38,10 @@ class Meeting
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $workspace;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
+    private $creator;
+
     #[ORM\Column(type: 'integer')]
     private $importance;
 
@@ -53,6 +57,7 @@ class Meeting
 
     public function __construct(
         Workspace $workspace,
+        User $creator,
         string $name,
         int $importance,
         \DateTime $beginAt,
@@ -61,6 +66,7 @@ class Meeting
     ) {
         $this->id = Uuid::uuid4();
         $this->workspace = $workspace;
+        $this->creator = $creator;
         $this->importance = $importance;
         $this->name = $name;
         $this->beginAt = $beginAt;
@@ -68,9 +74,9 @@ class Meeting
         $this->contact = $contact;
     }
 
-    public static function createFromDto(Workspace $workspace, MeetingDto $dto): self
+    public static function createFromDto(Workspace $workspace, User $creator, MeetingDto $dto): self
     {
-        return new self($workspace, $dto->name, $dto->importance, $dto->beginAt, $dto->endAt, $dto->contact);
+        return new self($workspace, $creator, $dto->name, $dto->importance, $dto->beginAt, $dto->endAt, $dto->contact);
     }
 
     public function updateFromDto(MeetingDto $dto): self
@@ -94,7 +100,7 @@ class Meeting
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -111,9 +117,14 @@ class Meeting
         return $this;
     }
 
-    public function getWorkspace(): ?Workspace
+    public function getWorkspace(): Workspace
     {
         return $this->workspace;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
     }
 
     public function getImportance(): int

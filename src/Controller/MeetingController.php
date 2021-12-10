@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constant\Design\MeetingColorConstant;
 use App\Controller\Abstract\AbstractBaseController;
 use App\Dto\MeetingDto;
 use App\Dto\Transformer\MeetingDtoTransformer;
@@ -26,16 +27,23 @@ class MeetingController extends AbstractBaseController
     #[IsGranted('WORKSPACE_VIEW', subject: 'workspace')]
     public function index(Workspace $workspace): Response
     {
-        return $this->render('meeting/calendar.html.twig');
+        return $this->render('meeting/calendar.html.twig', [
+            'importance_options' => Meeting::getImportanceOptions(),
+            'importance_colors' => MeetingColorConstant::COLORS, 
+        ]);
     }
 
-    #[Route('/meeting/{slug}', name: 'app_meeting_show', methods: ['GET'])]
+    #[Route('/meeting/{slug}', name: 'app_meeting_show', methods: ['GET', 'POST'])]
+    #[IsGranted('MEETING_VIEW', subject: 'meeting')]
     public function show(Meeting $meeting): Response
     {
-        return $this->render('meeting/show.html.twig');
+        return $this->render('meeting/show.html.twig', [
+            'meeting' => $meeting,
+        ]);
     }
 
     #[Route('/{slug}/meetings/create', name: 'app_meeting_create', methods: ['GET', 'POST'])]
+    #[IsGranted('WORKSPACE_ADD_ITEM', subject: 'workspace')]
     public function create(Workspace $workspace, Request $request): Response
     {
         $form = $this->createForm(MeetingFormType::class, null, [
@@ -47,7 +55,7 @@ class MeetingController extends AbstractBaseController
             /** @var MeetingDto $dto */
             $dto = $form->getData();
 
-            $meeting = Meeting::createFromDto($workspace, $dto);
+            $meeting = Meeting::createFromDto($workspace, $this->getUser(), $dto);
 
             $this->meetingRepository->save($meeting);
 
@@ -64,6 +72,7 @@ class MeetingController extends AbstractBaseController
     }
 
     #[Route('/meeting/{slug}/edit', name: 'app_meeting_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('MEETING_EDIT', subject: 'meeting')]
     public function edit(Meeting $meeting, Request $request): Response
     {
         $workspace = $meeting->getWorkspace();

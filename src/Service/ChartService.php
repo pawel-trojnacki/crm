@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Constant\Design\ColorConstant;
 use App\Entity\Deal;
 use App\Entity\Workspace;
 use App\Repository\CompanyRepository;
@@ -10,13 +11,8 @@ use App\Repository\DealRepository;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-
 class ChartService
 {
-    private const BLUE = '#2600bc';
-    private const ORANGE = '#ef6e4b';
-    private const CYAN = '#0fcce3';
-    private const PINK = '#f82362';
 
     private const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
@@ -48,22 +44,22 @@ class ChartService
                 [
                     'label' => 'Contacts',
                     'fill' => false,
-                    'backgroundColor' => self::BLUE,
-                    'borderColor' => self::BLUE,
+                    'backgroundColor' => ColorConstant::BLUE,
+                    'borderColor' => ColorConstant::BLUE,
                     'data' => array_values($contactData),
                 ],
                 [
                     'label' => 'Companies',
                     'fill' => false,
-                    'backgroundColor' => self::ORANGE,
-                    'borderColor' => self::ORANGE,
+                    'backgroundColor' => ColorConstant::ORANGE,
+                    'borderColor' => ColorConstant::ORANGE,
                     'data' => array_values($companyData),
                 ],
                 [
                     'label' => 'Deals',
                     'fill' => false,
-                    'backgroundColor' => self::CYAN,
-                    'borderColor' => self::CYAN,
+                    'backgroundColor' => ColorConstant::CYAN,
+                    'borderColor' => ColorConstant::CYAN,
                     'data' => array_values($dealData),
                 ],
             ],
@@ -105,7 +101,11 @@ class ChartService
             'labels' => array_map(fn ($stage) => ucwords($stage), Deal::ACTIVE_STAGES),
             'datasets' => [
                 [
-                    'backgroundColor' => [self::BLUE, self::ORANGE, self::CYAN],
+                    'backgroundColor' => [
+                        ColorConstant::BLUE,
+                        ColorConstant::ORANGE,
+                        ColorConstant::CYAN,
+                    ],
                     'data' => $chartData,
                 ],
             ],
@@ -148,8 +148,13 @@ class ChartService
             'datasets' => [
                 [
                     'label' => 'Companies',
-                    'backgroundColor' => [self::BLUE, self::ORANGE, self::CYAN, self::PINK],
-                    // 'borderColor' => self::BLUE,
+                    'backgroundColor' => [
+                        ColorConstant::BLUE,
+                        ColorConstant::ORANGE,
+                        ColorConstant::CYAN,
+                        ColorConstant::PINK
+                    ],
+                    // 'borderColor' => ColorConstant::BLUE,
                     'data' => $chartData,
                 ],
             ],

@@ -1,1 +1,14 @@
-<h1>Meeting show</h1>
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ meeting.name | title }}
+{% endblock %}
+
+{% block heading %}
+	Meeting:
+	"{{ meeting.name | title }}"
+{% endblock %}
+
+{% block body %}
+	<h2>Hello</h2>
+{% endblock %}
