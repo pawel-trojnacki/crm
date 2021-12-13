@@ -51,7 +51,7 @@ class Meeting
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $endAt;
 
-    #[ORM\ManyToOne(targetEntity: Contact::class, inversedBy: 'meetings')]
+    #[ORM\ManyToOne(targetEntity: Contact::class, inversedBy: 'meetings', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: true, referencedColumnName: 'id', onDelete: 'SET NULL')]
     private $contact;
 
