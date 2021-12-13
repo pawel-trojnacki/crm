@@ -29,15 +29,60 @@ class MeetingController extends AbstractBaseController
     {
         return $this->render('meeting/calendar.html.twig', [
             'importance_options' => Meeting::getImportanceOptions(),
-            'importance_colors' => MeetingColorConstant::COLORS, 
+            'importance_colors' => MeetingColorConstant::COLORS,
         ]);
     }
 
     #[Route('/meeting/{slug}', name: 'app_meeting_show', methods: ['GET', 'POST'])]
     #[IsGranted('MEETING_VIEW', subject: 'meeting')]
-    public function show(Meeting $meeting): Response
+    public function show(Meeting $meeting, Request $request): Response
     {
-        return $this->render('meeting/show.html.twig', [
+        $workspace = $meeting->getWorkspace();
+
+        $meetingDto = $this->meetingDtoTransformer->transformFromObject($meeting);
+
+        $form = $this->createForm(MeetingFormType::class, $meetingDto, [
+            'workspace' => $workspace,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->denyAccessUnlessGranted('MEETING_EDIT', $meeting);
+
+            /** @var MeetingDto $dto */
+            $dto = $form->getData();
+
+            $meeting->updateFromDto($dto);
+
+            $this->meetingRepository->save($meeting);
+
+            $this->addFlashSuccess(sprintf('Meeting %s has been updated', $meeting->getName()));
+
+            return $this->redirectToRoute('app_meeting_show', [
+                'slug' => $meeting->getSlug(),
+            ]);
+        }
+
+        if ($request->isMethod('POST') && $request->request->get('delete-meeting')) {
+            $this->denyAccessUnlessGranted('MEETING_EDIT', $meeting);
+
+            $meetingName = $meeting->getName();
+
+            $this->meetingRepository->delete($meeting);
+
+            $this->addFlashSuccess(sprintf(
+                'Meeting %s has been deleted',
+                $meetingName,
+            ));
+
+            return $this->redirectToRoute('app_meeting_index', [
+                'slug' => $workspace->getSlug(),
+            ]);
+        }
+
+        return $this->renderForm('meeting/show.html.twig', [
+            'form' => $form,
             'meeting' => $meeting,
         ]);
     }
@@ -68,41 +113,6 @@ class MeetingController extends AbstractBaseController
 
         return $this->renderForm('meeting/create.html.twig', [
             'form' => $form,
-        ]);
-    }
-
-    #[Route('/meeting/{slug}/edit', name: 'app_meeting_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('MEETING_EDIT', subject: 'meeting')]
-    public function edit(Meeting $meeting, Request $request): Response
-    {
-        $workspace = $meeting->getWorkspace();
-
-        $meetingDto = $this->meetingDtoTransformer->transformFromObject($meeting);
-
-        $form = $this->createForm(MeetingFormType::class, $meetingDto, [
-            'workspace' => $workspace,
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var MeetingDto $dto */
-            $dto = $form->getData();
-
-            $meeting->updateFromDto($dto);
-
-            $this->meetingRepository->save($meeting);
-
-            $this->addFlashSuccess(sprintf('Meeting %s has been updated', $meeting->getName()));
-
-            return $this->redirectToRoute('app_meeting_show', [
-                'slug' => $meeting->getSlug(),
-            ]);
-        }
-
-        return $this->renderForm('meeting/edit.html.twig', [
-            'form' => $form,
-            'meeting' => $meeting,
         ]);
     }
 }

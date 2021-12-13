@@ -1,14 +1,31 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ meeting.name | title }}
+{{ meeting.name | title }}
 {% endblock %}
 
 {% block heading %}
-	Meeting:
-	"{{ meeting.name | title }}"
+Meeting: "{{ meeting.name | title }}"
 {% endblock %}
 
 {% block body %}
-	<h2>Hello</h2>
+
+<section class="mb-5">
+	<h2 class="fw-bold fs-5 mb-3">Edit meeting</h2>
+	{{ include('meeting/_form.html.twig', { button_text: 'Update meeting' }) }}
+</section>
+
+<section class="mb-5">
+	<h2 class="fw-bold fs-5 mb-3">Delete meeting</h2>
+	<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-meeting-modal">
+		Delete
+	</button>
+
+	{{ include('partials/_delete-modal.html.twig', {
+	id: 'delete-meeting-modal',
+	delete_name: 'delete-meeting',
+	delete_id: 'delete-meeting'
+	}) }}
+</section>
+
 {% endblock %}
