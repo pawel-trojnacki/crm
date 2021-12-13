@@ -6,8 +6,10 @@ use App\Entity\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
@@ -25,6 +27,8 @@ class AppAuthenticator extends AbstractAuthenticator
 
     public function __construct(
         private RouterInterface $router,
+        private FlashBagInterface $flashBag,
+        private AuthorizationCheckerInterface $authorizationChecker,
     ) {
     }
 
@@ -60,6 +64,22 @@ class AppAuthenticator extends AbstractAuthenticator
         $user = $token->getUser();
 
         $workspace = $user->getWorkspace();
+
+        if (
+            !$this->authorizationChecker->isGranted('ROLE_ADMIN')
+            ||
+            !$this->authorizationChecker->isGranted('ROLE_ADMIN')
+        ) {
+            $this->flashBag->add(
+                'warning',
+                <<<EOD
+                Hello! You are logged in as a user with view capabilities only.
+                Please notice that you are able to see almost everything,
+                but you won't be able to create new contacts, deals, companies,
+                meetings, users etc. or edit or delete existing ones.
+                EOD,
+            );
+        }
 
         return new RedirectResponse(
             $this->getTargetPath($request->getSession(), $firewallName)

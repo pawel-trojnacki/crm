@@ -1,3 +1,4 @@
-<div class="alert alert-success" role="alert">
+{% set alert_class = type | default('success') %}
+<div class="alert alert-{{alert_class}}" role="alert">
     {{ message }}
 </div>

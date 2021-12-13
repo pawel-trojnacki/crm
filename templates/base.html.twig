@@ -30,6 +30,10 @@
         {{ include('partials/_flash.html.twig', { message: message }) }}
         {% endfor %}
 
+        {% for message in app.flashes('warning') %}
+        {{ include('partials/_flash.html.twig', { message: message, type: 'warning' }) }}
+        {% endfor %}
+
         {% block body %}{% endblock %}
 
     </main>
