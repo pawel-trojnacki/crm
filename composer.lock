@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "babdev/pagerfanta-bundle",
-            "version": "v3.6.0",
+            "version": "v3.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BabDev/PagerfantaBundle.git",
-                "reference": "db3ab9d68424072c41fad9cc0685de1e974e0a49"
+                "reference": "7faf8d584a5c93d1ddff55fcacd0fede8bc748d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BabDev/PagerfantaBundle/zipball/db3ab9d68424072c41fad9cc0685de1e974e0a49",
-                "reference": "db3ab9d68424072c41fad9cc0685de1e974e0a49",
+                "url": "https://api.github.com/repos/BabDev/PagerfantaBundle/zipball/7faf8d584a5c93d1ddff55fcacd0fede8bc748d5",
+                "reference": "7faf8d584a5c93d1ddff55fcacd0fede8bc748d5",
                 "shasum": ""
             },
             "require": {
@@ -79,7 +79,7 @@
             ],
             "support": {
                 "issues": "https://github.com/BabDev/PagerfantaBundle/issues",
-                "source": "https://github.com/BabDev/PagerfantaBundle/tree/v3.6.0"
+                "source": "https://github.com/BabDev/PagerfantaBundle/tree/v3.6.1"
             },
             "funding": [
                 {
@@ -87,7 +87,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-12-01T00:55:26+00:00"
+            "time": "2021-12-09T00:39:39+00:00"
         },
         {
             "name": "beberlei/doctrineextensions",
@@ -2182,16 +2182,16 @@
         },
         {
             "name": "pagerfanta/core",
-            "version": "v3.5.0",
+            "version": "v3.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Pagerfanta/core.git",
-                "reference": "433e0ff7afffd6a15c9688830283e6208e9a8903"
+                "reference": "ef508747e3626ea456313412b082080c5c6ab77a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Pagerfanta/core/zipball/433e0ff7afffd6a15c9688830283e6208e9a8903",
-                "reference": "433e0ff7afffd6a15c9688830283e6208e9a8903",
+                "url": "https://api.github.com/repos/Pagerfanta/core/zipball/ef508747e3626ea456313412b082080c5c6ab77a",
+                "reference": "ef508747e3626ea456313412b082080c5c6ab77a",
                 "shasum": ""
             },
             "require": {
@@ -2222,13 +2222,13 @@
                 "pagerfanta"
             ],
             "support": {
-                "source": "https://github.com/Pagerfanta/core/tree/v3.5.0"
+                "source": "https://github.com/Pagerfanta/core/tree/v3.5.1"
             },
-            "time": "2021-11-25T23:29:09+00:00"
+            "time": "2021-12-01T23:47:09+00:00"
         },
         {
             "name": "pagerfanta/doctrine-orm-adapter",
-            "version": "v3.5.0",
+            "version": "v3.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Pagerfanta/doctrine-orm-adapter.git",
@@ -2273,22 +2273,22 @@
                 "pagerfanta"
             ],
             "support": {
-                "source": "https://github.com/Pagerfanta/doctrine-orm-adapter/tree/v3.5.0"
+                "source": "https://github.com/Pagerfanta/doctrine-orm-adapter/tree/v3.5.1"
             },
             "time": "2021-11-25T23:29:09+00:00"
         },
         {
             "name": "pagerfanta/twig",
-            "version": "v3.5.0",
+            "version": "v3.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Pagerfanta/twig.git",
-                "reference": "91c2bbfdb0dfcc3d2e12234e40bd8ddfd63d9316"
+                "reference": "b818605c814dd1b18c42a4f047cc75352152841b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Pagerfanta/twig/zipball/91c2bbfdb0dfcc3d2e12234e40bd8ddfd63d9316",
-                "reference": "91c2bbfdb0dfcc3d2e12234e40bd8ddfd63d9316",
+                "url": "https://api.github.com/repos/Pagerfanta/twig/zipball/b818605c814dd1b18c42a4f047cc75352152841b",
+                "reference": "b818605c814dd1b18c42a4f047cc75352152841b",
                 "shasum": ""
             },
             "require": {
@@ -2319,9 +2319,9 @@
                 "pagerfanta"
             ],
             "support": {
-                "source": "https://github.com/Pagerfanta/twig/tree/v3.5.0"
+                "source": "https://github.com/Pagerfanta/twig/tree/v3.5.1"
             },
-            "time": "2021-11-25T23:29:09+00:00"
+            "time": "2021-12-01T23:47:09+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -9303,16 +9303,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.14.0",
+            "version": "v1.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "d86dfc2e2a3cd366cee475e52c6bb3bbc371aa0e"
+                "reference": "bbcd7380b0ebf3961ee21409db7b38bc31d69a13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/d86dfc2e2a3cd366cee475e52c6bb3bbc371aa0e",
-                "reference": "d86dfc2e2a3cd366cee475e52c6bb3bbc371aa0e",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/bbcd7380b0ebf3961ee21409db7b38bc31d69a13",
+                "reference": "bbcd7380b0ebf3961ee21409db7b38bc31d69a13",
                 "shasum": ""
             },
             "require": {
@@ -9364,9 +9364,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpspec/prophecy/issues",
-                "source": "https://github.com/phpspec/prophecy/tree/1.14.0"
+                "source": "https://github.com/phpspec/prophecy/tree/v1.15.0"
             },
-            "time": "2021-09-10T09:02:12+00:00"
+            "time": "2021-12-08T12:19:24+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

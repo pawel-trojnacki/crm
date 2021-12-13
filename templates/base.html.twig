@@ -1,18 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM | {% block title %}{% endblock %}</title>
-    {% block stylesheets %}
-    {{ encore_entry_link_tags('app') }}
-    {% endblock %}
-
-    {% block javascripts %}
-    {{ encore_entry_script_tags('app') }}
-    {% endblock %}
-</head>
+{{ include('partials/_head.html.twig') }}
 
 <body>
 
@@ -22,7 +11,7 @@
 
         <header class="dashboard-header mb-5">
             <h1 class="fs-4 lh-1 fw-bold text-uppercase">
-            {% block heading %}Dashboard{% endblock %}
+                {% block heading %}Dashboard{% endblock %}
             </h1>
         </header>
 
@@ -37,7 +26,6 @@
         {% block body %}{% endblock %}
 
     </main>
-
 
 </body>
 
